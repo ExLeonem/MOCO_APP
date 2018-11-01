@@ -1,11 +1,17 @@
 
 
-# Project Outline
+# Index
+
+- [Projekt Outline](#Project-Outline)
+- [User Interface](#User-Interface)
+
 
 #### Teammebers
 - Benjamin Bäumler
 - Maksim Sandybekov
 
+
+## Project Outline
 
 ### Motivation
 Some people close their curtains/shutters when they go to sleep. The reason for doing so varies from person to person.
@@ -86,3 +92,10 @@ vary depending on usage of libraries and their learning curve, from scratch impl
 #### Risks
 - Lack of experience with hardware
 - Non standard way to implement app (cross-platform/less support of lecturer)
+
+## User Interface
+
+The current state of the interface design is accessable through below link.
+
+https://www.figma.com/file/RVZd5LnsutkQmoSH1gSq4f1N/MoCo
+
