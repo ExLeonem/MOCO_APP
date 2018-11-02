@@ -1,0 +1,17 @@
+[package]
+name = "common"
+version = "0.1.0"
+authors = ["Benjamin Bäumler <benjamin.baeumler@qqwa.de>"]
+edition = "2018"
+
+[lib]
+name = "common"
+crate-type = ["staticlib", "cdylib"]
+
+[dependencies]
+libc = "0.2"
+jni = { version = "0.5.1", optional = true, default-features = false }
+
+[features]
+default = ["jni"]
+

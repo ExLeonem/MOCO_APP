@@ -1,0 +1,7 @@
+[package]
+name = "server"
+version = "0.1.0"
+authors = ["Benjamin Bäumler <benjamin.baeumler@qqwa.de>"]
+edition = "2018"
+
+[dependencies]

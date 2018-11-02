@@ -1,3 +1,6 @@
 paper
 android-udev-rules
-sun_react/local.properties
+client/local.properties
+target
+NDK
+client/android/app/src/main/jniLibs

@@ -99,3 +99,37 @@ The current state of the interface design is accessable through below link.
 
 https://www.figma.com/file/RVZd5LnsutkQmoSH1gSq4f1N/MoCo
 
+# Build
+
+https://medium.com/@marekkotewicz/building-a-mobile-app-in-rust-and-react-native-part-1-project-setup-b8dbcf3f539f
+
+https://medium.com/@marekkotewicz/building-a-mobile-app-in-rust-and-react-native-part-2-hello-world-60970a7d194a
+
+Install Android NDK toolchains with the following command:
+```
+${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 16 --arch x86 --install-dir NDK/x86
+${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 16 --arch arm --install-dir NDK/arm
+${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 16 --arch arm64 --install-dir NDK/arm64
+```
+
+Install Rust and run:
+```
+rustup target add aarch64-linux-android
+rustup target add armv7-linux-androideabi
+rustup target add i686-linux-android
+```
+
+Compile Project with:
+```
+make android
+```
+
+And run with:
+```
+make run-android
+```
+
+Not sure if this step is need..
+```
+react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
+```
