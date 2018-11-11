@@ -27,4 +27,11 @@ public class RustLib extends ReactContextBaseJavaModule {
         Log.d("RustLib", "sayHello");
         promise.resolve(greeting(to));
     }
+
+    private static native String getPacket(final String address);
+    @ReactMethod
+    public void getPacket(String address, Promise promise) {
+        // Log.d("RustLib", "getPacket");
+        Log.d("RustLib", getPacket(address));
+    }
 }

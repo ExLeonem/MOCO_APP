@@ -13,6 +13,7 @@ import { RustLib } from 'NativeModules';
 
 async function displayGreeting(self) {
     try {
+        RustLib.getPacket("192.168.178.20:5123");
         let text = await RustLib.greeting("Test")
         self.setState({
             hello: text
