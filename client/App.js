@@ -13,8 +13,7 @@ import { RustLib } from 'NativeModules';
 
 async function displayGreeting(self) {
     try {
-        RustLib.getPacket("192.168.178.20:5123");
-        let text = await RustLib.greeting("Test")
+        let text = "Text"
         self.setState({
             hello: text
         })
@@ -34,7 +33,7 @@ export default class mobile_app extends Component {
         return (
             <View style={styles.container}>
                 <Text style={styles.welcome}>
-                    rust says: {this.state.hello}
+                    some text: {this.state.hello}
                 </Text>
             </View>
         );

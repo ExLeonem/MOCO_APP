@@ -3,4 +3,4 @@ android-udev-rules
 client/local.properties
 target
 NDK
-client/android/app/src/main/jniLibs
+client/android/app/src/main/assets/index.android.bundle
