@@ -1,6 +1,7 @@
 {
     "ManuelControl": {
         "on": true,
-        "color": [100, 20, 30]
+        "color": [100, 20, 30],
+        "brightness": 50
     }
 }
