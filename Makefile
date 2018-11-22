@@ -10,7 +10,10 @@ target/release/server: $(server_src)
 android: $(client_src)
 	cd client; react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res
 
-.PHONY: android run-android run-server
+.PHONY: android run-android run-server test-server
+
+test-server: $(server_src)
+	cargo test -p server
 
 run-android: android
 	cd client; react-native run-android
