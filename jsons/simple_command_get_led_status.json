@@ -1,0 +1,5 @@
+{
+    "SimpleCommand": {
+        "name": "get_led_status"
+    }
+}

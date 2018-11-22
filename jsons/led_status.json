@@ -1,5 +1,5 @@
 {
-    "ManuelControl": {
+    "LedStatus": {
         "on": true,
         "color": [100, 20, 30],
         "brightness": 50
