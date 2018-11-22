@@ -4,9 +4,9 @@ pub enum Commands {
         name: String,
     },
     LedStatus {
-        on: Option<bool>,
-        color: Option<[u8; 3]>,
-        brightness: Option<u8>,
+        on: bool,
+        color: [u8; 3],
+        brightness: u8,
     },
 }
 
