@@ -1,8 +1,7 @@
 pub mod v1;
 
-use actix_web::http::{header, Method, StatusCode};
-use actix_web::{server, App, HttpRequest, Json, middleware, HttpResponse, fs, Result, pred};
-use actix_web::server::{HttpHandler, HttpHandlerTask};
+use actix_web::http::Method;
+use actix_web::{App, middleware};
 use std::sync::{Arc, Mutex};
 
 pub fn v1_app(prefix: &str) -> Box<(dyn actix_web::server::HttpHandler<Task=std::boxed::Box<(dyn actix_web::server::HttpHandlerTask + 'static)>> + 'static)> {

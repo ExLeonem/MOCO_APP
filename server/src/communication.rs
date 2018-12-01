@@ -22,9 +22,9 @@ mod tests {
         let data = include_str!("../../jsons/led_status.json");
         let led_is: Commands = serde_json::from_str(data).unwrap();
         let led_should = Commands::LedStatus {
-            on: Some(true),
-            color: Some([100, 20, 30]),
-            brightness: Some(50),
+            on: true,
+            color: [100, 20, 30],
+            brightness: 50,
         };
 
         assert_eq!(led_should, led_is);

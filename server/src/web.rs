@@ -1,13 +1,13 @@
 pub mod api;
 
-use actix_web::http::{header, Method, StatusCode};
-use actix_web::{server, App, HttpRequest, Json, middleware, HttpResponse, fs, Result, pred};
+use actix_web::http::{Method, StatusCode};
+use actix_web::{App, HttpRequest, middleware, HttpResponse, fs, Result, pred};
 
 fn index(_req: &HttpRequest) -> &'static str {
     "Hello World"
 }
 
-fn p404(req: &HttpRequest) -> Result<fs::NamedFile> {
+fn p404(_req: &HttpRequest) -> Result<fs::NamedFile> {
     Ok(fs::NamedFile::open("server/static/404.html")?.set_status_code(StatusCode::NOT_FOUND))
 }
 
@@ -21,7 +21,7 @@ pub fn app(prefix: &str) -> Box<(dyn actix_web::server::HttpHandler<Task=std::bo
                 r.method(Method::GET).f(p404);
 
                 r.route().filter(pred::Not(pred::Get())).f(
-                    |req| HttpResponse::MethodNotAllowed()
+                    |_req| HttpResponse::MethodNotAllowed()
                 );
         })
         .boxed()

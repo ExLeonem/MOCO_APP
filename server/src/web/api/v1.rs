@@ -1,6 +1,6 @@
 use crate::communication::Commands;
 
-use actix_web::{Json, HttpRequest, Result, Responder, HttpResponse};
+use actix_web::{HttpRequest, HttpResponse};
 
 use std::sync::{Arc, Mutex};
 
@@ -30,7 +30,7 @@ pub struct AppState {
 ///     }
 /// }
 /// ```
-pub fn led_status(req: &HttpRequest<AppState>) -> HttpResponse {
+pub fn led_status(_req: &HttpRequest<AppState>) -> HttpResponse {
     HttpResponse::Ok()
         .json(Commands::LedStatus {
             on: true,

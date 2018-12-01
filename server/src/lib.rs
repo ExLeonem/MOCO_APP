@@ -10,8 +10,7 @@ pub mod led;
 pub mod web;
 
 
-use actix_web::http::{header, Method, StatusCode};
-use actix_web::{server, App, HttpRequest, Json, middleware, HttpResponse, fs, Result, pred};
+use actix_web::{server};
 
 pub fn run_server(bind: &str) {
     let sys = actix::System::new("ws-example");
