@@ -8,8 +8,13 @@ edition = "2018"
 serde_json = "1.0"
 serde = "1.0"
 serde_derive = "1.0"
-#actix-web = { git = "https://github.com/actix/actix-web" }
-actix = "0.7"
-actix-web = "0.7"
-futures = "0.1"
+rocket = "0.4.0-rc.2"
 env_logger = "0.5"
+log = "0.4"
+fern = { version = "0.5", features = ["colored"] }
+chrono = { version = "0.4", features = ["serde"] }
+
+[dependencies.rocket_contrib]
+version = "0.4.0-rc.2"
+default-features = false
+features = ["json"]
