@@ -1,62 +1,31 @@
-/** @format */
+/**
+ * Sample React Native App
+ * https://github.com/facebook/react-native
+ *
+ * @format
+ * @flow
+ */
 
 import React, {Component} from 'react';
-import {
-    AppRegistry,
-    StyleSheet,
-    Text,
-    View
-} from 'react-native';
-// import App from './App';
-import {name as appName} from './app.json';
-import { RustLib } from 'NativeModules';
+import {Platform, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
+import Schedule from './components/schedule/screen';
+import {Provider} from 'react-redux';
+import store from './components/store/index';
 
-async function displayGreeting(self) {
-    try {
-        let text = "Text"
-        self.setState({
-            hello: text
-        })
-    } catch (e) {
-        console.log(e)
-    }
+
+export default class App extends Component {
+
+  constructor(props) {
+    super(props);
+
+  }
+
+  
+  render() {
+    return (
+      <Provider store={store}>
+        <Schedule/>
+      </Provider>
+    );
+  }
 }
-
-export default class mobile_app extends Component {
-    state = {}
-
-    componentDidMount () {
-        displayGreeting(this)
-    }
-
-    render() {
-        return (
-            <View style={styles.container}>
-                <Text style={styles.welcome}>
-                    some text: {this.state.hello}
-                </Text>
-            </View>
-        );
-    }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
-
-AppRegistry.registerComponent(appName, () => App);

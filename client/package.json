@@ -7,14 +7,19 @@
     "test": "jest"
   },
   "dependencies": {
-    "react": "16.6.0-alpha.8af6728",
-    "react-native": "0.57.4"
+    "@shoutem/ui": "^0.23.9",
+    "react": "16.6.1",
+    "react-native": "0.57.7",
+    "react-native-device-info": "^0.24.3",
+    "react-navigation": "^3.0.2",
+    "react-redux": "^5.1.1",
+    "redux": "^4.0.1"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",
     "jest": "23.6.0",
-    "metro-react-native-babel-preset": "0.48.3",
-    "react-test-renderer": "16.6.0-alpha.8af6728"
+    "metro-react-native-babel-preset": "0.49.2",
+    "react-test-renderer": "16.6.1"
   },
   "jest": {
     "preset": "react-native"
