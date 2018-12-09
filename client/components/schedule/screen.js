@@ -1,29 +1,17 @@
-import React, {Components} from 'react';
-import Entry from './entry';
-import {StyleSheet, View, Text} from 'react-native';
-import {connect} from 'react-redux';
+import React, {Component} from 'react';
+import {StyleSheet, View} from 'react-native';
+import Schedule from './schedule';
+import CircleButton from '../general/button';
+import {createStackNavigator} from 'react-navigation';
 
-class Schedule extends React.Component {
-
-    renderEntries() {
-        console.log("Generate entries");
-        let entries = this.props.schedules.map((schedule) => {
-        return <Entry 
-                time={schedule.time}
-                date={schedule.date} 
-                type={schedule.repitionPattern} 
-                repeat={schedule.repeat}
-                isActive={schedule.isActive}
-                uuid={schedule.deviceUUID}
-            />;
-        });
-        return entries;
-    };
-
+export default class ScheduleScreen extends React.Component {
     render() {
         return (
-            <View style={styles.scheduleWrapper}>
-                {this.renderEntries()}
+            <View style={styles.screenWrapper}>
+                <Schedule style={styles.scheduleList}/>
+                <View style={styles.footer}>
+                    <CircleButton type={'add'} size={60} onPress={() => console.log("redirect")}/>
+                </View>
             </View>
         );
     };
@@ -31,19 +19,20 @@ class Schedule extends React.Component {
 
 
 const styles = StyleSheet.create({
-    scheduleWrapper: {
-
+    screenWrapper: {
+        flex: 1,
+        flexDirection: 'column',
+        alignSelf: 'stretch',
+    },
+    scheduleList: {
+        flex: 1,
+    },
+    footer: {
+        position: 'relative',
+        flex: 0,
+        height: 100,
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 });
 
-
-const mapStateToProps = (state, ownProps) => {
-    let filterSchedules = (scheduleEntry) => state.currentDevice.uuid == scheduleEntry.deviceUUID;
-    let schedulesOfCurrentDevice = state.schedules.filter(filterSchedules);
-    return {
-        schedules: schedulesOfCurrentDevice
-    }
-};
-
-
-export default connect(mapStateToProps)(Schedule);

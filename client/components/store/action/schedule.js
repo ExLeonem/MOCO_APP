@@ -1,4 +1,4 @@
-import {ADD_SCHEDULE, UPDATE_SCHEDULE, REMOVE_SCHEDULE, REMOVE_DEVICE_SCHEDULES} from '../constants';
+import {ADD_SCHEDULE, UPDATE_SCHEDULE, REMOVE_SCHEDULE, REMOVE_DEVICE_SCHEDULES, ACTIVATE_SCHEDULE} from '../constants';
 
 
 const addSchedule = (schedule) => {

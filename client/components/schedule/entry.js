@@ -1,125 +1,137 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
+import {View, Text, Switch, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
-import {Switch} from '@shoutem/ui';
+import {activateSchedule} from '../store/action/schedule';
+import {defaultText} from '../colors';
 
-/**
- */
+
+const repStyles = StyleSheet.create({
+    activeRepetition: {
+        color: defaultText.lighten(0.8).hex(),
+    },
+    inactiveRepetition: {
+        color: defaultText.lighten(0.4).hex()
+    },
+    repetitionBlock: {
+        flex:1,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderBottomColor: defaultText.lighten(0.6).hex(),
+        marginLeft: 20,
+        marginRight: 20
+    },
+    dateRepetitionBlock: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginRight: 20,
+        marginLeft: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: defaultText.lighten(0.6).hex()
+    },
+    dateRepetitionDate: {
+        color: defaultText.lighten(0.8).hex(),
+    }
+});
+
+const capitalize = (entry)  => {
+    if(entry) {
+        return entry.charAt(0).toUpperCase() + entry.slice(1);
+    }
+    return entry;
+}
+
+const RepetitionEntries = ({type, date, repetitions}) => {
+    if(type == 'week') {
+        let checkExistence = (entry) => {
+                if(repetitions.includes(entry)) {
+                    return {repeat: entry, isActive: true};
+                } else {
+                    return {repeat: entry, isActive: false};
+                }
+        }
+        let defaultEntries = ["mo", "tu", "we", "th", "fr", "sa", "su"];
+        let existent = defaultEntries.map(checkExistence);
+        return (
+            <View style={repStyles.repetitionBlock}>
+                {existent.map((props) => <RepEntry {...props}/>)}
+            </View>
+        )
+    } else {
+        let entry = repetitions.pop();
+        return (
+            <View style={repStyles.dateRepetitionBlock}>
+                <Text style={repStyles.dateRepetitionDate}>{date}, <Text>{capitalize(entry)}</Text></Text>
+            </View>
+        )
+    }
+}
+
+const RepEntry = ({repeat, isActive}) => {
+    let entryStyle = isActive? repStyles.activeRepetition : repStyles.inactiveRepetition;
+    return (
+        <Text style={entryStyle}>{capitalize(repeat)}</Text>
+    );
+}
+
 
 class Entry extends Component {
 
-    constructor(props) {
-        super(props);
-        const {dispatch} = props;
-    }
-
-    switchActive(value) {
-        this.setState({active: value})
-    }
-
-    renderDateTime(time, date) {
-        let toDisplay = date? <Text style={styles.clockDate}>, {date}</Text> : "";
-
-        return (
-            <Text style={styles.clockTime}>{time} Uhr{toDisplay}</Text>
-        )
-    }
-
-
-    renderRepetitions(repeatEntryOn,repeatType = "date") {
-        let repetitions;
-        let entries = "";
-
-        if(repeatType === "week") {
-            repetitions = ["mo", "di", "mi", "do", "fr", "sa", "so"];
-            let styleToAdd;
-            for(rep in repetitions) {
-                if(rep in repeatEntryOn) {
-                    styleToAdd = styles.textRepetitionActive;
-                } else {
-                    styleToAdd = styles.textRepetitionInactive;
-                }
-
-                entries += <TouchableHighlight>
-                    <Text style={styleToAdd}>{rep.charAt(0).toUpperCase() + rep.slice(1)}</Text>
-                </TouchableHighlight>
-            }
-
-        } else if(repeatType === "date") {
-            for(repeatOn in repeatEntryOn) {
-                entries += <TouchableHighlight>
-                    <Text> </Text>
-                </TouchableHighlight>
-            }
-        }
-        return entries;
-    }
-
     render() {
-        let renderedDateTime = this.renderDateTime(this.props.time, this.props.date);
-        console.log("Render Time");
+        let {time, date, repeat, type, isActive, toggleActive} = this.props;
+    
         return(
-        <View style={styles.container}>
-            <View style={styles.scheduleHeader}>
-                {renderedDateTime}
-                <Switch style={styles.scheduleSwitch} onValueChange={value => this.dispatch({active: value})} value={this.props.isActive}/>
+        <TouchableWithoutFeedback>
+            <View style={entryStyles.container}>
+                <View style={entryStyles.scheduleHeader}>
+                    <Text style={entryStyles.clockTime}>{time} Uhr</Text>
+                    <Switch style={entryStyles.scheduleSwitch} onValueChange={toggleActive} value={isActive}/>
+                </View>
+                <RepetitionEntries repetitions={repeat} type={type} date={date}/>
             </View>
-            <View>
-            
-            </View>
-        </View>
+        </TouchableWithoutFeedback>
         );
     }
 }
 
-const styles = StyleSheet.create({
+const entryStyles = StyleSheet.create({
     container: {
         flex: 1,
         position: 'relative',
         height: 100,
         minHeight: 100,
-        borderWidth: 2,
-        borderColor: 'black'
+        paddingTop: 13,
+        paddingBottom: 13,
+        marginTop: 10
     },
     scheduleHeader: {
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
     },
     scheduleSwitch: {
-        alignSelf: 'flex-end'
+        flex: 1,
+        alignSelf: 'center',
+        marginRight: 30,
     },
     clockTime: {
-        fontSize: 20,
-        color: '#424B54'
-    },
-    clockDate: {
-        fontSize: 10,
-        opacity: 0.6,
-        color: '#424B54'
-    },
-    clockRepeat: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        height: 50,
-        alignItems: 'center',
-        borderBottomColor: '#424B54',
-        borderBottomWidth: 2
-    },
-    textRepetitionActive: {
-        paddingLeft: 10,
-        paddingRight: 10,
-    },
-    textRepetitionInactive: {
-        paddingLeft: 10,
-        paddingRight: 10,
-        opacity: 0.6
+        alignSelf: 'center',
+        fontSize: 17,
+        color: defaultText.hex(),
+        marginLeft: 20
     }
 });
 
 
-const mapStateToProps = (state, ownProps) => {
-    return {...ownProps};
-};
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        toggleActive: (value) => dispatch(activateSchedule({deviceUUID: ownProps.uuid, id: ownProps.id}))
 
-export default connect(mapStateToProps)(Entry);
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Entry);
