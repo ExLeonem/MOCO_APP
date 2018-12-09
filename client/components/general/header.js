@@ -29,7 +29,7 @@ export default class Header extends React.Component {
                 <TouchableHighlight onPress={() => console.log("what")} underlayColor={'white'}>
                     <DrawerIcon scaleBy={5}/>                    
                 </TouchableHighlight>
-                <Text style={headStyle.title}>{this.props.title}</Text>
+                <Text style={headStyle.title}>{this.props.children}</Text>
                 <View>
                     {this.props.subTask}
                 </View>

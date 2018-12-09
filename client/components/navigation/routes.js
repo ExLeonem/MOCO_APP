@@ -1,8 +1,7 @@
-import DevicesScreen from '../screens/device';
-
+import ScheduleScreen from '../schedule/screen';
 
 let mainRoutes = {
-    Devices: DevicesScreen
+    Devices: ScheduleScreen
 }
 
 

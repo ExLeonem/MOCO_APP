@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 import scheduleReducer from './schedule';
 import deviceReducer from './device';
-import currentDeviceReducer from './current_device_reducer';
+import currentDeviceReducer from './current_device';
 
 
 const rootReducer = combineReducers({

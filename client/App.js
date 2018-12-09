@@ -10,21 +10,20 @@ import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
 import {createMaterialTopTabNavigator, createDrawerNavigator, createAppContainer, createStackNavigator, DrawerNavigator} from 'react-navigation';
 
-import Header from './components/general/header';
-import Drawer from './components/general/drawer';
-
-// import ScheduleScreen from './components/schedule/screen';
-import {DrawerIcon} from './components/general/icons';
-
-
+import store from './components/store/index';
+import {Provider} from 'react-redux';
 import {AppNavigator} from './components/navigation/navigator';
 
+import Drawer from './components/general/drawer';
 
 
 export default class App extends Component {
   render() {
     return (
-        <AppNavigator/> 
+      <Provider store={store}>
+        {/* <AppNavigator/> */}
+        <Drawer></Drawer>
+      </Provider>
     );
   }
 }

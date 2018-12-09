@@ -1,23 +1,31 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, Button, ScrollView, TouchableHighlight, StyleSheet} from 'react-native';
 import {NavigationActions} from 'react-navigation';
 
-import {arsenic} from '../colors';
+import {arsenic, snow} from '../colors';
 import {RemoveIcon} from './icons';
 import {mainRoutes} from '../navigation/routes';
 
 
-const styles = StyleSheet.create({
-    container: {
-
-    },
-    removeIcon: {
-
-    }
-});
+const DeviceItem = () => {
+    return (
+        <View>
+            <Text>Device Name
+                <Text>connect</Text>
+            </Text>
+        </View>
+    )
+}
 
 
 class Drawer extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        };
+    }
 
     navigateToScreen = (route) => {
         const navigateAction = NavigationActions.navigate({
@@ -40,12 +48,66 @@ class Drawer extends React.Component {
         console.log(navigationKeys);
         return (
             <View style={styles.container}>
-                <RemoveIcon scaleBy={0}></RemoveIcon>
-                
+                <View style={styles.removeIcon}>
+                    <TouchableHighlight onPress={() => {console.log("Close drawer")}} underlayColor={arsenic.hex()}>
+                        <RemoveIcon scaleBy={0} color={snow.hex()}></RemoveIcon>
+                    </TouchableHighlight>
+                </View>
+
+                <View style={styles.searchForDevices}>
+                    <Button style={styles.buttonStyle} title={"Search..."} onPress={() => console.log("searach for devices")}/>
+                    <View style={styles.horizontalLine}/>
+                </View>
+             
+                <ScrollView>
+                    {/*Scan for Lamp devices and list them */}
+                </ScrollView>
             </View>
         );
     }
 }
+
+
+const mapStateToProps = (state, ownProps) => {
+    return {...ownProps};
+};
+
+const mapDispatchToProps = (dispatch, ownProps) => {
+    
+};
+
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: arsenic.hex()
+
+    },
+    removeIcon: {
+        flex: 0,
+        paddingTop: 20,
+        paddingLeft: 20,
+    },
+    searchForDevices: {
+        flex: 0,
+        paddingTop: 30,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingBottom: 10,
+    },
+    buttonStyle: {
+        backgroundColor: snow.hex()
+    },
+    searchButton: {
+        color: arsenic.hex(),
+        backgroundColor: snow.hex(),
+    },
+    horizontalLine: {
+        marginTop: 20,
+        borderBottomColor: arsenic.lighten(0.6).hex(),
+        borderBottomWidth: 2
+    }
+});
 
 // {navigationKeys.map(this.renderItem)}
 
