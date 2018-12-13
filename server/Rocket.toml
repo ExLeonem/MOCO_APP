@@ -1,0 +1,6 @@
+[global.databases]
+sqlite = { url = "database.sqlite" }
+
+[production]
+address = "127.0.0.1"
+port = 8080

@@ -4,3 +4,4 @@ client/local.properties
 target
 NDK
 client/android/app/src/main/assets/index.android.bundle
+server/database.sqlite

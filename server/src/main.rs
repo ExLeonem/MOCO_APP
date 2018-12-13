@@ -5,7 +5,7 @@ use fern::colors::{Color, ColoredLevelConfig};
 fn main() {
 //    std::env::set_var("RUST_LOG", "actix_web=info");
 //    env_logger::init();
-    let verbosity: u64 = 2;
+    let verbosity: u64 = 0;
 
     let colors = ColoredLevelConfig::new()
         .debug(Color::Magenta)
