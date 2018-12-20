@@ -8,23 +8,21 @@
 
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View, TouchableHighlight} from 'react-native';
-import Schedule from './components/schedule/screen';
+import {createMaterialTopTabNavigator, createDrawerNavigator, createAppContainer, createStackNavigator, DrawerNavigator} from 'react-navigation';
+
+import store from './store/index';
 import {Provider} from 'react-redux';
-import store from './components/store/index';
+import {AppNavigator} from './components/navigation/navigator';
+
+import Drawer from './components/general/drawer';
 
 
 export default class App extends Component {
-
-  constructor(props) {
-    super(props);
-
-  }
-
-  
   render() {
     return (
       <Provider store={store}>
-        <Schedule/>
+        <AppNavigator/>
+        {/* <Drawer></Drawer> */}
       </Provider>
     );
   }

@@ -1,23 +1,23 @@
 import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE} from '../constants';
 
-const addDevice = (device) => {
+const addDevice = (payload) => {
     return {
         type: ADD_DEVICE,
-        payload: device
+        payload: payload
     }
 };
 
-const removeDevice = (deviceId) => {
+const removeDevice = (payload) => {
     return {
         type: REMOVE_DEVICE,
-        deviceId: deviceId
+        payload: payload
     }
 };
 
-const renameDevice = (deviceData) => {
+const renameDevice = (payload) => {
     return {
         type: RENAME_DEVICE,
-        deviceData: deviceData
+        payload: payload
     }
 };
 
