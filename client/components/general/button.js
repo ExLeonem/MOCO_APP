@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, TouchableHighlight} from 'react-native'; 
 import {green, blue, red} from '../colors';
-import {AddIcon, RemoveIcon, CheckIcon, BackIcon} from './icons';
+import {AddIcon, RemoveIcon, CheckIcon, BackIcon, ForwardIcon} from './icons';
 
 
 // color prop of CircleButton must be of type Colors
@@ -21,6 +21,7 @@ export default class CircleButton extends React.Component {
             case "remove": return <RemoveIcon scaleBy={size} color={color}/>
             case "back": return <BackIcon scaleBy={size} color={color}/>
             case "check": return <CheckIcon scaleBy={size} color={color}/>
+            case "forward": return <ForwardIcon scaleBy={size} color={color}/>
             default: return <AddIcon scaleBy={size} color={color}/>
         }
     }

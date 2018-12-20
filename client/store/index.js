@@ -1,4 +1,5 @@
-import {createStore, } from 'redux';
+import {createStore, applyMiddleware} from 'redux';
+import createSagaMiddleware from 'redux-saga';
 import rootReducer from './reducer/index';
 
 
@@ -47,11 +48,29 @@ let scheduleThree = {
 }
 
 
+let toAddTemp = {
+    from: 'manual',
+    date: new Date(),
+    time: "17:00",
+    repetitionPattern: null,
+    repeat: [],
+    isActive: true,
+}
+
 // Load initial data from database
 let initialState = {
-    schedules: [scheduleOne, scheduleTwo, scheduleThree],
+    schedules: {
+        toAdd: {},
+        active: [scheduleOne, scheduleTwo, scheduleThree]
+    },
     devices: [],
-    currentDevice: deviceTemplate
+    currentDevice: deviceTemplate,
+    navigation: {
+        currentScreen: {
+            name: "main",
+            activeTab: "",
+        }
+    }
 };
 
 

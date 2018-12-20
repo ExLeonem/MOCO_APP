@@ -35,8 +35,12 @@ let scheduleThree = {
     isActive: false,
 }
 
+let initialState = {
+    toAdd: {},
+    active: [scheduleOne, scheduleTwo, scheduleThree]
+}
 
-const scheduleReducer = (state = [scheduleOne, scheduleTwo, scheduleThree], action) => {
+const scheduleReducer = (state = initialState, action) => {
     let newState;
 
     // DB request in each level 

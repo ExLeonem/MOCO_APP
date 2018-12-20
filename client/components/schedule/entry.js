@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Switch, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
-import {activateSchedule} from '../store/action/schedule';
+import {activateSchedule} from '../../store/action/schedule';
 import {defaultText} from '../colors';
 
 

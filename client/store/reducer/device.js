@@ -1,4 +1,6 @@
 import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE} from '../constants';
+import SQlite from 'react-native-sqlite-storage';
+
 
 const deviceTemplate = {
     uuid: 1,

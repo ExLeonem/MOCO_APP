@@ -38,9 +38,18 @@ const BackIcon = ({scaleBy=0, color}) => {
     let {height, width} = scaleIconSize(scaleBy);
     return (
         <Svg width={width} height={height} viewBox="0 0 13 20" fill="none">
-            <Path d="M11 2L3 10L11 18" stroke={color} strokeWidth="3"/>
+            <Path d="M11 2L3 10L11 18" stroke={color} strokeWidth="2"/>
         </Svg>
     );
+}
+
+const ForwardIcon = ({scaleBy=0, color}) => {
+    let {height, width} = scaleIconSize(scaleBy);
+    return (
+        <Svg width={width} height={height} viewBox="0 0 13 20" fill="none">
+            <Path d="M2 2L10 10L2 18" stroke={color} strokeWidth="2"/>
+        </Svg>
+    )
 }
 
 // Stroke needs width 
@@ -48,7 +57,7 @@ const CheckIcon = ({scaleBy=0, color}) => {
     let {height, width} = scaleIconSize(scaleBy);
     return (
         <Svg  width={width} height={height} viewBox="0 0 24 18" fill="none">
-            <Path d="M2 8.5L8.66667 15L22 2" stroke={color} strokeWidth="3"/>
+            <Path d="M2 8.5L8.66667 15L22 2" stroke={color} strokeWidth="2"/>
         </Svg>
     );
 }
@@ -117,6 +126,7 @@ export {
     AddIcon,
     CheckIcon,
     BackIcon,
+    ForwardIcon,
     RemoveIcon,
     DrawerIcon,
     LampIcon,
