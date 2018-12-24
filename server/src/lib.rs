@@ -26,21 +26,9 @@ fn hello() -> &'static str {
 #[database("sqlite")]
 pub struct DbConn(diesel::SqliteConnection);
 
-pub fn run_server(addr: &str, port: u16) -> rocket::config::Result<()> {
-
-    use rocket::config::{Config, Environment, LoggingLevel};
-
-    let config = Config::build(Environment::Development)
-        .address(addr)
-        .port(port)
-        .log_level(LoggingLevel::Debug)
-        .finalize()?;
-
-    println!("Starting http server: {}:{}", addr, port);
-
+pub fn run_server() -> rocket::config::Result<()> {
     use rocket::fairing::AdHoc;
 
-    // rocket::custom(config)
     rocket::ignite()
         .mount("/sneaky/moco/", web::routes())
         .mount("/sneaky/moco/", routes![hello])

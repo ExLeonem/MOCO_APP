@@ -1,6 +1,6 @@
 type Color = (u8, u8, u8);
 
-pub trait LedController {
+pub trait LedControls {
     fn set_color(&mut self, color: Color);
     fn color(&self) -> Color;
     fn set_on(&mut self, on: bool);
@@ -26,7 +26,7 @@ impl MocLedStrip {
     }
 }
 
-impl LedController for MocLedStrip {
+impl LedControls for MocLedStrip {
 
     fn set_color(&mut self, color: Color) {
         self.color = color;

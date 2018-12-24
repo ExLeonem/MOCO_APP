@@ -6,14 +6,13 @@ type Result<T> = std::result::Result<T, DatabaseError>;
 
 impl DbSchedule {
     pub fn add(conn: &diesel::SqliteConnection, new_schedule: NewSchedule) -> Result<DbSchedule> {
-        use crate::schema::schedules::dsl::*;
         let schedule = DbSchedule::get_by_activation_time(&*conn, &new_schedule.activation_time);
 
         if let Ok(_) = schedule {
             return Err(DatabaseError::AlreadyExists);
         }
 
-        let rows = diesel::insert_into(crate::schema::schedules::table)
+        let _rows = diesel::insert_into(crate::schema::schedules::table)
             .values(&new_schedule)
             .execute(&*conn);
         
@@ -52,7 +51,7 @@ impl DbSchedule {
                     Err(DatabaseError::NotFound)
                 }
             }
-            Err(e) => {
+            Err(_) => {
                 Err(DatabaseError::SqliteError)
             }
         }
@@ -72,7 +71,7 @@ impl DbSchedule {
                     Err(e) => Err(e),
                 }
             }
-            Err(e) => {
+            Err(_) => {
                 Err(DatabaseError::SqliteError)
             }
         }
@@ -101,7 +100,7 @@ impl DbSchedule {
 
         match found_schedules {
             Ok(found_schedules) => Ok(found_schedules),
-            Err(e) => Err(DatabaseError::SqliteError),
+            Err(_) => Err(DatabaseError::SqliteError),
         }
     }
 

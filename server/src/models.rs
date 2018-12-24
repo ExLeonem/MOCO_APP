@@ -1,7 +1,6 @@
 pub mod sqlite;
 
 pub use self::sqlite::*;
-use diesel::prelude::*;
 
 #[derive(Debug)]
 pub enum DatabaseError {
