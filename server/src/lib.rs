@@ -11,12 +11,15 @@ extern crate serde_json;
 extern crate serde_derive;
 #[macro_use] extern crate diesel;
 
-pub mod communication;
 pub mod led;
 pub mod web;
 
 pub mod schema;
 pub mod models;
+
+use std::sync::mpsc::channel;
+use std::time::Duration;
+use std::thread;
 
 #[get("/")]
 fn hello() -> &'static str {
@@ -29,6 +32,13 @@ pub struct DbConn(diesel::SqliteConnection);
 pub fn run_server() -> rocket::config::Result<()> {
     use rocket::fairing::AdHoc;
 
+    let (controller_tx, controller_rx) = channel();
+    let (cache_tx, cache_rx) = channel();
+
+    thread::spawn(move|| {
+        led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx);
+    });
+
     rocket::ignite()
         .mount("/sneaky/moco/", web::routes())
         .mount("/sneaky/moco/", routes![hello])
@@ -37,6 +47,7 @@ pub fn run_server() -> rocket::config::Result<()> {
             let conn = DbConn::get_one(&rocket).unwrap().0;
             diesel_migrations::run_pending_migrations(&conn).unwrap();
         }))
+        .manage(led::cache::LedCache::new(cache_tx, controller_rx, Duration::from_secs(5)))
         .launch();
 
     Ok(())
