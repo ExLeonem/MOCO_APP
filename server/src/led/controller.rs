@@ -2,8 +2,10 @@ use std::sync::mpsc::{Sender, Receiver, TryRecvError};
 use super::LedControls;
 use super::message::{Message, DataDump};
 
-pub fn run(mut led: Box<LedControls>, sender: Sender<Message>, receiver: Receiver<Message>) {
+pub fn run(mut led: Box<LedControls>, mut sender: Sender<Message>, mut receiver: Receiver<Message>) {
     log::info!("Started Controller thread!");
+    let mut counter = 0usize;
+    let mut notified = false;
     loop {
         let recv_result = receiver.try_recv();
         let got_response = recv_result.is_ok();
@@ -13,6 +15,7 @@ pub fn run(mut led: Box<LedControls>, sender: Sender<Message>, receiver: Receive
                 log::info!("Received {:?}", response);
                 match response {
                     Message::GetData => {
+                        notified = false;
                         let dump = DataDump {
                             on: led.on(),
                             color: led.color(),
@@ -42,8 +45,27 @@ pub fn run(mut led: Box<LedControls>, sender: Sender<Message>, receiver: Receive
             std::thread::sleep(std::time::Duration::from_millis(5));
         }
 
+        // temp test data
         // TODO: update led: gpio, check schedules..
-
+        counter += 1;
+        if counter == 50 {
+            let mut brightness = led.brightness() + 1;
+            if brightness == 101 {
+                brightness = 0;
+            }
+            led.set_brightness(brightness);
+            counter = 0;
+            if !notified {
+                notify_cache(&mut sender);
+                notified = true;
+            }
+        }
         
     }
+}
+
+// call when some data changed, that was not explicit requested by cache
+fn notify_cache(sender: &mut Sender<Message>) {
+    log::info!("Notified chache");
+    sender.send(Message::DataChanged).expect("Couldn't send to cache");
 }

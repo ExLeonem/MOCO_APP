@@ -20,6 +20,7 @@ pub enum Message {
     UpdateOn(bool),
     UpdateBrightness(u8),
     UpdateManuel(bool),
+    DataChanged,
 }
 
 impl std::fmt::Display for Message {
@@ -32,14 +33,15 @@ impl std::fmt::Display for Message {
             Message::UpdateOn(_) => write!(f, "{}", "Message::UpdateOn"),
             Message::UpdateBrightness(_) => write!(f, "{}", "Message::UpdateBrightness"),
             Message::UpdateManuel(_) => write!(f, "{}", "Message::UpdateManuel"),
+            Message::DataChanged => write!(f, "{}", "Message::DataChanged"),
         }
     }
 }
 
 impl Message {
-    pub fn get_dump(sender: &mut Sender<Message>, receiver: &mut Receiver<Message>) -> DataDump {
-        sender.send(Message::GetData).expect("Couldn't send to Controller");
-        let response = receiver.recv().expect("Couldn't receive from Controller");
+    pub fn get_dump(channel: &mut(Sender<Message>, Receiver<Message>)) -> DataDump {
+        channel.0.send(Message::GetData).expect("Couldn't send to Controller");
+        let response = channel.1.recv().expect("Couldn't receive from Controller");
         match response {
             Message::DataDump(dump) => dump,
             _ => panic!("Couldn't get {}", response),

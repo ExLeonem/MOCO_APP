@@ -18,6 +18,7 @@ pub mod schema;
 pub mod models;
 
 use std::sync::mpsc::channel;
+use std::sync::Mutex;
 use std::time::Duration;
 use std::thread;
 
@@ -47,7 +48,7 @@ pub fn run_server() -> rocket::config::Result<()> {
             let conn = DbConn::get_one(&rocket).unwrap().0;
             diesel_migrations::run_pending_migrations(&conn).unwrap();
         }))
-        .manage(led::cache::LedCache::new(cache_tx, controller_rx, Duration::from_secs(5)))
+        .manage(Mutex::new(led::cache::LedCache::new(cache_tx, controller_rx, Duration::from_secs(5))))
         .launch();
 
     Ok(())
