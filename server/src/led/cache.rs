@@ -1,7 +1,6 @@
 use super::{Color, LedControls};
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use std::sync::Mutex;
-use std::time::{Duration, SystemTime};
 
 use super::message::Message;
 
@@ -10,8 +9,6 @@ use super::message::Message;
 /// successive requests in a short time
 pub struct LedCache {
     sender_receiver: Mutex<(Sender<Message>, Receiver<Message>)>,
-    last_update: SystemTime,
-    cache_time: Duration,
     on: bool,
     color: Color,
     brightness: u8,
@@ -19,7 +16,7 @@ pub struct LedCache {
 }
 
 impl LedCache {
-    pub fn new(sender: Sender<Message>, receiver: Receiver<Message>, cache_time: Duration) -> Self {
+    pub fn new(sender: Sender<Message>, receiver: Receiver<Message>) -> Self {
         sender
             .send(Message::GetData)
             .expect("Couldn't not send to LedController");
@@ -29,8 +26,6 @@ impl LedCache {
 
         LedCache {
             sender_receiver: Mutex::new(channel),
-            last_update: SystemTime::now(),
-            cache_time,
             on: dump.on,
             color: dump.color,
             brightness: dump.brightness,
@@ -39,7 +34,7 @@ impl LedCache {
     }
 
     pub fn update_cache(&mut self) {
-        let mut channel = self.sender_receiver.lock().expect("Couln't lock channel");
+        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
         channel
             .0
             .send(Message::GetData)
@@ -53,7 +48,7 @@ impl LedCache {
         let mut message_limit = 5;
         while got_message && message_limit != 0 {
             let recv_result = {
-                let mut channel = self.sender_receiver.lock().expect("Couln't lock channel");
+                let channel = self.sender_receiver.lock().expect("Couln't lock channel");
                 channel.1.try_recv()
             };
             got_message = false;

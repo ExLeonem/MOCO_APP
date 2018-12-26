@@ -5,7 +5,7 @@ use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 pub fn run(
     mut led: Box<LedControls>,
     mut sender: Sender<Message>,
-    mut receiver: Receiver<Message>,
+    receiver: Receiver<Message>,
 ) {
     log::info!("Started Controller thread!");
     let mut counter = 0usize;

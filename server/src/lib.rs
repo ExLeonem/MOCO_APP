@@ -23,7 +23,6 @@ pub mod schema;
 use std::sync::mpsc::channel;
 use std::sync::Mutex;
 use std::thread;
-use std::time::Duration;
 
 #[get("/")]
 fn hello() -> &'static str {
@@ -54,7 +53,6 @@ pub fn run_server() -> rocket::config::Result<()> {
         .manage(Mutex::new(led::cache::LedCache::new(
             cache_tx,
             controller_rx,
-            Duration::from_secs(5),
         )))
         .launch();
 
