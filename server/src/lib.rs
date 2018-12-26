@@ -2,25 +2,28 @@
 #![feature(box_patterns)]
 #![allow(proc_macro_derive_resolution_fallback)]
 
-#[macro_use] extern crate rocket;
-#[macro_use] extern crate rocket_contrib;
+#[macro_use]
+extern crate rocket;
+#[macro_use]
+extern crate rocket_contrib;
 extern crate serde;
 extern crate serde_json;
 
 #[macro_use]
 extern crate serde_derive;
-#[macro_use] extern crate diesel;
+#[macro_use]
+extern crate diesel;
 
 pub mod led;
 pub mod web;
 
-pub mod schema;
 pub mod models;
+pub mod schema;
 
 use std::sync::mpsc::channel;
 use std::sync::Mutex;
-use std::time::Duration;
 use std::thread;
+use std::time::Duration;
 
 #[get("/")]
 fn hello() -> &'static str {
@@ -36,7 +39,7 @@ pub fn run_server() -> rocket::config::Result<()> {
     let (controller_tx, controller_rx) = channel();
     let (cache_tx, cache_rx) = channel();
 
-    thread::spawn(move|| {
+    thread::spawn(move || {
         led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx);
     });
 
@@ -48,7 +51,11 @@ pub fn run_server() -> rocket::config::Result<()> {
             let conn = DbConn::get_one(&rocket).unwrap().0;
             diesel_migrations::run_pending_migrations(&conn).unwrap();
         }))
-        .manage(Mutex::new(led::cache::LedCache::new(cache_tx, controller_rx, Duration::from_secs(5))))
+        .manage(Mutex::new(led::cache::LedCache::new(
+            cache_tx,
+            controller_rx,
+            Duration::from_secs(5),
+        )))
         .launch();
 
     Ok(())

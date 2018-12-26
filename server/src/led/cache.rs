@@ -1,6 +1,6 @@
-use std::sync::mpsc::{Sender, Receiver, TryRecvError};
-use std::sync::Mutex;
 use super::{Color, LedControls};
+use std::sync::mpsc::{Receiver, Sender, TryRecvError};
+use std::sync::Mutex;
 use std::time::{Duration, SystemTime};
 
 use super::message::Message;
@@ -20,8 +20,9 @@ pub struct LedCache {
 
 impl LedCache {
     pub fn new(sender: Sender<Message>, receiver: Receiver<Message>, cache_time: Duration) -> Self {
-
-        sender.send(Message::GetData).expect("Couldn't not send to LedController");
+        sender
+            .send(Message::GetData)
+            .expect("Couldn't not send to LedController");
         let mut channel = (sender, receiver);
         let dump = Message::get_dump(&mut channel);
         println!("{:?}", dump);
@@ -39,7 +40,10 @@ impl LedCache {
 
     pub fn update_cache(&mut self) {
         let mut channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel.0.send(Message::GetData).expect("Couldn't not send to LedController");
+        channel
+            .0
+            .send(Message::GetData)
+            .expect("Couldn't not send to LedController");
         // TODO: workaround to update in same web request
         std::thread::sleep(std::time::Duration::from_millis(5));
     }
@@ -88,7 +92,10 @@ impl LedCache {
 impl LedControls for LedCache {
     fn set_color(&mut self, color: Color) {
         let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel.0.send(Message::UpdateColor(color)).expect("Could not send to controller");
+        channel
+            .0
+            .send(Message::UpdateColor(color))
+            .expect("Could not send to controller");
         self.color = color;
     }
 
@@ -98,7 +105,10 @@ impl LedControls for LedCache {
 
     fn set_on(&mut self, on: bool) {
         let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel.0.send(Message::UpdateOn(on)).expect("Could not send to controller");
+        channel
+            .0
+            .send(Message::UpdateOn(on))
+            .expect("Could not send to controller");
         self.on = on;
     }
 
@@ -108,7 +118,10 @@ impl LedControls for LedCache {
 
     fn set_brightness(&mut self, brightness: u8) {
         let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel.0.send(Message::UpdateBrightness(brightness)).expect("Could not send to controller");
+        channel
+            .0
+            .send(Message::UpdateBrightness(brightness))
+            .expect("Could not send to controller");
         self.brightness = brightness;
     }
 

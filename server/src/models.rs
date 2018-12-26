@@ -24,21 +24,11 @@ impl std::error::Error for DatabaseError {
 impl std::fmt::Display for DatabaseError {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            DatabaseError::AlreadyExists => {
-                write!(f, "Value already exists in Database")
-            }
-            DatabaseError::NotFound => {
-                write!(f, "Could not find entry")
-            }
-            DatabaseError::CouldNotCrateNewEntry => {
-                write!(f, "Could not create new table entry")
-            }
-            DatabaseError::SqliteError => {
-                write!(f, "SQLite Error")
-            }
-            DatabaseError::UnknownError => {
-                write!(f, "Encounterd an unknown error")
-            }
+            DatabaseError::AlreadyExists => write!(f, "Value already exists in Database"),
+            DatabaseError::NotFound => write!(f, "Could not find entry"),
+            DatabaseError::CouldNotCrateNewEntry => write!(f, "Could not create new table entry"),
+            DatabaseError::SqliteError => write!(f, "SQLite Error"),
+            DatabaseError::UnknownError => write!(f, "Encounterd an unknown error"),
         }
     }
 }
@@ -87,7 +77,11 @@ impl From<DbSchedule> for Schedule {
     fn from(item: DbSchedule) -> Self {
         let led_setting = LedSetting {
             mode: item.color_mode.into(),
-            color: [item.color_red as u8, item.color_green as u8, item.color_blue as u8],
+            color: [
+                item.color_red as u8,
+                item.color_green as u8,
+                item.color_blue as u8,
+            ],
         };
 
         Schedule {
@@ -101,7 +95,6 @@ impl From<DbSchedule> for Schedule {
             activation_time: item.activation_time,
             active: item.active,
         }
-
     }
 }
 
@@ -145,13 +138,13 @@ impl From<Schedule> for DbSchedule {
 use super::schema::schedules;
 
 #[derive(Debug, Clone, Queryable, AsChangeset, Deserialize, Serialize)]
-#[table_name="schedules"]
+#[table_name = "schedules"]
 pub struct DbSchedule {
     pub schedule_id: i32,
     pub device: String,
     pub integration: String,
     pub color_mode: i32,
-    pub color_red: i32, 
+    pub color_red: i32,
     pub color_green: i32,
     pub color_blue: i32,
     pub activation_time: chrono::NaiveDateTime,
@@ -159,12 +152,12 @@ pub struct DbSchedule {
 }
 
 #[derive(Debug, Insertable, Deserialize, Serialize)]
-#[table_name="schedules"]
+#[table_name = "schedules"]
 pub struct NewSchedule {
     pub device: String,
     pub integration: String,
     pub color_mode: i32,
-    pub color_red: i32, 
+    pub color_red: i32,
     pub color_green: i32,
     pub color_blue: i32,
     pub activation_time: chrono::NaiveDateTime,

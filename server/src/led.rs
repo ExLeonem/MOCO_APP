@@ -1,7 +1,6 @@
-
-mod message;
 pub mod cache;
 pub mod controller;
+mod message;
 
 type Color = (u8, u8, u8);
 

@@ -11,9 +11,7 @@ pub struct DataDump {
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
 pub enum Message {
-    SimpleCommand {
-        name: String,
-    },
+    SimpleCommand { name: String },
     GetData,
     DataDump(DataDump),
     UpdateColor(Color),
@@ -26,7 +24,7 @@ pub enum Message {
 impl std::fmt::Display for Message {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         match self {
-            Message::SimpleCommand{..} => write!(f, "{}", "Message::SimpleCommand"),
+            Message::SimpleCommand { .. } => write!(f, "{}", "Message::SimpleCommand"),
             Message::GetData => write!(f, "{}", "Message::GetData"),
             Message::DataDump(_) => write!(f, "{}", "Message::DataDump"),
             Message::UpdateColor(_) => write!(f, "{}", "Message::UpdateColor"),
@@ -39,8 +37,11 @@ impl std::fmt::Display for Message {
 }
 
 impl Message {
-    pub fn get_dump(channel: &mut(Sender<Message>, Receiver<Message>)) -> DataDump {
-        channel.0.send(Message::GetData).expect("Couldn't send to Controller");
+    pub fn get_dump(channel: &mut (Sender<Message>, Receiver<Message>)) -> DataDump {
+        channel
+            .0
+            .send(Message::GetData)
+            .expect("Couldn't send to Controller");
         let response = channel.1.recv().expect("Couldn't receive from Controller");
         match response {
             Message::DataDump(dump) => dump,
@@ -48,9 +49,6 @@ impl Message {
         }
     }
 }
-
-
-
 
 #[cfg(test)]
 mod tests {

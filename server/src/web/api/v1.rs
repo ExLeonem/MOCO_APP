@@ -9,19 +9,26 @@
 //! [update_schedule](fn.update_schedule.html) \
 //! ` `
 
-use rocket_contrib::json::{Json, JsonValue};
-use crate::web::Response;
-use crate::models::*;
-use crate::DbConn;
-use rocket::State;
 use crate::led::cache::LedCache;
 use crate::led::LedControls;
+use crate::models::*;
+use crate::web::Response;
+use crate::DbConn;
+use rocket::State;
+use rocket_contrib::json::{Json, JsonValue};
 use std::sync::Mutex;
-
 
 /// routes for `/api/v1/`
 pub fn routes() -> Vec<rocket::Route> {
-    let routes = routes![led_status, set_led, get_schedules, get_schedule, delete_schedule, add_schedule, update_schedule];
+    let routes = routes![
+        led_status,
+        set_led,
+        get_schedules,
+        get_schedule,
+        delete_schedule,
+        add_schedule,
+        update_schedule
+    ];
     routes
 }
 
@@ -66,7 +73,6 @@ fn led_status(cache: State<Mutex<LedCache>>) -> Json<LedStatus> {
     })
 }
 
-
 #[derive(Deserialize, Serialize, Debug)]
 pub struct LedStatus {
     on: bool,
@@ -101,11 +107,8 @@ pub struct LedStatus {
 ///
 #[post("/api/v1/set_led", data = "<led_status>")]
 pub fn set_led(led_status: Json<LedStatus>) -> Json<Response> {
-    Json(
-        Response::Ok(Some("Led status updated".to_string()))
-    )
+    Json(Response::Ok(Some("Led status updated".to_string())))
 }
-
 
 /// Get all schedules
 ///
@@ -180,7 +183,8 @@ fn get_schedules(conn: DbConn) -> Json<serde_json::Value> {
         }
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
     Json(json)
 }
@@ -237,12 +241,11 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
     let schedule = DbSchedule::get(&conn, id);
 
     let json: serde_json::Value = match schedule {
-        Ok(schedule) => {
-            serde_json::to_value(schedule).unwrap()
-        }
+        Ok(schedule) => serde_json::to_value(schedule).unwrap(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
     Json(json)
 }
@@ -312,7 +315,8 @@ fn add_schedule(conn: DbConn, schedule: Json<Schedule>) -> JsonValue {
         Ok(new_schedule) => serde_json::to_value(Schedule::from(new_schedule)).unwrap(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
 
     JsonValue::from(json)
@@ -358,16 +362,14 @@ fn delete_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
     let schedule = DbSchedule::delete(&conn, id);
 
     let json: serde_json::Value = match schedule {
-        Ok(()) => json!({
-            "deleted": id
-        }).take(),
+        Ok(()) => json!({ "deleted": id }).take(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
     Json(json)
 }
-
 
 /// Update Schedule with given `id`
 /// # Endpoint
@@ -437,7 +439,8 @@ fn update_schedule(conn: DbConn, id: i32, schedule: Json<Schedule>) -> JsonValue
         Ok(new_schedule) => serde_json::to_value(Schedule::from(new_schedule)).unwrap(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
 
     JsonValue::from(json)
