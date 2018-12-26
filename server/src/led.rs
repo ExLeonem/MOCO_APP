@@ -2,7 +2,7 @@ pub mod cache;
 pub mod controller;
 mod message;
 
-type Color = (u8, u8, u8);
+type Color = [u8; 3];
 
 pub trait LedControls {
     fn set_color(&mut self, color: Color);
@@ -17,7 +17,7 @@ pub trait LedControls {
 
 /// Mockup of a LedStrip for testing purposes
 pub struct MocLedStrip {
-    color: (u8, u8, u8),
+    color: Color,
     brightness: u8,
     on: bool,
     manuel: bool,
@@ -26,7 +26,7 @@ pub struct MocLedStrip {
 impl MocLedStrip {
     pub fn new() -> Self {
         MocLedStrip {
-            color: (100, 100, 100),
+            color: [100, 100, 100],
             brightness: 100,
             on: false,
             manuel: false,

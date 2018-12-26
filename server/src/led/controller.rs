@@ -1,6 +1,7 @@
 use super::message::{DataDump, Message};
 use super::LedControls;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
+use std::time::{Duration, Instant};
 
 pub fn run(
     mut led: Box<LedControls>,
@@ -10,6 +11,8 @@ pub fn run(
     log::info!("Started Controller thread!");
     let mut counter = 0usize;
     let mut notified = false;
+    let mut manuel_timestamp = Instant::now();
+    let manuel_duration = Duration::from_secs(5);
     loop {
         let recv_result = receiver.try_recv();
         let got_response = recv_result.is_ok();
@@ -33,6 +36,10 @@ pub fn run(
                     Message::UpdateColor(color) => led.set_color(color),
                     Message::UpdateOn(on) => led.set_on(on),
                     Message::UpdateBrightness(brightness) => led.set_brightness(brightness),
+                    Message::UpdateManuel(on) => {
+                        led.set_manuel(on);
+                        manuel_timestamp = Instant::now();
+                    },
                     _ => {
                         log::warn!("Received unexpected Message");
                     }

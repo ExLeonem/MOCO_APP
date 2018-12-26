@@ -129,6 +129,11 @@ impl LedControls for LedCache {
     }
 
     fn set_manuel(&mut self, manuel: bool) {
+        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+        channel
+            .0
+            .send(Message::UpdateManuel(manuel))
+            .expect("Could not send to controller");
         self.manuel = manuel
     }
 }

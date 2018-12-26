@@ -64,10 +64,9 @@ pub fn routes() -> Vec<rocket::Route> {
 fn led_status(cache: State<Mutex<LedCache>>) -> Json<LedStatus> {
     let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
     cache.handle_messages();
-    let c = cache.color();
     Json(LedStatus {
         on: cache.on(),
-        color: [c.0, c.1, c.2],
+        color: cache.color(),
         brightness: cache.brightness(),
         manuel: cache.manuel(),
     })
@@ -106,7 +105,14 @@ pub struct LedStatus {
 /// ```
 ///
 #[post("/api/v1/set_led", data = "<led_status>")]
-pub fn set_led(led_status: Json<LedStatus>) -> Json<Response> {
+pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> Json<Response> {
+    let led_status = led_status.into_inner();
+    let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
+    cache.handle_messages();
+    cache.set_on(led_status.on);
+    cache.set_color(led_status.color);
+    cache.set_brightness(led_status.brightness);
+    cache.set_manuel(led_status.manuel);
     Json(Response::Ok(Some("Led status updated".to_string())))
 }
 
