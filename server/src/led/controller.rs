@@ -33,13 +33,22 @@ pub fn run(
                             .send(Message::DataDump(dump))
                             .expect("Couldn't send to Cache");
                     }
-                    Message::UpdateColor(color) => led.set_color(color),
-                    Message::UpdateOn(on) => led.set_on(on),
-                    Message::UpdateBrightness(brightness) => led.set_brightness(brightness),
+                    Message::UpdateColor(color) => {
+                        led.set_color(color);
+                        manuel_timestamp = Instant::now();
+                    }
+                    Message::UpdateOn(on) => {
+                        led.set_on(on);
+                        manuel_timestamp = Instant::now();
+                    }
+                    Message::UpdateBrightness(brightness) => {
+                        led.set_brightness(brightness);
+                        manuel_timestamp = Instant::now();
+                    }
                     Message::UpdateManuel(on) => {
                         led.set_manuel(on);
                         manuel_timestamp = Instant::now();
-                    },
+                    }
                     _ => {
                         log::warn!("Received unexpected Message");
                     }
@@ -53,13 +62,29 @@ pub fn run(
             }
         }
 
+        // do controller stuff
+        // TODO: update led: gpio, check schedules..
+
+        //check if we need to turn off manuel mode
+        if led.manuel() {
+            if manuel_duration < manuel_timestamp.elapsed() {
+                log::info!("Turned of manuel mode because of inactivity");
+                led.set_manuel(false);
+                if !notified {
+                    notify_cache(&mut sender);
+                    notified = true;
+                }
+            }
+        }
+
+
+
         if !got_response {
             // sleep only if didn't get message from web server
             std::thread::sleep(std::time::Duration::from_millis(5));
         }
 
         // temp test data
-        // TODO: update led: gpio, check schedules..
         counter += 1;
         if counter == 50 {
             let mut brightness = led.brightness() + 1;
