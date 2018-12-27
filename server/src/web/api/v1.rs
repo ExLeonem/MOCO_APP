@@ -184,10 +184,7 @@ pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> Js
 fn get_schedules(conn: DbConn) -> Json<serde_json::Value> {
     let schedules = DbSchedule::get_all(&*conn);
     let json: serde_json::Value = match schedules {
-        Ok(schedules) => {
-            let schedules: Vec<Schedule> = schedules.into_iter().map(|x| x.into()).collect();
-            serde_json::to_value(schedules).unwrap()
-        }
+        Ok(schedules) => serde_json::to_value(schedules).unwrap(),
         Err(e) => json!({
             "error": e.to_string()
         })

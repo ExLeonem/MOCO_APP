@@ -91,12 +91,12 @@ impl DbSchedule {
         }
     }
 
-    pub fn get_all(conn: &diesel::SqliteConnection) -> Result<Vec<DbSchedule>> {
+    pub fn get_all(conn: &diesel::SqliteConnection) -> Result<Vec<Schedule>> {
         use crate::schema::schedules::dsl::*;
         let found_schedules = schedules.load::<DbSchedule>(&*conn);
 
         match found_schedules {
-            Ok(found_schedules) => Ok(found_schedules),
+            Ok(found_schedules) => Ok(found_schedules.into_iter().map(|x| x.into()).collect()),
             Err(_) => Err(DatabaseError::SqliteError),
         }
     }
