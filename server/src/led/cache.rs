@@ -16,17 +16,13 @@ pub struct LedCache {
 }
 
 impl LedCache {
+    // don't block by recving something, because we would deadlock in rocket creation
     pub fn new(sender: Sender<Message>, receiver: Receiver<Message>) -> Self {
         sender
             .send(Message::GetData)
             .expect("Couldn't not send to LedController");
-        let mut channel = (sender, receiver);
-        // don't block, because we would deadlock in rocket creation
-        // let dump = Message::get_dump(&mut channel);
-        // println!("{:?}", dump);
-
         LedCache {
-            sender_receiver: Mutex::new(channel),
+            sender_receiver: Mutex::new((sender, receiver)),
             on: false,
             color: [0,0,0],
             brightness: 0,
