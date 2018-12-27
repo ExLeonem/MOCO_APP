@@ -38,10 +38,6 @@ pub fn run_server() -> rocket::config::Result<()> {
     let (controller_tx, controller_rx) = channel();
     let (cache_tx, cache_rx) = channel();
 
-    thread::spawn(move || {
-        led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx);
-    });
-
     rocket::ignite()
         .mount("/sneaky/moco/", web::routes())
         .mount("/sneaky/moco/", routes![hello])
@@ -49,6 +45,13 @@ pub fn run_server() -> rocket::config::Result<()> {
         .attach(AdHoc::on_launch("Database Migrations", |rocket| {
             let conn = DbConn::get_one(&rocket).unwrap().0;
             diesel_migrations::run_pending_migrations(&conn).unwrap();
+        }))
+        .attach(AdHoc::on_launch("Controller Thread", |rocket| {
+            let config = rocket.config();
+            let conn = rocket_contrib::databases::database_config("sqlite", config).unwrap().url.to_owned();
+            thread::spawn(move || {
+                led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx, conn);
+            });
         }))
         .manage(Mutex::new(led::cache::LedCache::new(
             cache_tx,

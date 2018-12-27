@@ -2,16 +2,20 @@ use super::message::{DataDump, Message};
 use super::LedControls;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use std::time::{Duration, Instant};
+use diesel::prelude::*;
+use diesel::sqlite::SqliteConnection;
 
 pub fn run(
     mut led: Box<LedControls>,
     mut sender: Sender<Message>,
     receiver: Receiver<Message>,
+    database_url: String,
 ) {
     log::info!("Started Controller thread!");
     let mut counter = 0usize;
     let mut notified = false;
     let mut manuel_timestamp = Instant::now();
+    let mut check_database = true;
     let manuel_duration = Duration::from_secs(5);
     loop {
         let recv_result = receiver.try_recv();
@@ -49,6 +53,7 @@ pub fn run(
                         led.set_manuel(on);
                         manuel_timestamp = Instant::now();
                     }
+                    Message::DatabaseChanged => check_database = true,
                     _ => {
                         log::warn!("Received unexpected Message");
                     }
@@ -64,6 +69,12 @@ pub fn run(
 
         // do controller stuff
         // TODO: update led: gpio, check schedules..
+        if check_database {
+            let conn = establish_connection(&database_url);
+            let schedules = crate::models::DbSchedule::get_all(&conn).unwrap();
+            log::info!("Got {} schedules", schedules.len());
+            check_database = false;
+        }
 
         //check if we need to turn off manuel mode
         if led.manuel() {
@@ -107,4 +118,9 @@ fn notify_cache(sender: &mut Sender<Message>) {
     sender
         .send(Message::DataChanged)
         .expect("Couldn't send to cache");
+}
+
+pub fn establish_connection(database_url: &str) -> SqliteConnection {
+    SqliteConnection::establish(&database_url)
+        .expect(&format!("Error connecting to {}", database_url))
 }

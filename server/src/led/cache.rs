@@ -21,15 +21,16 @@ impl LedCache {
             .send(Message::GetData)
             .expect("Couldn't not send to LedController");
         let mut channel = (sender, receiver);
-        let dump = Message::get_dump(&mut channel);
-        println!("{:?}", dump);
+        // don't block, because we would deadlock in rocket creation
+        // let dump = Message::get_dump(&mut channel);
+        // println!("{:?}", dump);
 
         LedCache {
             sender_receiver: Mutex::new(channel),
-            on: dump.on,
-            color: dump.color,
-            brightness: dump.brightness,
-            manuel: dump.manuel,
+            on: false,
+            color: [0,0,0],
+            brightness: 0,
+            manuel: false,
         }
     }
 
@@ -41,6 +42,14 @@ impl LedCache {
             .expect("Couldn't not send to LedController");
         // TODO: workaround to update in same web request
         std::thread::sleep(std::time::Duration::from_millis(5));
+    }
+
+    pub fn send_message(&mut self, message: Message) {
+        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+        channel
+            .0
+            .send(message)
+            .expect("Couldn't not send to LedController");
     }
 
     pub fn handle_messages(&mut self) {

@@ -11,6 +11,7 @@
 
 use crate::led::cache::LedCache;
 use crate::led::LedControls;
+use crate::led::message::Message;
 use crate::models::*;
 use crate::web::Response;
 use crate::DbConn;
@@ -314,11 +315,15 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 /// }'
 /// ```
 #[post("/api/v1/schedule", format = "json", data = "<schedule>")]
-fn add_schedule(conn: DbConn, schedule: Json<Schedule>) -> JsonValue {
+fn add_schedule(conn: DbConn, schedule: Json<Schedule>, cache: State<Mutex<LedCache>>) -> JsonValue {
     let schedule = schedule.into_inner();
     let new_schedule = DbSchedule::add(&*conn, schedule.into());
     let json = match new_schedule {
-        Ok(new_schedule) => serde_json::to_value(Schedule::from(new_schedule)).unwrap(),
+        Ok(new_schedule) => {
+            let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
+            cache.send_message(Message::DatabaseChanged);
+            serde_json::to_value(Schedule::from(new_schedule)).unwrap()
+        }
         Err(e) => json!({
             "error": e.to_string()
         })

@@ -19,6 +19,7 @@ pub enum Message {
     UpdateBrightness(u8),
     UpdateManuel(bool),
     DataChanged,
+    DatabaseChanged,
 }
 
 impl std::fmt::Display for Message {
@@ -32,6 +33,7 @@ impl std::fmt::Display for Message {
             Message::UpdateBrightness(_) => write!(f, "{}", "Message::UpdateBrightness"),
             Message::UpdateManuel(_) => write!(f, "{}", "Message::UpdateManuel"),
             Message::DataChanged => write!(f, "{}", "Message::DataChanged"),
+            Message::DatabaseChanged => write!(f, "{}", "Message::DatabaseChanged"),
         }
     }
 }
