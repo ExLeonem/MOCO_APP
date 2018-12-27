@@ -16,6 +16,8 @@ pub fn run(
     let mut notified = false;
     let mut manuel_timestamp = Instant::now();
     let mut check_database = true;
+    let mut schedules = Vec::with_capacity(5);
+    let keep_schedules = 3;
     let manuel_duration = Duration::from_secs(5);
     loop {
         let recv_result = receiver.try_recv();
@@ -69,10 +71,24 @@ pub fn run(
 
         // do controller stuff
         // TODO: update led: gpio, check schedules..
+
+        // update schedule list
         if check_database {
             let conn = establish_connection(&database_url);
-            let schedules = crate::models::DbSchedule::get_all(&conn).unwrap();
-            log::info!("Got {} schedules", schedules.len());
+            let mut schedule_list = crate::models::DbSchedule::get_all(&conn).unwrap();
+            // sort by activation time
+            schedule_list.sort_by(|a, b| {
+                a.activation_time.cmp(&b.activation_time)
+            });
+
+            schedules.clear();
+            schedules.extend_from_slice(&schedule_list[..keep_schedules.min(schedule_list.len())]);
+
+            let mut schedule_text = "Next Schedules:\n".to_string();
+            schedules.iter().enumerate().for_each(|(i, x)| schedule_text.push_str(&format!("Schedule {:2}.: {}\n", i+1, x.activation_time.to_string())));
+            schedule_text.pop();
+            log::info!("{}", schedule_text);
+
             check_database = false;
         }
 
