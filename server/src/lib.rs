@@ -32,6 +32,8 @@ fn hello() -> &'static str {
 #[database("sqlite")]
 pub struct DbConn(diesel::SqliteConnection);
 
+pub struct Timezone(i64);
+
 pub fn run_server() -> rocket::config::Result<()> {
     use rocket::fairing::AdHoc;
 
@@ -49,9 +51,19 @@ pub fn run_server() -> rocket::config::Result<()> {
         .attach(AdHoc::on_launch("Controller Thread", |rocket| {
             let config = rocket.config();
             let conn = rocket_contrib::databases::database_config("sqlite", config).unwrap().url.to_owned();
+            let timezone = rocket.config()
+                .get_int("timezone")
+                .unwrap_or(1);
             thread::spawn(move || {
-                led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx, conn);
+                led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx, conn, timezone);
             });
+        }))
+        .attach(AdHoc::on_attach("Assets Config", |rocket| {
+            let timezone = rocket.config()
+                .get_int("timezone")
+                .unwrap_or(1);
+
+            Ok(rocket.manage(Timezone(timezone)))
         }))
         .manage(Mutex::new(led::cache::LedCache::new(
             cache_tx,

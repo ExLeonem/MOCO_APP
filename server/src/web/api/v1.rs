@@ -15,6 +15,7 @@ use crate::led::message::Message;
 use crate::models::*;
 use crate::web::Response;
 use crate::DbConn;
+use crate::Timezone;
 use rocket::State;
 use rocket_contrib::json::{Json, JsonValue};
 use std::sync::Mutex;
@@ -312,9 +313,20 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 /// }'
 /// ```
 #[post("/api/v1/schedule", format = "json", data = "<schedule>")]
-fn add_schedule(conn: DbConn, schedule: Json<Schedule>, cache: State<Mutex<LedCache>>) -> JsonValue {
+fn add_schedule(conn: DbConn, schedule: Json<NewSchedule>, cache: State<Mutex<LedCache>>, timezone: State<Timezone>) -> JsonValue {
     let schedule = schedule.into_inner();
+
+    let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(timezone.0);
+    let diff = schedule.activation_time.signed_duration_since(now);
+
+    if diff < chrono::Duration::minutes(-1) {
+        return json!({
+            "error": "activation time was in the past"
+        });
+    }
+
     let new_schedule = DbSchedule::add(&*conn, schedule.into());
+
     let json = match new_schedule {
         Ok(new_schedule) => {
             let mut cache = cache.lock().expect("Could not aquire lock of LedCache");

@@ -1,5 +1,6 @@
-use super::message::{DataDump, Message};
-use super::LedControls;
+use crate::led::message::{DataDump, Message};
+use crate::led::LedControls;
+use crate::models::DbSchedule;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use std::time::{Duration, Instant};
 use diesel::prelude::*;
@@ -10,6 +11,7 @@ pub fn run(
     mut sender: Sender<Message>,
     receiver: Receiver<Message>,
     database_url: String,
+    timezone: i64,
 ) {
     log::info!("Started Controller thread!");
     let mut counter = 0usize;
@@ -74,6 +76,7 @@ pub fn run(
 
         // update schedule list
         if check_database {
+            check_database = false;
             let conn = establish_connection(&database_url);
             let mut schedule_list = crate::models::DbSchedule::get_all(&conn).unwrap();
             // sort by activation time
@@ -83,13 +86,29 @@ pub fn run(
 
             schedules.clear();
             schedules.extend_from_slice(&schedule_list[..keep_schedules.min(schedule_list.len())]);
+            let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(timezone);
 
             let mut schedule_text = "Next Schedules:\n".to_string();
-            schedules.iter().enumerate().for_each(|(i, x)| schedule_text.push_str(&format!("Schedule {:2}.: {}\n", i+1, x.activation_time.to_string())));
+            schedules.iter().filter(|schedule| {
+                let diff = schedule.activation_time.signed_duration_since(now);
+                // delete schedules that are in the past and not currently running
+                // this should not happen normally
+                if diff < chrono::Duration::minutes(-1) && !schedule.running {
+                    check_database = true;
+                    match DbSchedule::delete(&conn, schedule.id.unwrap()) {
+                        Ok(()) => log::info!("Deleted schedule with id {} because its activation time was in the past and it was not running", schedule.id.unwrap()),
+                        Err(e) => log::warn!("Tried to delete schedule with id {}, got error: {}", schedule.id.unwrap(), e),
+                    };
+                    false
+                } else {
+                    true
+                }
+            }).enumerate().for_each(|(i, schedule)| {
+                let diff = schedule.activation_time.signed_duration_since(now);
+                schedule_text.push_str(&format!("Schedule {:2}.: {} in {}\n", i+1, schedule.activation_time.to_string(), diff));
+            });
             schedule_text.pop();
             log::info!("{}", schedule_text);
-
-            check_database = false;
         }
 
         //check if we need to turn off manuel mode

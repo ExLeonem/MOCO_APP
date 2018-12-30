@@ -9,5 +9,6 @@ table! {
         color_blue -> Integer,
         activation_time -> Timestamp,
         active -> Bool,
+        running -> Bool,
     }
 }

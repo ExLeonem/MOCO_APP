@@ -4,7 +4,7 @@ use diesel::prelude::*;
 type Result<T> = std::result::Result<T, DatabaseError>;
 
 impl DbSchedule {
-    pub fn add(conn: &diesel::SqliteConnection, new_schedule: NewSchedule) -> Result<DbSchedule> {
+    pub fn add(conn: &diesel::SqliteConnection, new_schedule: NewDbSchedule) -> Result<DbSchedule> {
         let schedule = DbSchedule::get_by_activation_time(&*conn, &new_schedule.activation_time);
 
         if let Ok(_) = schedule {

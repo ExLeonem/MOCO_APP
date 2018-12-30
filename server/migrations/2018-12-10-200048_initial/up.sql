@@ -7,6 +7,7 @@ CREATE TABLE schedules (
     color_green INTEGER NOT NULL,
     color_blue INTEGER NOT NULL,
     activation_time DATETIME NOT NULL UNIQUE,
-    active BOOLEAN NOT NULL
+    active BOOLEAN NOT NULL,
+    running BOOLEAN NOT NULL
 );
 

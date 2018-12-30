@@ -41,6 +41,17 @@ pub struct Schedule {
     pub led_setting: LedSetting,
     pub activation_time: chrono::NaiveDateTime,
     pub active: bool,
+    pub running: bool,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct NewSchedule {
+    pub id: Option<i32>,
+    pub device: String,
+    pub integration: String,
+    pub led_setting: LedSetting,
+    pub activation_time: chrono::NaiveDateTime,
+    pub active: bool,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -94,13 +105,14 @@ impl From<DbSchedule> for Schedule {
             led_setting,
             activation_time: item.activation_time,
             active: item.active,
+            running: item.running,
         }
     }
 }
 
-impl From<DbSchedule> for NewSchedule {
+impl From<DbSchedule> for NewDbSchedule {
     fn from(item: DbSchedule) -> Self {
-        NewSchedule {
+        NewDbSchedule {
             device: item.device,
             integration: item.integration,
             color_mode: item.color_mode,
@@ -109,11 +121,28 @@ impl From<DbSchedule> for NewSchedule {
             color_blue: item.color_blue,
             activation_time: item.activation_time,
             active: item.active,
+            running: item.running,
         }
     }
 }
 
-impl From<Schedule> for NewSchedule {
+impl From<NewSchedule> for NewDbSchedule {
+    fn from(item: NewSchedule) -> Self {
+        NewDbSchedule {
+            device: item.device,
+            integration: item.integration,
+            color_mode: item.led_setting.mode.into(),
+            color_red: item.led_setting.color[0] as i32,
+            color_green: item.led_setting.color[1] as i32,
+            color_blue: item.led_setting.color[2] as i32,
+            activation_time: item.activation_time,
+            active: item.active,
+            running: false,
+        }
+    }
+}
+
+impl From<Schedule> for NewDbSchedule {
     fn from(item: Schedule) -> Self {
         DbSchedule::from(item).into()
     }
@@ -131,6 +160,7 @@ impl From<Schedule> for DbSchedule {
             color_blue: item.led_setting.color[2] as i32,
             activation_time: item.activation_time,
             active: item.active,
+            running: item.running,
         }
     }
 }
@@ -149,11 +179,12 @@ pub struct DbSchedule {
     pub color_blue: i32,
     pub activation_time: chrono::NaiveDateTime,
     pub active: bool,
+    pub running: bool,
 }
 
 #[derive(Debug, Insertable, Deserialize, Serialize)]
 #[table_name = "schedules"]
-pub struct NewSchedule {
+pub struct NewDbSchedule {
     pub device: String,
     pub integration: String,
     pub color_mode: i32,
@@ -162,4 +193,5 @@ pub struct NewSchedule {
     pub color_blue: i32,
     pub activation_time: chrono::NaiveDateTime,
     pub active: bool,
+    pub running: bool,
 }
