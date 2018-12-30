@@ -1,6 +1,7 @@
 use crate::led::message::{DataDump, Message};
 use crate::led::LedControls;
 use crate::models::DbSchedule;
+use crate::models::Schedule;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
 use std::time::{Duration, Instant};
 use diesel::prelude::*;
@@ -14,14 +15,15 @@ pub fn run(
     timezone: i64,
 ) {
     log::info!("Started Controller thread!");
-    let mut counter = 0usize;
     let mut notified = false;
     let mut manuel_timestamp = Instant::now();
     let mut check_database = true;
-    let mut schedules = Vec::with_capacity(5);
+    let mut schedules: Vec<Schedule> = Vec::with_capacity(5);
+    let mut running_schedule: Option<Schedule> = None;
     let keep_schedules = 3;
     let manuel_duration = Duration::from_secs(5);
     loop {
+        let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(timezone);
         let recv_result = receiver.try_recv();
         let got_response = recv_result.is_ok();
         match recv_result {
@@ -86,7 +88,6 @@ pub fn run(
 
             schedules.clear();
             schedules.extend_from_slice(&schedule_list[..keep_schedules.min(schedule_list.len())]);
-            let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(timezone);
 
             let mut schedule_text = "Next Schedules:\n".to_string();
             schedules.iter().filter(|schedule| {
@@ -111,6 +112,51 @@ pub fn run(
             log::info!("{}", schedule_text);
         }
 
+        match running_schedule {
+            Some(schedule) => {
+                let diff = schedules[0].activation_time.signed_duration_since(now);
+                let active_since_secs = -diff.num_seconds();
+                let time_til_100 = chrono::Duration::minutes(5).num_seconds();
+                let time_til_off = chrono::Duration::minutes(15).num_seconds();
+                let brightness = ((active_since_secs as f32 /  time_til_100 as f32) * 100.0) as u8;
+                led.set_on(true);
+                led.set_color(schedule.led_setting.color);
+                led.set_brightness(brightness.min(100));
+                if !notified {
+                    notify_cache(&mut sender);
+                    notified = true;
+                }
+                if time_til_off < active_since_secs {
+                    led.set_on(false);
+                    let conn = establish_connection(&database_url);
+                    let result = DbSchedule::delete(&conn, schedule.id.unwrap());
+                    if let Err(e) = result {
+                        log::warn!("Failed to delete schedule with id {} from database: {}", schedule.id.unwrap(), e);
+                    }
+                    running_schedule = None;
+                    check_database = true;
+                    log::info!("Schedule with id {} finished and deleted from database", schedule.id.unwrap());
+                } else {
+                    running_schedule = Some(schedule);
+                }
+            }
+            None => {
+                if schedules.len() != 0 {
+                    let diff = schedules[0].activation_time.signed_duration_since(now);
+                    if diff < chrono::Duration::seconds(5) {
+                        schedules[0].running = true;
+                        let conn = establish_connection(&database_url);
+                        let result = DbSchedule::update(&conn, schedules[0].id.unwrap(), schedules[0].clone().into());
+                        if let Err(e) = result {
+                            log::warn!("Failed to update schedule with id {} from database: {}", schedules[0].id.unwrap(), e);
+                        }
+                        running_schedule = Some(schedules[0].clone());
+                        log::info!("Schedule with id {} is now running!", schedules[0].id.unwrap());
+                    }
+                }
+            }
+        }
+
         //check if we need to turn off manuel mode
         if led.manuel() {
             if manuel_duration < manuel_timestamp.elapsed() {
@@ -123,26 +169,9 @@ pub fn run(
             }
         }
 
-
-
         if !got_response {
             // sleep only if didn't get message from web server
             std::thread::sleep(std::time::Duration::from_millis(5));
-        }
-
-        // temp test data
-        counter += 1;
-        if counter == 50 {
-            let mut brightness = led.brightness() + 1;
-            if brightness == 101 {
-                brightness = 0;
-            }
-            led.set_brightness(brightness);
-            counter = 0;
-            if !notified {
-                notify_cache(&mut sender);
-                notified = true;
-            }
         }
     }
 }
