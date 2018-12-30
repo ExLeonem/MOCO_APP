@@ -37,6 +37,7 @@ impl MocLedStrip {
 impl LedControls for MocLedStrip {
     fn set_color(&mut self, color: Color) {
         self.color = color;
+        log::trace!("Updated color: {:?}", color);
     }
 
     fn color(&self) -> Color {
@@ -45,6 +46,7 @@ impl LedControls for MocLedStrip {
 
     fn set_on(&mut self, on: bool) {
         self.on = on;
+        log::trace!("Updated on: {}", on);
     }
 
     fn on(&self) -> bool {
@@ -53,6 +55,7 @@ impl LedControls for MocLedStrip {
 
     fn set_brightness(&mut self, brightness: u8) {
         self.brightness = brightness;
+        log::trace!("Updated brightness: {}", brightness);
     }
 
     fn brightness(&self) -> u8 {
@@ -64,6 +67,7 @@ impl LedControls for MocLedStrip {
     }
 
     fn set_manuel(&mut self, manuel: bool) {
-        self.manuel = manuel
+        self.manuel = manuel;
+        log::trace!("Updated manuel: {}", manuel);
     }
 }
