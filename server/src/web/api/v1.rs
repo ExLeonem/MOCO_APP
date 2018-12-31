@@ -107,15 +107,22 @@ pub struct LedStatus {
 /// ```
 ///
 #[post("/api/v1/set_led", data = "<led_status>")]
-pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> Json<Response> {
+pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> JsonValue {
     let led_status = led_status.into_inner();
     let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
+    if !cache.manuel() && !led_status.manuel {
+        return json!({
+            "error": "can't control led, because manuel mode is off"
+        });
+    }
     cache.handle_messages();
+    cache.set_manuel(led_status.manuel);
     cache.set_on(led_status.on);
     cache.set_color(led_status.color);
     cache.set_brightness(led_status.brightness);
-    cache.set_manuel(led_status.manuel);
-    Json(Response::Ok(Some("Led status updated".to_string())))
+    json!({
+        "Ok": "Led status updated"
+    })
 }
 
 /// Get all schedules

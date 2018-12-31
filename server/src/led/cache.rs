@@ -91,12 +91,14 @@ impl LedCache {
 
 impl LedControls for LedCache {
     fn set_color(&mut self, color: Color) {
-        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel
-            .0
-            .send(Message::UpdateColor(color))
-            .expect("Could not send to controller");
-        self.color = color;
+        if self.manuel {
+            let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+            channel
+                .0
+                .send(Message::UpdateColor(color))
+                .expect("Could not send to controller");
+            self.color = color;
+        }
     }
 
     fn color(&self) -> Color {
@@ -104,12 +106,14 @@ impl LedControls for LedCache {
     }
 
     fn set_on(&mut self, on: bool) {
-        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel
-            .0
-            .send(Message::UpdateOn(on))
-            .expect("Could not send to controller");
-        self.on = on;
+        if self.manuel {
+            let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+            channel
+                .0
+                .send(Message::UpdateOn(on))
+                .expect("Could not send to controller");
+            self.on = on;
+        }
     }
 
     fn on(&self) -> bool {
@@ -117,12 +121,14 @@ impl LedControls for LedCache {
     }
 
     fn set_brightness(&mut self, brightness: u8) {
-        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel
-            .0
-            .send(Message::UpdateBrightness(brightness))
-            .expect("Could not send to controller");
-        self.brightness = brightness;
+        if self.manuel {
+            let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+            channel
+                .0
+                .send(Message::UpdateBrightness(brightness))
+                .expect("Could not send to controller");
+            self.brightness = brightness;
+        }
     }
 
     fn brightness(&self) -> u8 {

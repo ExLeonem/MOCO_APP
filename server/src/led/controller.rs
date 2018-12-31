@@ -3,7 +3,7 @@ use crate::led::LedControls;
 use crate::models::DbSchedule;
 use crate::models::Schedule;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
-use std::time::{Duration, Instant};
+use std::time::Instant;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 
@@ -21,7 +21,7 @@ pub fn run(
     let mut schedules: Vec<Schedule> = Vec::with_capacity(5);
     let mut running_schedule: Option<Schedule> = None;
     let keep_schedules = 3;
-    let manuel_duration = Duration::from_secs(5);
+    let manuel_duration = chrono::Duration::minutes(1).to_std().unwrap();
     loop {
         let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(timezone);
         let recv_result = receiver.try_recv();
@@ -56,6 +56,7 @@ pub fn run(
                         manuel_timestamp = Instant::now();
                     }
                     Message::UpdateManuel(on) => {
+                        let old = led.manuel();
                         led.set_manuel(on);
                         manuel_timestamp = Instant::now();
                         if on {
@@ -69,7 +70,16 @@ pub fn run(
                                 check_database = true;
                                 log::info!("Schedule with id {} finished and deleted from database", schedule.id.unwrap());
                             }
-                        } 
+                        } else {
+                            // manuel mode was on and now turned off, deactive manuel mode
+                            if old {
+                                led.set_on(false);
+                                if !notified {
+                                    notify_cache(&mut sender);
+                                    notified = true;
+                                }
+                            }
+                        }
                     }
                     Message::DatabaseChanged => check_database = true,
                     _ => {
