@@ -118,10 +118,10 @@ pub fn run(
                 let active_since_secs = -diff.num_seconds();
                 let time_til_100 = chrono::Duration::minutes(5).num_seconds();
                 let time_til_off = chrono::Duration::minutes(15).num_seconds();
-                let brightness = ((active_since_secs as f32 /  time_til_100 as f32) * 100.0) as u8;
+                let brightness = ((active_since_secs as f32 /  time_til_100 as f32) * 100.0).min(100.0) as u8;
                 led.set_on(true);
                 led.set_color(schedule.led_setting.color);
-                led.set_brightness(brightness.min(100));
+                led.set_brightness(brightness);
                 if !notified {
                     notify_cache(&mut sender);
                     notified = true;
