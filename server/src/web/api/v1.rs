@@ -147,7 +147,8 @@ pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> Js
 ///         10
 ///       ],
 ///       "mode": "Default"
-///     }
+///     },
+///     "running": false
 ///   },
 ///   {
 ///     "activation_time": "2018-05-03T12:34:00",
@@ -162,7 +163,8 @@ pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> Js
 ///         10
 ///       ],
 ///       "mode": "Default"
-///     }
+///     },
+///     "running": false
 ///   }
 /// ]
 /// ```
@@ -223,7 +225,8 @@ fn get_schedules(conn: DbConn) -> Json<serde_json::Value> {
 ///       10
 ///     ],
 ///     "mode": "Default"
-///   }
+///   },
+///   "running": false
 /// }
 /// ```
 ///
@@ -283,7 +286,8 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 ///       10
 ///     ],
 ///     "mode": "Default"
-///   }
+///   },
+///   "running": false
 /// }
 /// ```
 ///
@@ -418,7 +422,8 @@ fn delete_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 ///       10
 ///     ],
 ///     "mode": "Default"
-///   }
+///   },
+///   "running": false
 /// }
 /// ```
 ///
