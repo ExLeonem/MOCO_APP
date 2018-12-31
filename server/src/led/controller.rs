@@ -58,6 +58,18 @@ pub fn run(
                     Message::UpdateManuel(on) => {
                         led.set_manuel(on);
                         manuel_timestamp = Instant::now();
+                        if on {
+                            if let Some(schedule) = running_schedule {
+                                let conn = establish_connection(&database_url);
+                                let result = DbSchedule::delete(&conn, schedule.id.unwrap());
+                                if let Err(e) = result {
+                                    log::warn!("Failed to delete schedule with id {} from database: {}", schedule.id.unwrap(), e);
+                                }
+                                running_schedule = None;
+                                check_database = true;
+                                log::info!("Schedule with id {} finished and deleted from database", schedule.id.unwrap());
+                            }
+                        } 
                     }
                     Message::DatabaseChanged => check_database = true,
                     _ => {
