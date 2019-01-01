@@ -44,16 +44,22 @@ pub fn run(
                             .expect("Couldn't send to Cache");
                     }
                     Message::UpdateColor(color) => {
-                        led.set_color(color);
-                        manuel_timestamp = Instant::now();
+                        if led.manuel() {
+                            led.set_color(color);
+                            manuel_timestamp = Instant::now();
+                        }
                     }
                     Message::UpdateOn(on) => {
-                        led.set_on(on);
-                        manuel_timestamp = Instant::now();
+                        if led.manuel() {
+                            led.set_on(on);
+                            manuel_timestamp = Instant::now();
+                        }
                     }
                     Message::UpdateBrightness(brightness) => {
-                        led.set_brightness(brightness);
-                        manuel_timestamp = Instant::now();
+                        if led.manuel() {
+                            led.set_brightness(brightness);
+                            manuel_timestamp = Instant::now();                            
+                        }
                     }
                     Message::UpdateManuel(on) => {
                         let old = led.manuel();
@@ -94,9 +100,6 @@ pub fn run(
                 panic!("Temp");
             }
         }
-
-        // do controller stuff
-        // TODO: update led: gpio, check schedules..
 
         // update schedule list
         if check_database {
@@ -141,14 +144,24 @@ pub fn run(
                 let time_til_100 = chrono::Duration::minutes(5).num_seconds();
                 let time_til_off = chrono::Duration::minutes(15).num_seconds();
                 let brightness = ((active_since_secs as f32 /  time_til_100 as f32) * 100.0).min(100.0) as u8;
-                led.set_on(true);
-                led.set_color(schedule.led_setting.color);
-                led.set_brightness(brightness);
-                if !notified {
-                    notify_cache(&mut sender);
-                    notified = true;
+                let mut changed_led = false;
+                if led.on() != false {
+                    led.set_on(true);
+                    changed_led = true;
+                }
+                if led.color() != schedule.led_setting.color {
+                    led.set_color(schedule.led_setting.color);
+                    changed_led = true;
+                }
+                if led.brightness() != brightness {
+                    led.set_brightness(brightness);
+                    changed_led = true;
                 }
                 if time_til_off < active_since_secs {
+                    if led.on() != true {
+                        led.set_on(false);
+                        changed_led = true;
+                    }
                     led.set_on(false);
                     let conn = establish_connection(&database_url);
                     let result = DbSchedule::delete(&conn, schedule.id.unwrap());
@@ -160,6 +173,10 @@ pub fn run(
                     log::info!("Schedule with id {} finished and deleted from database", schedule.id.unwrap());
                 } else {
                     running_schedule = Some(schedule);
+                }
+                if !notified && changed_led {
+                    notify_cache(&mut sender);
+                    notified = true;
                 }
             }
             None => {
