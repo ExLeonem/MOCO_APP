@@ -3,9 +3,9 @@ extern crate server;
 use fern::colors::{Color, ColoredLevelConfig};
 
 fn main() {
-//    std::env::set_var("RUST_LOG", "actix_web=info");
-//    env_logger::init();
-    let verbosity: u64 = 0;
+    // std::env::set_var("RUST_LOG", "actix_web=info");
+    // env_logger::init();
+    let verbosity: u64 = 1;
 
     let colors = ColoredLevelConfig::new()
         .debug(Color::Magenta)
@@ -34,5 +34,5 @@ fn main() {
         .apply()
         .unwrap();
 
-    server::run_server("127.0.0.1", 8080).expect("Failed to config server");
+    server::run_server().expect("Failed to config server");
 }

@@ -1,22 +1,20 @@
-use diesel::prelude::*;
 use super::*;
+use diesel::prelude::*;
 
 type Result<T> = std::result::Result<T, DatabaseError>;
 
-
 impl DbSchedule {
-    pub fn add(conn: &diesel::SqliteConnection, new_schedule: NewSchedule) -> Result<DbSchedule> {
-        use crate::schema::schedules::dsl::*;
+    pub fn add(conn: &diesel::SqliteConnection, new_schedule: NewDbSchedule) -> Result<DbSchedule> {
         let schedule = DbSchedule::get_by_activation_time(&*conn, &new_schedule.activation_time);
 
         if let Ok(_) = schedule {
             return Err(DatabaseError::AlreadyExists);
         }
 
-        let rows = diesel::insert_into(crate::schema::schedules::table)
+        let _rows = diesel::insert_into(crate::schema::schedules::table)
             .values(&new_schedule)
             .execute(&*conn);
-        
+
         let schedule = DbSchedule::get_by_activation_time(&*conn, &new_schedule.activation_time);
 
         schedule
@@ -33,16 +31,19 @@ impl DbSchedule {
                     Err(DatabaseError::NotFound)
                 }
             }
-            Err(_) => {
-                Err(DatabaseError::SqliteError)
-            }
+            Err(_) => Err(DatabaseError::SqliteError),
         }
-    } 
+    }
 
-    pub fn get_by_activation_time(conn: &diesel::SqliteConnection, activation_time_: &chrono::NaiveDateTime) -> Result<DbSchedule> {
+    pub fn get_by_activation_time(
+        conn: &diesel::SqliteConnection,
+        activation_time_: &chrono::NaiveDateTime,
+    ) -> Result<DbSchedule> {
         use crate::schema::schedules::dsl::*;
         // check if device exists already
-        let found_schedules = schedules.filter(activation_time.eq(activation_time_)).load::<DbSchedule>(&*conn);
+        let found_schedules = schedules
+            .filter(activation_time.eq(activation_time_))
+            .load::<DbSchedule>(&*conn);
 
         match found_schedules {
             Ok(found_schedules) => {
@@ -52,9 +53,7 @@ impl DbSchedule {
                     Err(DatabaseError::NotFound)
                 }
             }
-            Err(e) => {
-                Err(DatabaseError::SqliteError)
-            }
+            Err(_) => Err(DatabaseError::SqliteError),
         }
     }
 
@@ -66,22 +65,19 @@ impl DbSchedule {
             .execute(conn);
 
         match row {
-            Ok(_) => {
-                match DbSchedule::get_by_activation_time(&*conn, &schedule.activation_time) {
-                    Ok(schedule) => Ok(schedule.into()),
-                    Err(e) => Err(e),
-                }
-            }
-            Err(e) => {
-                Err(DatabaseError::SqliteError)
-            }
+            Ok(_) => match DbSchedule::get_by_activation_time(&*conn, &schedule.activation_time) {
+                Ok(schedule) => Ok(schedule.into()),
+                Err(e) => Err(e),
+            },
+            Err(_) => Err(DatabaseError::SqliteError),
         }
-
     }
 
     pub fn get(conn: &diesel::SqliteConnection, id: i32) -> Result<Schedule> {
         use crate::schema::schedules::dsl::*;
-        let schedule = schedules.filter(schedule_id.eq(id)).load::<DbSchedule>(conn);
+        let schedule = schedules
+            .filter(schedule_id.eq(id))
+            .load::<DbSchedule>(conn);
 
         match schedule {
             Ok(schedule) => {
@@ -90,19 +86,18 @@ impl DbSchedule {
                 } else {
                     Err(DatabaseError::NotFound)
                 }
-            },
+            }
             Err(_) => Err(DatabaseError::SqliteError),
         }
     }
 
-    pub fn get_all(conn: &diesel::SqliteConnection) -> Result<Vec<DbSchedule>> {
+    pub fn get_all(conn: &diesel::SqliteConnection) -> Result<Vec<Schedule>> {
         use crate::schema::schedules::dsl::*;
         let found_schedules = schedules.load::<DbSchedule>(&*conn);
 
         match found_schedules {
-            Ok(found_schedules) => Ok(found_schedules),
-            Err(e) => Err(DatabaseError::SqliteError),
+            Ok(found_schedules) => Ok(found_schedules.into_iter().map(|x| x.into()).collect()),
+            Err(_) => Err(DatabaseError::SqliteError),
         }
     }
-
 }

@@ -9,25 +9,38 @@
 //! [update_schedule](fn.update_schedule.html) \
 //! ` `
 
-use rocket_contrib::json::{Json, JsonValue};
-use crate::web::Response;
+use crate::led::cache::LedCache;
+use crate::led::LedControls;
+use crate::led::message::Message;
 use crate::models::*;
+use crate::web::Response;
 use crate::DbConn;
-
+use crate::Timezone;
+use rocket::State;
+use rocket_contrib::json::{Json, JsonValue};
+use std::sync::Mutex;
 
 /// routes for `/api/v1/`
 pub fn routes() -> Vec<rocket::Route> {
-    let routes = routes![led_status, set_led, get_schedules, get_schedule, delete_schedule, add_schedule, update_schedule];
+    let routes = routes![
+        led_status,
+        set_led,
+        get_schedules,
+        get_schedule,
+        delete_schedule,
+        add_schedule,
+        update_schedule
+    ];
     routes
 }
 
 /// Returns json data about the current led status
-/// 
-/// # Endpoint 
+///
+/// # Endpoint
 ///
 /// `/api/v1/led_status`
 ///
-/// # Method 
+/// # Method
 ///
 /// `GET`
 ///
@@ -50,15 +63,16 @@ pub fn routes() -> Vec<rocket::Route> {
 /// curl -i -X GET ${endpoint}
 /// ```
 #[get("/api/v1/led_status")]
-fn led_status() -> Json<LedStatus> {
+fn led_status(cache: State<Mutex<LedCache>>) -> Json<LedStatus> {
+    let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
+    cache.handle_messages();
     Json(LedStatus {
-        on: true,
-        color: [20, 10, 5],
-        brightness: 20,
-        manuel: false,
+        on: cache.on(),
+        color: cache.color(),
+        brightness: cache.brightness(),
+        manuel: cache.manuel(),
     })
 }
-
 
 #[derive(Deserialize, Serialize, Debug)]
 pub struct LedStatus {
@@ -93,27 +107,38 @@ pub struct LedStatus {
 /// ```
 ///
 #[post("/api/v1/set_led", data = "<led_status>")]
-pub fn set_led(led_status: Json<LedStatus>) -> Json<Response> {
-    Json(
-        Response::Ok(Some("Led status updated".to_string()))
-    )
+pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> JsonValue {
+    let led_status = led_status.into_inner();
+    let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
+    if !cache.manuel() && !led_status.manuel {
+        return json!({
+            "error": "can't control led, because manuel mode is off"
+        });
+    }
+    cache.handle_messages();
+    cache.set_manuel(led_status.manuel);
+    cache.set_on(led_status.on);
+    cache.set_color(led_status.color);
+    cache.set_brightness(led_status.brightness);
+    json!({
+        "Ok": "Led status updated"
+    })
 }
 
-
 /// Get all schedules
-/// 
+///
 /// # Endpoint
-/// 
+///
 /// `/api/v1/schedules`
 ///
-/// # Method 
-/// 
+/// # Method
+///
 /// `GET`
-/// 
+///
 /// # Response
-/// 
+///
 /// ## On Success
-/// 
+///
 /// ```json
 /// [
 ///   {
@@ -129,7 +154,8 @@ pub fn set_led(led_status: Json<LedStatus>) -> Json<Response> {
 ///         10
 ///       ],
 ///       "mode": "Default"
-///     }
+///     },
+///     "running": false
 ///   },
 ///   {
 ///     "activation_time": "2018-05-03T12:34:00",
@@ -144,21 +170,22 @@ pub fn set_led(led_status: Json<LedStatus>) -> Json<Response> {
 ///         10
 ///       ],
 ///       "mode": "Default"
-///     }
+///     },
+///     "running": false
 ///   }
 /// ]
 /// ```
-/// 
+///
 /// ## On Failure
-/// 
+///
 /// ```json
 /// {
 ///     "error": "Error Message"
 /// }
 /// ```
-/// 
+///
 /// # cURL
-/// 
+///
 /// ```bash
 /// curl --request GET \
 ///   --url ${base_url}/api/v1/schedules
@@ -167,32 +194,30 @@ pub fn set_led(led_status: Json<LedStatus>) -> Json<Response> {
 fn get_schedules(conn: DbConn) -> Json<serde_json::Value> {
     let schedules = DbSchedule::get_all(&*conn);
     let json: serde_json::Value = match schedules {
-        Ok(schedules) => {
-            let schedules: Vec<Schedule> = schedules.into_iter().map(|x| x.into()).collect();
-            serde_json::to_value(schedules).unwrap()
-        }
+        Ok(schedules) => serde_json::to_value(schedules).unwrap(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
     Json(json)
 }
 
 /// Get Schedule with given `id`
 /// # Endpoint
-/// 
+///
 /// `/api/v1/schedule/<id>`
-/// 
+///
 /// `id`: Integer
-/// 
+///
 /// # Method
 ///
 /// `GET`
-/// 
+///
 /// # Response
-/// 
+///
 /// ## On Success
-/// 
+///
 /// ```json
 /// {
 ///   "activation_time": "2018-05-03T12:34:16.100",
@@ -207,20 +232,21 @@ fn get_schedules(conn: DbConn) -> Json<serde_json::Value> {
 ///       10
 ///     ],
 ///     "mode": "Default"
-///   }
+///   },
+///   "running": false
 /// }
 /// ```
-/// 
+///
 /// ## On Failure
-/// 
+///
 /// ```json
 /// {
 ///     "error": "Error Message"
 /// }
 /// ```
-/// 
+///
 /// # cURL
-/// 
+///
 /// ```bash
 /// curl --request GET \
 ///   --url ${base_url}/api/v1/schedule/1
@@ -230,30 +256,29 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
     let schedule = DbSchedule::get(&conn, id);
 
     let json: serde_json::Value = match schedule {
-        Ok(schedule) => {
-            serde_json::to_value(schedule).unwrap()
-        }
+        Ok(schedule) => serde_json::to_value(schedule).unwrap(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
     Json(json)
 }
 
 /// Crate new schedule
-/// 
+///
 /// # Endpoint
-/// 
+///
 /// `/api/v1/schedule`
-/// 
+///
 /// # Method
 ///
 /// `POST`
-/// 
+///
 /// # Response
-/// 
+///
 /// ## On Success
-/// 
+///
 /// ```json
 /// {
 ///   "activation_time": "2021-06-03T12:34:00",
@@ -268,20 +293,21 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 ///       10
 ///     ],
 ///     "mode": "Default"
-///   }
+///   },
+///   "running": false
 /// }
 /// ```
-/// 
+///
 /// ## On Failure
-/// 
+///
 /// ```json
 /// {
 ///     "error": "Error Message"
 /// }
 /// ```
-/// 
+///
 /// # cURL
-/// 
+///
 /// ```bash
 /// curl --request POST \
 ///   --url ${base_url}/api/v1/schedule \
@@ -298,83 +324,97 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 /// }'
 /// ```
 #[post("/api/v1/schedule", format = "json", data = "<schedule>")]
-fn add_schedule(conn: DbConn, schedule: Json<Schedule>) -> JsonValue {
+fn add_schedule(conn: DbConn, schedule: Json<NewSchedule>, cache: State<Mutex<LedCache>>, timezone: State<Timezone>) -> JsonValue {
     let schedule = schedule.into_inner();
+
+    let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(timezone.0);
+    let diff = schedule.activation_time.signed_duration_since(now);
+
+    if diff < chrono::Duration::minutes(-1) {
+        return json!({
+            "error": "activation time was in the past"
+        });
+    }
+
     let new_schedule = DbSchedule::add(&*conn, schedule.into());
+
     let json = match new_schedule {
-        Ok(new_schedule) => serde_json::to_value(Schedule::from(new_schedule)).unwrap(),
+        Ok(new_schedule) => {
+            let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
+            cache.send_message(Message::DatabaseChanged);
+            serde_json::to_value(Schedule::from(new_schedule)).unwrap()
+        }
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
-    
+
     JsonValue::from(json)
 }
 
 /// Delete Schedule with given `id`
 /// # Endpoint
-/// 
+///
 /// `/api/v1/schedule/<id>`
-/// 
+///
 /// `id`: Integer
-/// 
+///
 /// # Method
 ///
 /// `DELETE`
-/// 
+///
 /// # Response
-/// 
+///
 /// ## On Success
-/// 
+///
 /// ```json
 /// {
 ///   "deleted": 19
 /// }
 /// ```
-/// 
+///
 /// ## On Failure
-/// 
+///
 /// ```json
 /// {
 ///     "error": "Error Message"
 /// }
 /// ```
-/// 
+///
 /// # cURL
-/// 
+///
 /// ```bash
 /// curl --request DELETE \
-///   --url ${base_url}/api/v1/schedule/19 
+///   --url ${base_url}/api/v1/schedule/19
 /// ```
 #[delete("/api/v1/schedule/<id>")]
 fn delete_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
     let schedule = DbSchedule::delete(&conn, id);
 
     let json: serde_json::Value = match schedule {
-        Ok(()) => json!({
-            "deleted": id
-        }).take(),
+        Ok(()) => json!({ "deleted": id }).take(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
     Json(json)
 }
 
-
 /// Update Schedule with given `id`
 /// # Endpoint
-/// 
+///
 /// `/api/v1/schedule/<id>`
-/// 
+///
 /// # Method
 ///
 /// `PUT`
-/// 
+///
 /// # Response
-/// 
+///
 /// ## On Success
-/// 
+///
 /// ```json
 /// {
 ///   "activation_time": "2018-05-03T12:34:00",
@@ -389,20 +429,21 @@ fn delete_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 ///       10
 ///     ],
 ///     "mode": "Default"
-///   }
+///   },
+///   "running": false
 /// }
 /// ```
-/// 
+///
 /// ## On Failure
-/// 
+///
 /// ```json
 /// {
 ///     "error": "Error Message"
 /// }
 /// ```
-/// 
+///
 /// # cURL
-/// 
+///
 /// ```bash
 /// curl --request PUT \
 ///   --url ${base_url}/api/v1/schedule/4 \
@@ -430,8 +471,9 @@ fn update_schedule(conn: DbConn, id: i32, schedule: Json<Schedule>) -> JsonValue
         Ok(new_schedule) => serde_json::to_value(Schedule::from(new_schedule)).unwrap(),
         Err(e) => json!({
             "error": e.to_string()
-        }).take(),
+        })
+        .take(),
     };
-    
+
     JsonValue::from(json)
 }
