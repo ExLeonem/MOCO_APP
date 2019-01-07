@@ -1,4 +1,4 @@
-import {createDrawerNavigator, createStackNavigator, createAppContainer} from 'react-navigation';
+import {createDrawerNavigator, createAppContainer} from 'react-navigation';
 import Drawer from '../general/drawer';
 import {mainRoutes} from './routes';
 

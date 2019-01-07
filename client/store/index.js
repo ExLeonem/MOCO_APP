@@ -61,16 +61,10 @@ let toAddTemp = {
 let initialState = {
     schedules: {
         toAdd: {},
-        active: [scheduleOne, scheduleTwo, scheduleThree]
+        current: [scheduleOne, scheduleTwo, scheduleThree]
     },
     devices: [],
-    currentDevice: deviceTemplate,
-    navigation: {
-        currentScreen: {
-            name: "main",
-            activeTab: "",
-        }
-    }
+    currentDevice: deviceTemplate
 };
 
 
