@@ -4,7 +4,7 @@ import {View, StyleSheet} from 'react-native';
 import Header from '../../general/header';
 import {TabNavigation, TabItem} from '../../navigation/tabs';
 
-import AddManual from '../add_manual';
+import AddManual from '../../schedule/add_manual';
 import CircleButton from '../../general/button';
 
 import {withFooter} from '../../general/screen_style';
@@ -12,16 +12,16 @@ import {connect} from 'react-redux';
 
 
 
-export default class AddScheduleScreen extends React.Component {
+export default class ManualScreen extends React.Component {
 
     render() {
         return (
             <View style={withFooter.screenWrapper}>
                 <Header>{"Add Schedule"}</Header>
                 <TabNavigation>
-                    <TabItem onPress={() => console.log("")} isActive={true}>{"Manuell"}</TabItem>
-                    <TabItem onPress={() => console.log("")}>{"Alarm"}</TabItem>
-                    <TabItem onPress={() => console.log("")}>{"Calendar"}</TabItem>
+                    <TabItem onPress={() => 1} isActive={true}>{"Manual"}</TabItem>
+                    <TabItem onPress={() => this.props.navigation.navigate('Alarm')}>{"Alarm"}</TabItem>
+                    <TabItem onPress={() => this.props.navigation.navigate('Calendar')}>{"Calendar"}</TabItem>
                 </TabNavigation>
                 <AddManual style={withFooter.content}/>
                 <View style={withFooter.footer}>

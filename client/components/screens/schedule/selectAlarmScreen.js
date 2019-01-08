@@ -8,6 +8,8 @@ import {View, Text} from 'react-native';
 export default class SelectAlarmScreen extends React.Component {
 
     render() {
+        <View>
 
+        </View>
     }
 }
