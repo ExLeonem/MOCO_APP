@@ -106,7 +106,7 @@ let GeneralOperationTabs = createSwitchNavigator({
     Color: {screen: ColorSelectionScreen},
     Schedule: {screen: ScheduleScreen}
 }, {
-    initialRouteName: 'Schedule'
+    initialRouteName: 'Light'
 });
 
 export {

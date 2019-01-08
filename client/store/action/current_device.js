@@ -9,7 +9,7 @@ import {
 } from '../constants';
 
 
-const setCurrentDevice = (payload) => {
+const setCurrentDevice = (device) => {
     return {
         type: SET_CURRENT_DEVICE,
         device: device
@@ -18,7 +18,7 @@ const setCurrentDevice = (payload) => {
 
 const setCurrentDeviceLevel = (level) => {
     return {
-        type: UPDATE_CURRENT_DEVICE_OPACITY,
+        type: SET_CURRENT_DEVICE_LEVEL,
         level: level
     }
 }

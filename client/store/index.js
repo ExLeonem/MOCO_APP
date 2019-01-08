@@ -7,8 +7,8 @@ import rootReducer from './reducer/index';
 const deviceTemplate = {
     uuid: 1,
     name: "Test licht",
-    color: "#FFFFF",
-    level: '0.8',
+    color: "#FFFF00",
+    level: 10,
     isActive: false
 };
 

@@ -31,16 +31,37 @@ class LightScreen extends React.Component {
                     <TabItem onPress={() => this.props.navigation.navigate('Color')}>{"Color"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Schedule')}>{"Schedule"}</TabItem>
                 </TabNavigation>
-                <View style={withFooter.content}>
+                <View style={styles.contentWrapper}>
                     <LightButton isOn={this.props.isActive} onPress={() => this.props.isActive? this.props.disable() : this.props.enable()}/>
                 </View>
-                <View style={withFooter.footer}>
-                    <Slider minimumValue={100} minimumValue={0} step={1} value={this.props.value} onSlidingComplete={level => this.props.updateLevel(level)}/>
+                <View style={{...withFooter.footer, justifyContent: 'flex-start', position: 'relative'}}>
+                    <Slider 
+                        style={styles.levelSelection}
+                        value={this.props.level} 
+                        maximumValue={100}
+                        minimumValue={0} 
+                        step={1}
+                        onSlidingComplete={level => this.props.updateLevel(level)} 
+                    />
                 </View>
             </View>
         );
     };
 }
+
+const styles = StyleSheet.create({
+    contentWrapper: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    levelSelection: {
+        position: 'relative',
+        width: 250,
+        maxWidth: 400,
+        minWidth: 150
+    }
+});
 
 
 const mapStateToProps = (state) => {
