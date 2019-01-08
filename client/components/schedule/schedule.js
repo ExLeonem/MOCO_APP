@@ -39,7 +39,7 @@ class Schedule extends Component {
 const mapStateToProps = (state, ownProps) => {
     // Show only schedules for current device
     let filterSchedules = (scheduleEntry) => state.currentDevice.uuid == scheduleEntry.deviceUUID;
-    let schedulesOfCurrentDevice = state.schedules.active.filter(filterSchedules);
+    let schedulesOfCurrentDevice = state.schedules.current.filter(filterSchedules);
     return {
         schedules: schedulesOfCurrentDevice
     }

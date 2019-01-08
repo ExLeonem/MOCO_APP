@@ -1,18 +1,14 @@
-import ScheduleScreen from '../schedule/screens/mainScreen';
-import AddScheduleScreen from '../schedule/screens/addScreen';
-import FinishAddScreen from '../schedule/screens/finishAddScreen';
+import FinishAddScreen from '../screens/schedule/finishAddScreen';
+
 
 import {createStackNavigator} from 'react-navigation';
+import {GeneralOperationTabs, ScheduleCreationTabs} from './tabs';
 
 
-// Paths for Schedule creation
+
 let scheduleStackNavigation = createStackNavigator({
-        Main: {
-            screen: ScheduleScreen
-        },
-        AddSchedule: {
-            screen: AddScheduleScreen
-        },
+        Main: GeneralOperationTabs,
+        AddSchedule: ScheduleCreationTabs,
         Finish: {
             screen: FinishAddScreen
         }

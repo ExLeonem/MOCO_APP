@@ -98,6 +98,7 @@ const disableSchedule = (schedule) => {
 
 
 export {
+    newScheduleInit,
     newScheduleReset,
     newScheduleSetTime,
     newScheduleSetRepeat,

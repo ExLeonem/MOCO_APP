@@ -9,7 +9,7 @@ const deviceTemplate = {
     name: "Test licht",
     color: "#FFFFF",
     level: '0.8',
-    active: false
+    isActive: false
 };
 
 // Template for schedules

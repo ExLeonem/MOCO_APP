@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, Switch, TouchableWithoutFeedback, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
-import {activateSchedule} from '../../store/action/schedule';
+import {enableSchedule, disableSchedule} from '../../store/action/schedule';
 import {defaultText} from '../colors';
 
 
@@ -88,7 +88,7 @@ class Entry extends Component {
             <View style={entryStyles.container}>
                 <View style={entryStyles.scheduleHeader}>
                     <Text style={entryStyles.clockTime}>{time} Uhr</Text>
-                    <Switch style={entryStyles.scheduleSwitch} onValueChange={toggleActive} value={isActive}/>
+                    <Switch style={entryStyles.scheduleSwitch} onValueChange={isActive?this.props.disable:this.props.enable} value={isActive}/>
                 </View>
                 <RepetitionEntries repetitions={repeat} type={type} date={date}/>
             </View>
@@ -129,8 +129,8 @@ const entryStyles = StyleSheet.create({
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        toggleActive: (value) => dispatch(activateSchedule({deviceUUID: ownProps.uuid, id: ownProps.id}))
-
+        enable: () => dispatch(enableSchedule({deviceUUID: ownProps.uuid, id: ownProps.id})),
+        disable: () => dispatch(disableSchedule({deviceUUID: ownProps.uuid, id: ownProps.id}))
     }
 }
 

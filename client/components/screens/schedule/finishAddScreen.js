@@ -3,7 +3,7 @@ import {View} from 'react-native';
 
 import Header from '../../general/header';
 import {TabNavigation, TabItem} from '../../navigation/tabs';
-import AddFinish from '../add_finish';
+import AddFinish from '../../schedule/add_finish';
 import CircleButton from '../../general/button';
 
 import {withFooter} from '../../general/screen_style';
