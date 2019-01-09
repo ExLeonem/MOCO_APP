@@ -145,7 +145,7 @@ pub fn run(
                 let time_til_off = chrono::Duration::minutes(15).num_seconds();
                 let brightness = ((active_since_secs as f32 /  time_til_100 as f32) * 100.0).min(100.0) as u8;
                 let mut changed_led = false;
-                if led.on() != false {
+                if led.on() != true {
                     led.set_on(true);
                     changed_led = true;
                 }
@@ -158,7 +158,7 @@ pub fn run(
                     changed_led = true;
                 }
                 if time_til_off < active_since_secs {
-                    if led.on() != true {
+                    if led.on() != false {
                         led.set_on(false);
                         changed_led = true;
                     }
