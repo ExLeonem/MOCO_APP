@@ -2,8 +2,10 @@ import {
     NEW_SCHEDULE_INIT,
     NEW_SCHEDULE_RESET,
     NEW_SCHEDULE_SET_TIME,
+    NEW_SCHEDULE_SET_DATE,
     NEW_SCHEDULE_SET_REPEAT,
     NEW_SCHEDULE_SET_TYPE,
+    NEW_SCHEDULE_REQUEST_ID,
     ADD_SCHEDULE,
     UPDATE_SCHEDULE,
     REMOVE_SCHEDULE,
@@ -57,9 +59,22 @@ const scheduleReducer = (state = initialState, action) => {
 
     // DB request in each level 
     switch(action.type) {
+        case NEW_SCHEDULE_REQUEST_ID: {break;}
         case NEW_SCHEDULE_INIT: {
             // Saga Request db state
-            newState = {...state, toAdd: {id: 1, deviceUUID: 2}}
+            newState = {
+                ...state,
+                toAdd: {
+                    id: 1,
+                    deviceUUID: 2,
+                    from: 'manual',
+                    isActive: true,
+                    time: '01:00',
+                    repeat: [],
+                    pattern: 'date',
+                    date: new Date()
+                }
+            }
             break;
         }
         case NEW_SCHEDULE_RESET: {
@@ -67,15 +82,19 @@ const scheduleReducer = (state = initialState, action) => {
             break;
         }
         case NEW_SCHEDULE_SET_TIME: {
-            newState = {...state, toAdd: {...toAdd, date: action.date, time: action.time}};
+            newState = {...state, toAdd: {...state.toAdd, time: action.time}};
+            break;
+        }
+        case NEW_SCHEDULE_SET_DATE: {
+            newState = {...state, toAdd: {...state.toAdd, date: action.date}}
             break;
         }
         case NEW_SCHEDULE_SET_REPEAT: {
-            newState = {...state, toAdd: {...toAdd, repetitionPattern: action.pattern, repeat: action.repeat}}
+            newState = {...state, toAdd: {...state.toAdd, pattern: action.pattern, repeat: action.repeat}}
             break;
         }
         case NEW_SCHEDULE_SET_TYPE: {
-            newState = {...state, toAdd: {...toAdd, from: action.type}};
+            newState = {...state, toAdd: {...state.toAdd, from: action.scheduleType}};
             break;
         }
         case ADD_SCHEDULE: {

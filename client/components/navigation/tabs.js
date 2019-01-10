@@ -91,26 +91,15 @@ const styles = StyleSheet.create({
     }
 });
 
-
-let ScheduleCreationTabs = createSwitchNavigator({
-    Manual: {screen: ManualScreen},
-    Alarm: {screen: AlarmScreen},
-    Calendar: {screen: CalendarScreen}
-}, {
-    initialRouteName: 'Manual'
-});
-
-
 let GeneralOperationTabs = createSwitchNavigator({
     Light: {screen: LightScreen},
     Color: {screen: ColorSelectionScreen},
     Schedule: {screen: ScheduleScreen}
 }, {
-    initialRouteName: 'Light'
+    initialRouteName: 'Schedule'
 });
 
 export {
-    ScheduleCreationTabs,
     GeneralOperationTabs,
     TabNavigation,
     TabItem

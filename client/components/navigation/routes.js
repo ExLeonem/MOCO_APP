@@ -1,8 +1,8 @@
 import FinishAddScreen from '../screens/schedule/finishAddScreen';
-
-
+import {Easing, Animated} from 'react-native';
 import {createStackNavigator} from 'react-navigation';
-import {GeneralOperationTabs, ScheduleCreationTabs} from './tabs';
+import {GeneralOperationTabs} from './tabs';
+import {ScheduleCreationTabs} from '../screens/schedule/navigation';
 
 
 
@@ -15,7 +15,14 @@ let scheduleStackNavigation = createStackNavigator({
 
     }, {
         initialRouteName: 'Main',
-        headerMode: 'none'
+        headerMode: 'none',
+        transitionConfig: () => ({
+            transitionSpec: {
+                duration: 0,
+                timing: Animated.timing,
+                easing: Easing.step0,
+            }
+        })
 });
 
 

@@ -1,11 +1,13 @@
 import {createStore, applyMiddleware} from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import rootReducer from './reducer/index';
+import rootSaga from './saga/index';
 
 
 // Template for device element in devices list
 const deviceTemplate = {
     uuid: 1,
+    url: "https://www.qqwa.de/sneaky/moco/api/v1",
     name: "Test licht",
     color: "#FFFF00",
     level: 10,
@@ -52,7 +54,7 @@ let toAddTemp = {
     from: 'manual',
     date: new Date(),
     time: "17:00",
-    repetitionPattern: null,
+    pattern: null,
     repeat: [],
     isActive: true,
 }
@@ -67,6 +69,13 @@ let initialState = {
     currentDevice: deviceTemplate
 };
 
+const sagaMiddleware = createSagaMiddleware();
+const store = createStore(
+    rootReducer, 
+    initialState,
+    applyMiddleware(sagaMiddleware)
+    );
 
-const store = createStore(rootReducer, initialState);
+sagaMiddleware.run(rootSaga);
+
 export default store;
