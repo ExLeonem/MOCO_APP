@@ -2,6 +2,7 @@ import {
     SET_CURRENT_DEVICE,
     SET_CURRENT_DEVICE_LEVEL,
     SET_CURRENT_DEVICE_COLOR,
+    SET_CURRENT_DEVICE_URL,
     RENAME_CURRENT_DEVICE,
     ENABLE_CURRENT_DEVICE,
     DISABLE_CURRENT_DEVICE,
@@ -9,7 +10,7 @@ import {
 } from '../constants';
 
 
-const setCurrentDevice = (payload) => {
+const setCurrentDevice = (device) => {
     return {
         type: SET_CURRENT_DEVICE,
         device: device
@@ -18,7 +19,7 @@ const setCurrentDevice = (payload) => {
 
 const setCurrentDeviceLevel = (level) => {
     return {
-        type: UPDATE_CURRENT_DEVICE_OPACITY,
+        type: SET_CURRENT_DEVICE_LEVEL,
         level: level
     }
 }
@@ -27,6 +28,13 @@ const setCurrentDeviceColor = (color) => {
     return {
         type: SET_CURRENT_DEVICE_COLOR,
         color: color
+    }
+}
+
+const setCurrentDeviceUrl = url => {
+    return {
+        type: SET_CURRENT_DEVICE_URL,
+        url: url
     }
 }
 
@@ -62,6 +70,7 @@ export {
     setCurrentDevice,
     setCurrentDeviceLevel,
     setCurrentDeviceColor,
+    setCurrentDeviceUrl,
     renameCurrentDevice,
     enableCurrentDevice,
     disableCurrentDevice,

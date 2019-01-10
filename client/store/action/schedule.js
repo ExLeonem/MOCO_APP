@@ -1,6 +1,7 @@
 import {
     NEW_SCHEDULE_RESET,
     NEW_SCHEDULE_SET_TIME,
+    NEW_SCHEDULE_SET_DATE,
     NEW_SCHEDULE_SET_REPEAT,
     NEW_SCHEDULE_INIT,
     NEW_SCHEDULE_SET_TYPE,
@@ -9,7 +10,8 @@ import {
     REMOVE_SCHEDULE,
     REMOVE_DEVICE_SCHEDULES,
     ENABLE_SCHEDULE,
-    DISABLE_SCHEDULE
+    DISABLE_SCHEDULE,
+    
 } from '../constants';
 
 /**
@@ -17,42 +19,48 @@ import {
  */
 const newScheduleInit = () => {
     return {
-        action: NEW_SCHEDULE_INIT
+        type: NEW_SCHEDULE_INIT
     }
 }
 
 const newScheduleReset = () => {
     return {
-        action: NEW_SCHEDULE_RESET,
+        type: NEW_SCHEDULE_RESET,
     }
 };
 
-const newScheduleSetTime = (time, date) => {
+const newScheduleSetTime = (time) => {
     return {
-        action: NEW_SCHEDULE_SET_TIME,
+        type: NEW_SCHEDULE_SET_TIME,
         time: time,
-        date: date
     }
 };
+
+const newScheduleSetDate = date => {
+    return {
+        type: NEW_SCHEDULE_SET_DATE,
+        date: date
+    }
+}
 
 const newScheduleSetRepeat = (pattern, repeat) => {
     return {
-        action: NEW_SCHEDULE_SET_REPEAT,
+        type: NEW_SCHEDULE_SET_REPEAT,
         repetitionPattern: pattern,
         repeat: repeat
     }
 };
 
-const newScheduleSetType = type => {
+const newScheduleSetType = scheduleType => {
     return {
-        action: NEW_SCHEDULE_SET_TYPE,
-        type: type
+        type: NEW_SCHEDULE_SET_TYPE,
+        scheduleType: scheduleType
     }
 }
 
 const addSchedule = (schedule) => {
     return {
-        action: ADD_SCHEDULE,
+        type: ADD_SCHEDULE,
         payload: schedule
     }
 };
@@ -101,6 +109,7 @@ export {
     newScheduleInit,
     newScheduleReset,
     newScheduleSetTime,
+    newScheduleSetDate,
     newScheduleSetRepeat,
     newScheduleSetType,
     addSchedule,

@@ -8,8 +8,6 @@ import AddManual from '../../schedule/add_manual';
 import CircleButton from '../../general/button';
 
 import {withFooter} from '../../general/screen_style';
-import {connect} from 'react-redux';
-
 
 
 export default class ManualScreen extends React.Component {
@@ -23,9 +21,9 @@ export default class ManualScreen extends React.Component {
                     <TabItem onPress={() => this.props.navigation.navigate('Alarm')}>{"Alarm"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Calendar')}>{"Calendar"}</TabItem>
                 </TabNavigation>
-                <AddManual style={withFooter.content}/>
+                <AddManual style={withFooter.content} onRepeat={() => this.props.navigation.navigate('Repeat')}/>
                 <View style={withFooter.footer}>
-                    <CircleButton type={"forward"} size={60} onPress={() => console.log("")}/>
+                    <CircleButton type={"forward"} size={60} onPress={() => this.props.navigation.navigate('Finish')}/>
                 </View>
             </View>
         );

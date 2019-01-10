@@ -8,13 +8,19 @@ import CircleButton from '../../general/button';
 
 import {withFooter} from '../../general/screen_style';
 
-// import {connect} from 'react-redux';
-// import {newScheduleInit} from '../../../store/action/schedule';
+import {connect} from 'react-redux';
+import {newScheduleInit} from '../../../store/action/schedule';
 
 
 
-export default class ScheduleScreen extends React.Component {
+class ScheduleScreen extends React.Component {
     
+    navCreateSchedule() {
+        this.props.initializeSchedule();
+        this.props.navigation.navigate('AddSchedule');
+    }
+
+
     render() {
         return (
             <View style={withFooter.screenWrapper}>
@@ -26,7 +32,7 @@ export default class ScheduleScreen extends React.Component {
                 </TabNavigation>
                 <Schedule style={withFooter.content}/>
                 <View style={withFooter.footer}>
-                    <CircleButton type={'add'} size={60} onPress={() => this.props.navigation.navigate('AddSchedule')}/>
+                    <CircleButton type={'add'} size={60} onPress={() => this.navCreateSchedule()}/>
                 </View>
             </View>
         );
@@ -34,14 +40,14 @@ export default class ScheduleScreen extends React.Component {
 }
 
 
-// const mapDispatchToProps = dispatch => {
-//     return {
-//         initializeSchedule = () => dispatch(newScheduleInit())
-//     };
-// }
+const mapDispatchToProps = dispatch => {
+    return {
+        initializeSchedule: () => dispatch(newScheduleInit())
+    };
+}
 
 
-// export default connect(null, mapDispatchToProps)(ScheduleScreen);
+export default connect(null, mapDispatchToProps)(ScheduleScreen);
 
 
 

@@ -3,6 +3,7 @@ import {
     SET_CURRENT_DEVICE,
     SET_CURRENT_DEVICE_LEVEL,
     SET_CURRENT_DEVICE_COLOR,
+    SET_CURRENT_DEVICE_URL,
     RENAME_CURRENT_DEVICE,
     ENABLE_CURRENT_DEVICE,
     DISABLE_CURRENT_DEVICE,
@@ -14,7 +15,7 @@ const deviceTemplate = {
     uuid: 1,
     name: "Test licht",
     color: "#FFFFF",
-    level: '0.8',
+    level: 10,
     isActive: false
 };
 
@@ -31,7 +32,11 @@ const currentDeviceReducer = (state = deviceTemplate, action) => {
            break; 
         }
         case SET_CURRENT_DEVICE_COLOR: {
-            newState = {...state, level: action.color};
+            newState = {...state, color: action.color};
+            break;
+        }
+        case SET_CURRENT_DEVICE_URL: {
+            newState = {...state, url: action.url};
             break;
         }
         case RENAME_CURRENT_DEVICE: {
