@@ -51,11 +51,16 @@ pub fn run_server() -> rocket::config::Result<()> {
         .attach(AdHoc::on_launch("Controller Thread", |rocket| {
             let config = rocket.config();
             let conn = rocket_contrib::databases::database_config("sqlite", config).unwrap().url.to_owned();
+            let light_source = config.get_str("light_source").unwrap_or("moc").to_owned();
             let timezone = rocket.config()
                 .get_int("timezone")
                 .unwrap_or(1);
             thread::spawn(move || {
-                led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx, conn, timezone);
+                match light_source.as_ref() {
+                    "moc" => led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx, conn, timezone),
+                    "4pin" => led::controller::run(Box::new(led::LedStrip::new()), controller_tx, cache_rx, conn, timezone),
+                    _ => panic!("\"{}\" is a unknown light source, please change config", light_source),
+                }
             });
         }))
         .attach(AdHoc::on_attach("Assets Config", |rocket| {

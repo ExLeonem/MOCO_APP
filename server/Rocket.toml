@@ -3,6 +3,7 @@ sqlite = { url = "database.sqlite" }
 
 [global]
 timezone = 1
+light_soure = "moc"
 
 [production]
 address = "127.0.0.1"
