@@ -23,6 +23,7 @@ pub mod schema;
 use std::sync::mpsc::channel;
 use std::sync::Mutex;
 use std::thread;
+use crate::led::LedControls;
 
 #[get("/")]
 fn hello() -> &'static str {
@@ -55,12 +56,15 @@ pub fn run_server() -> rocket::config::Result<()> {
             let timezone = rocket.config()
                 .get_int("timezone")
                 .unwrap_or(1);
+
+            let light_source: Box<LedControls + Send> = match light_source.as_ref() {
+                "moc" => Box::new(led::MocLedStrip::new()),
+                "4pin" => Box::new(led::LedStrip::new()),
+                _ => panic!("\"{}\" is a unknown light source, please change config", light_source),
+            };
+
             thread::spawn(move || {
-                match light_source.as_ref() {
-                    "moc" => led::controller::run(Box::new(led::MocLedStrip::new()), controller_tx, cache_rx, conn, timezone),
-                    "4pin" => led::controller::run(Box::new(led::LedStrip::new()), controller_tx, cache_rx, conn, timezone),
-                    _ => panic!("\"{}\" is a unknown light source, please change config", light_source),
-                }
+                led::controller::run(light_source, controller_tx, cache_rx, conn, timezone);
             });
         }))
         .attach(AdHoc::on_attach("Assets Config", |rocket| {
