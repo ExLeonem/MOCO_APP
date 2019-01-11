@@ -17,24 +17,23 @@ pub trait LedControls {
     fn on(&self) -> bool;
     fn set_brightness(&mut self, brightness: u8);
     fn brightness(&self) -> u8;
-    fn manuel(&self) -> bool;
-    fn set_manuel(&mut self, manuel: bool);
 }
 
 pub struct LedStrip {
     color: Color,
     brightness: u8,
     on: bool,
-    manuel: bool,
 }
 
 impl LedStrip {
     pub fn new() -> Self {
+        // make sure pigpiod is running by setting all colors to 0
+        LedStrip::do_colors(0, 0, 0);
+
         LedStrip {
             color: [100, 100, 100],
             brightness: 100,
             on: false,
-            manuel: false,
         }
     }
 
@@ -66,12 +65,17 @@ impl LedStrip {
     }
 
     fn call_pigs(pin: u32, value: u32) {
-        Command::new("pigs")
+        let output = Command::new("pigs")
             .arg("p")
             .arg(pin.to_string())
             .arg(value.to_string())
-            .spawn()
+            .output()
             .expect("Failed to update pin");
+
+        match String::from_utf8_lossy(&output.stderr).as_ref() {
+            "" => {}
+            err => panic!("Pigs failed with error message: {}", err),
+        }
     }
 }
 
@@ -114,15 +118,6 @@ impl LedControls for LedStrip {
     fn brightness(&self) -> u8 {
         self.brightness
     }
-
-    fn manuel(&self) -> bool {
-        self.manuel
-    }
-
-    fn set_manuel(&mut self, manuel: bool) {
-        self.manuel = manuel;
-        log::trace!("Updated manuel: {}", manuel);
-    }
 }
 
 
@@ -131,7 +126,6 @@ pub struct MocLedStrip {
     color: Color,
     brightness: u8,
     on: bool,
-    manuel: bool,
 }
 
 impl MocLedStrip {
@@ -140,7 +134,6 @@ impl MocLedStrip {
             color: [100, 100, 100],
             brightness: 100,
             on: false,
-            manuel: false,
         }
     }
 }
@@ -171,14 +164,5 @@ impl LedControls for MocLedStrip {
 
     fn brightness(&self) -> u8 {
         self.brightness
-    }
-
-    fn manuel(&self) -> bool {
-        self.manuel
-    }
-
-    fn set_manuel(&mut self, manuel: bool) {
-        self.manuel = manuel;
-        log::trace!("Updated manuel: {}", manuel);
     }
 }

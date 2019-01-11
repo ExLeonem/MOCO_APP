@@ -16,7 +16,7 @@ pub fn run(
 ) {
     log::info!("Started Controller thread!");
     let mut notified = false;
-    let mut manuel_timestamp = Instant::now();
+    let mut manuel_timestamp = None; //Instant::now();
     let mut check_database = true;
     let mut schedules: Vec<Schedule> = Vec::with_capacity(5);
     let mut running_schedule: Option<Schedule> = None;
@@ -37,55 +37,22 @@ pub fn run(
                             on: led.on(),
                             color: led.color(),
                             brightness: led.brightness(),
-                            manuel: led.manuel(),
                         };
                         sender
                             .send(Message::DataDump(dump))
                             .expect("Couldn't send to Cache");
                     }
                     Message::UpdateColor(color) => {
-                        if led.manuel() {
-                            led.set_color(color);
-                            manuel_timestamp = Instant::now();
-                        }
+                        led.set_color(color);
+                        manuel_timestamp = Some(Instant::now());
                     }
                     Message::UpdateOn(on) => {
-                        if led.manuel() {
-                            led.set_on(on);
-                            manuel_timestamp = Instant::now();
-                        }
+                        led.set_on(on);
+                        manuel_timestamp = Some(Instant::now());
                     }
                     Message::UpdateBrightness(brightness) => {
-                        if led.manuel() {
-                            led.set_brightness(brightness);
-                            manuel_timestamp = Instant::now();                            
-                        }
-                    }
-                    Message::UpdateManuel(on) => {
-                        let old = led.manuel();
-                        led.set_manuel(on);
-                        manuel_timestamp = Instant::now();
-                        if on {
-                            if let Some(schedule) = running_schedule {
-                                let conn = establish_connection(&database_url);
-                                let result = DbSchedule::delete(&conn, schedule.id.unwrap());
-                                if let Err(e) = result {
-                                    log::warn!("Failed to delete schedule with id {} from database: {}", schedule.id.unwrap(), e);
-                                }
-                                running_schedule = None;
-                                check_database = true;
-                                log::info!("Schedule with id {} finished and deleted from database", schedule.id.unwrap());
-                            }
-                        } else {
-                            // manuel mode was on and now turned off, deactive manuel mode
-                            if old {
-                                led.set_on(false);
-                                if !notified {
-                                    notify_cache(&mut sender);
-                                    notified = true;
-                                }
-                            }
-                        }
+                        led.set_brightness(brightness);
+                        manuel_timestamp = Some(Instant::now()); 
                     }
                     Message::DatabaseChanged => check_database = true,
                     _ => {
@@ -197,16 +164,46 @@ pub fn run(
         }
 
         //check if we need to turn off manuel mode
-        if led.manuel() {
-            if manuel_duration < manuel_timestamp.elapsed() {
-                log::info!("Turned of manuel mode because of inactivity");
-                led.set_manuel(false);
-                if !notified {
-                    notify_cache(&mut sender);
-                    notified = true;
+
+        manuel_timestamp = match manuel_timestamp.take() {
+            None => None,
+            Some(manuel_timestamp) => {
+                if manuel_duration < manuel_timestamp.elapsed() {
+                    log::info!("Turned of manuel mode because of inactivity");
+                    led.set_on(false);
+                    if !notified {
+                        notify_cache(&mut sender);
+                        notified = true;
+                    }
+                    None
+                } else {
+                    Some(manuel_timestamp)
                 }
             }
-        }
+        };
+
+        // TODO: check if we need to end a running schedule when entering manuel mode
+        // if on {
+        //     if let Some(schedule) = running_schedule {
+        //         let conn = establish_connection(&database_url);
+        //         let result = DbSchedule::delete(&conn, schedule.id.unwrap());
+        //         if let Err(e) = result {
+        //             log::warn!("Failed to delete schedule with id {} from database: {}", schedule.id.unwrap(), e);
+        //         }
+        //         running_schedule = None;
+        //         check_database = true;
+        //         log::info!("Schedule with id {} finished and deleted from database", schedule.id.unwrap());
+        //     }
+        // } else {
+        //     // manuel mode was on and now turned off, deactive manuel mode
+        //     if old {
+        //         led.set_on(false);
+        //         if !notified {
+        //             notify_cache(&mut sender);
+        //             notified = true;
+        //         }
+        //     }
+        // }
 
         if !got_response {
             // sleep only if didn't get message from web server

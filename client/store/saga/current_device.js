@@ -137,7 +137,6 @@ function getDeviceData(url) {
      return {
          on: on ? on: currentData.isActive,
          color: color ? color : currentData.color,
-         brightness: brightness ? brightness : currentData.level,
-         manuel: true
+         brightness: brightness ? brightness : currentData.level
      }
  }
