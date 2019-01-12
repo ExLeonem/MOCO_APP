@@ -1,0 +1,106 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+
+
+\title{Light alarm - Using a react-native client in combination with a rust backend.}
+
+\author{\IEEEauthorblockN{1\textsuperscript{st} Maksim Sandybekov}
+\IEEEauthorblockA{\textit{computer science - autonomouse systems)} \\
+\textit{HTWG Konstanz}\\
+Konstaz, Germany \\
+maksim.sandybekov@live.de}
+\and
+\IEEEauthorblockN{2\textsuperscript{nd} Benjamin Bäumler}
+\IEEEauthorblockA{\textit{computer science - autonomouse systems} \\
+\textit{HTWG Konstanz}\\
+Konstanz, Germany \\
+be391bae@htwg-konstanz.de}
+}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\begin{IEEEkeywords}
+rust, react-native, redux, redux-saga, light, alarm, smart-light
+\end{IEEEkeywords}
+
+\section{Introduction}
+
+\section{State of the art}
+
+
+% Approach
+\section{Proposed approach}
+
+
+\section{architecture}
+
+\subsection{interaction}
+
+
+\section{client}
+
+
+\section{server}
+The main tasks of the server are to communicate with clients and to actually drive a 
+led strip or any other kind of light source.
+
+\subsection{Light Sources}
+
+The server can support different kind of light sources, as long as it implements the \texttt{LedControls} trait.
+Only one implementation of the trait can be used at the same time tho. But it is possible that a specific implementation
+controls multiple hardware lights. At the current time there are only two implementations that can be used as light
+sources:
+
+\begin{itemize}
+    \item LedStrip
+    
+    Controls a 4-pin led strip with a 12v pin and one pin for each color(red, green,blue). This cannot be driven 
+    directly by the Raspberry Pi and therefore we need to use a extra curcuit board\cite{b0} for it. The circuit
+    board allows us to controll each color seperatly by driving the gate pin of a MOSFET's respectivly. We will use 
+    the pigpio Daemon\cite{b1} for this, because we need 3 PWM pins for this and currently available gpio libraries 
+    for Rust only over up to 2 PWM pins.
+    
+    % TODO: add picture
+    **picture of circuit board**
+
+    \item MocLedStrip
+    
+    This is used only for testing. It allows us to verify the logic of the led controller without driving any
+    GPIO's of the Raspberry Pi and also allows us to run the server on amd64 architecure for testing purposes.
+\end{itemize}
+
+
+
+\section{Results}
+
+
+\section{Conclusion}
+
+
+\section{Further work}
+
+
+
+\begin{thebibliography}{00}
+\bibitem{b0} Raspberry Pi \& RGB LED-Strips How to control a RGB LED-Strip with a Raspberry Pi By David Ordnung - https://dordnung.de/raspberrypi-ledstrip/
+\bibitem{b1} pigpio Daemon - http://abyz.me.uk/rpi/pigpio/pigpiod.html
+
+\end{thebibliography}
+\vspace{12pt}
+
+\end{document}

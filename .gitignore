@@ -1,5 +1,6 @@
 android-udev-rules
 client/local.properties
+paper/library
 target
 NDK
 client/android/app/src/main/assets/index.android.bundle

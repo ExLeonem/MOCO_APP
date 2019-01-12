@@ -99,19 +99,3 @@ The current state of the interface design is accessable through below link.
 
 https://www.figma.com/file/RVZd5LnsutkQmoSH1gSq4f1N/MoCo
 
-# Build
-
-Make sure the following is installed:
-
-TODO...
-
-To run the app on android: 
-```
-make run-android
-```
-
-To run the server:
-```
-make run-server
-```
-
