@@ -64,7 +64,8 @@ pub fn run_server() -> rocket::config::Result<()> {
             };
 
             thread::spawn(move || {
-                led::controller::run(light_source, controller_tx, cache_rx, conn, timezone);
+                let mut controller = led::controller::Controller::new(light_source, controller_tx, cache_rx, conn, timezone);
+                controller.run();
             });
         }))
         .attach(AdHoc::on_attach("Assets Config", |rocket| {
