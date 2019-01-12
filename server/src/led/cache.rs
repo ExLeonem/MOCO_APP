@@ -23,7 +23,7 @@ impl LedCache {
         LedCache {
             sender_receiver: Mutex::new((sender, receiver)),
             on: false,
-            color: [0,0,0],
+            color: [0, 0, 0],
             brightness: 0,
         }
     }

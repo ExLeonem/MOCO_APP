@@ -20,10 +20,10 @@ pub mod web;
 pub mod models;
 pub mod schema;
 
+use crate::led::LedControls;
 use std::sync::mpsc::channel;
 use std::sync::Mutex;
 use std::thread;
-use crate::led::LedControls;
 
 #[get("/")]
 fn hello() -> &'static str {
@@ -51,27 +51,35 @@ pub fn run_server() -> rocket::config::Result<()> {
         }))
         .attach(AdHoc::on_launch("Controller Thread", |rocket| {
             let config = rocket.config();
-            let conn = rocket_contrib::databases::database_config("sqlite", config).unwrap().url.to_owned();
+            let conn = rocket_contrib::databases::database_config("sqlite", config)
+                .unwrap()
+                .url
+                .to_owned();
             let light_source = config.get_str("light_source").unwrap_or("moc").to_owned();
-            let timezone = rocket.config()
-                .get_int("timezone")
-                .unwrap_or(1);
+            let timezone = rocket.config().get_int("timezone").unwrap_or(1);
 
             let light_source: Box<LedControls + Send> = match light_source.as_ref() {
                 "moc" => Box::new(led::MocLedStrip::new()),
                 "4pin" => Box::new(led::LedStrip::new()),
-                _ => panic!("\"{}\" is a unknown light source, please change config", light_source),
+                _ => panic!(
+                    "\"{}\" is a unknown light source, please change config",
+                    light_source
+                ),
             };
 
             thread::spawn(move || {
-                let mut controller = led::controller::Controller::new(light_source, controller_tx, cache_rx, conn, timezone);
+                let mut controller = led::controller::Controller::new(
+                    light_source,
+                    controller_tx,
+                    cache_rx,
+                    conn,
+                    timezone,
+                );
                 controller.run();
             });
         }))
         .attach(AdHoc::on_attach("Assets Config", |rocket| {
-            let timezone = rocket.config()
-                .get_int("timezone")
-                .unwrap_or(1);
+            let timezone = rocket.config().get_int("timezone").unwrap_or(1);
 
             Ok(rocket.manage(Timezone(timezone)))
         }))

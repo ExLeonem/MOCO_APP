@@ -10,8 +10,8 @@
 //! ` `
 
 use crate::led::cache::LedCache;
-use crate::led::LedControls;
 use crate::led::message::Message;
+use crate::led::LedControls;
 use crate::models::*;
 use crate::web::Response;
 use crate::DbConn;
@@ -315,7 +315,12 @@ fn get_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
 /// }'
 /// ```
 #[post("/api/v1/schedule", format = "json", data = "<schedule>")]
-fn add_schedule(conn: DbConn, schedule: Json<NewSchedule>, cache: State<Mutex<LedCache>>, timezone: State<Timezone>) -> JsonValue {
+fn add_schedule(
+    conn: DbConn,
+    schedule: Json<NewSchedule>,
+    cache: State<Mutex<LedCache>>,
+    timezone: State<Timezone>,
+) -> JsonValue {
     let schedule = schedule.into_inner();
 
     let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(timezone.0);

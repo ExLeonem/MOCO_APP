@@ -5,8 +5,8 @@ use crate::models::Schedule;
 use diesel::prelude::*;
 use diesel::sqlite::SqliteConnection;
 use std::sync::mpsc::{Receiver, Sender, TryRecvError};
-use std::time::{Instant};
 use std::time::Duration;
+use std::time::Instant;
 
 pub struct Controller {
     led: Box<LedControls>,
@@ -158,8 +158,12 @@ impl Controller {
             Some(schedule) => {
                 let diff = self.schedules[0].activation_time.signed_duration_since(now);
                 let active_since_secs = -diff.num_seconds();
-                let time_til_100 = chrono::Duration::from_std(self.time_til_100).unwrap().num_seconds();
-                let time_til_off = chrono::Duration::from_std(self.time_til_off).unwrap().num_seconds();
+                let time_til_100 = chrono::Duration::from_std(self.time_til_100)
+                    .unwrap()
+                    .num_seconds();
+                let time_til_off = chrono::Duration::from_std(self.time_til_off)
+                    .unwrap()
+                    .num_seconds();
                 let brightness =
                     ((active_since_secs as f32 / time_til_100 as f32) * 100.0).min(100.0) as u8;
                 if self.led.on() != true {
@@ -226,7 +230,6 @@ impl Controller {
             }
         }
     }
-
 
     fn handle_manuel(&mut self) {
         self.manuel_timestamp = match self.manuel_timestamp.take() {

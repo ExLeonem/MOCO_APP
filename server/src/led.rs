@@ -53,7 +53,7 @@ impl LedStrip {
                 blue = 0.0;
             }
             LedStrip::do_colors(red as u32, green as u32, blue as u32);
-        } else { 
+        } else {
             LedStrip::do_colors(0, 0, 0);
         }
     }
@@ -119,7 +119,6 @@ impl LedControls for LedStrip {
         self.brightness
     }
 }
-
 
 /// Mockup of a LedStrip for testing purposes
 pub struct MocLedStrip {
