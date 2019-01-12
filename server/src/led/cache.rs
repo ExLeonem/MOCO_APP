@@ -12,7 +12,6 @@ pub struct LedCache {
     on: bool,
     color: Color,
     brightness: u8,
-    manuel: bool,
 }
 
 impl LedCache {
@@ -26,7 +25,6 @@ impl LedCache {
             on: false,
             color: [0,0,0],
             brightness: 0,
-            manuel: false,
         }
     }
 
@@ -70,7 +68,6 @@ impl LedCache {
                             self.on = dump.on;
                             self.color = dump.color;
                             self.brightness = dump.brightness;
-                            self.manuel = dump.manuel;
                             log::info!("Cache updated data");
                         }
                         _ => {
@@ -91,14 +88,12 @@ impl LedCache {
 
 impl LedControls for LedCache {
     fn set_color(&mut self, color: Color) {
-        if self.manuel {
-            let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-            channel
-                .0
-                .send(Message::UpdateColor(color))
-                .expect("Could not send to controller");
-            self.color = color;
-        }
+        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+        channel
+            .0
+            .send(Message::UpdateColor(color))
+            .expect("Could not send to controller");
+        self.color = color;
     }
 
     fn color(&self) -> Color {
@@ -106,14 +101,12 @@ impl LedControls for LedCache {
     }
 
     fn set_on(&mut self, on: bool) {
-        if self.manuel {
-            let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-            channel
-                .0
-                .send(Message::UpdateOn(on))
-                .expect("Could not send to controller");
-            self.on = on;
-        }
+        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+        channel
+            .0
+            .send(Message::UpdateOn(on))
+            .expect("Could not send to controller");
+        self.on = on;
     }
 
     fn on(&self) -> bool {
@@ -121,30 +114,15 @@ impl LedControls for LedCache {
     }
 
     fn set_brightness(&mut self, brightness: u8) {
-        if self.manuel {
-            let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-            channel
-                .0
-                .send(Message::UpdateBrightness(brightness))
-                .expect("Could not send to controller");
-            self.brightness = brightness;
-        }
+        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
+        channel
+            .0
+            .send(Message::UpdateBrightness(brightness))
+            .expect("Could not send to controller");
+        self.brightness = brightness;
     }
 
     fn brightness(&self) -> u8 {
         self.brightness
-    }
-
-    fn manuel(&self) -> bool {
-        self.manuel
-    }
-
-    fn set_manuel(&mut self, manuel: bool) {
-        let channel = self.sender_receiver.lock().expect("Couln't lock channel");
-        channel
-            .0
-            .send(Message::UpdateManuel(manuel))
-            .expect("Could not send to controller");
-        self.manuel = manuel
     }
 }

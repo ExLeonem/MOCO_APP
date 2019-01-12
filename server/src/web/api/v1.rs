@@ -51,8 +51,7 @@ pub fn routes() -> Vec<rocket::Route> {
 ///     "LedStatus": {
 ///         "on": true,
 ///         "color": [100, 20, 30],
-///         "brightness": 50,
-///         "manuel": off,
+///         "brightness": 50
 ///     }
 /// }
 /// ```
@@ -70,7 +69,6 @@ fn led_status(cache: State<Mutex<LedCache>>) -> Json<LedStatus> {
         on: cache.on(),
         color: cache.color(),
         brightness: cache.brightness(),
-        manuel: cache.manuel(),
     })
 }
 
@@ -79,7 +77,6 @@ pub struct LedStatus {
     on: bool,
     color: [u8; 3],
     brightness: u8,
-    manuel: bool,
 }
 
 /// Set the led
@@ -110,13 +107,7 @@ pub struct LedStatus {
 pub fn set_led(led_status: Json<LedStatus>, cache: State<Mutex<LedCache>>) -> JsonValue {
     let led_status = led_status.into_inner();
     let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
-    if !cache.manuel() && !led_status.manuel {
-        return json!({
-            "error": "can't control led, because manuel mode is off"
-        });
-    }
     cache.handle_messages();
-    cache.set_manuel(led_status.manuel);
     cache.set_on(led_status.on);
     cache.set_color(led_status.color);
     cache.set_brightness(led_status.brightness);

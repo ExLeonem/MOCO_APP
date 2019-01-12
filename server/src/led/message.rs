@@ -6,7 +6,6 @@ pub struct DataDump {
     pub on: bool,
     pub color: Color,
     pub brightness: u8,
-    pub manuel: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, PartialEq)]
@@ -17,7 +16,6 @@ pub enum Message {
     UpdateColor(Color),
     UpdateOn(bool),
     UpdateBrightness(u8),
-    UpdateManuel(bool),
     DataChanged,
     DatabaseChanged,
 }
@@ -31,7 +29,6 @@ impl std::fmt::Display for Message {
             Message::UpdateColor(_) => write!(f, "{}", "Message::UpdateColor"),
             Message::UpdateOn(_) => write!(f, "{}", "Message::UpdateOn"),
             Message::UpdateBrightness(_) => write!(f, "{}", "Message::UpdateBrightness"),
-            Message::UpdateManuel(_) => write!(f, "{}", "Message::UpdateManuel"),
             Message::DataChanged => write!(f, "{}", "Message::DataChanged"),
             Message::DatabaseChanged => write!(f, "{}", "Message::DatabaseChanged"),
         }
