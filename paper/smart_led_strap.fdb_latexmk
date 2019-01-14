@@ -1,7 +1,15 @@
 # Fdb version 3
-["pdflatex"] 1547319406 "/home/maksim/Desktop/Workspaces/WS18/mobile/paper/smart_led_strap.tex" "smart_led_strap.pdf" "smart_led_strap" 1547319407
+["bibtex smart_led_strap"] 1547499507 "smart_led_strap.aux" "smart_led_strap.bbl" "smart_led_strap" 1547505487
+  "/usr/share/texlive/texmf-dist/bibtex/bst/amscls/amsplain.bst" 1513722769 25798 9b3546f2f237ee0ce4724eed95f954f4 ""
+  "moco.bib" 1547341915 41402 3c56422d12936fa6b3bc9de0e121ad14 ""
+  "smart_led_strap.aux" 1547505487 1348 d7f467c9f1d2bba98f991382dea8ed94 ""
+  "smart_led_strap.bcf" 0 -1 0 ""
+  (generated)
+  "smart_led_strap.blg"
+  "smart_led_strap.bbl"
+["pdflatex"] 1547505487 "/home/maksim/Desktop/Workspaces/WS18/mobile/paper/smart_led_strap.tex" "smart_led_strap.pdf" "smart_led_strap" 1547505487
   "/etc/texmf/web2c/texmf.cnf" 1547156117 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/maksim/Desktop/Workspaces/WS18/mobile/paper/smart_led_strap.tex" 1547319406 3100 a33378052ddd6343c8649abb6c39c6a9 ""
+  "/home/maksim/Desktop/Workspaces/WS18/mobile/paper/smart_led_strap.tex" 1547505486 5836 3621947284ff85665cbcf1d83ba694dc ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1480098666 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1480098688 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -30,6 +38,7 @@
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr8.tfm" 1480098701 1292 21c1c5bfeaebccffdb478fd231a0997d ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsy10.tfm" 1480098701 1124 6c73e740cf17375f03eec0ee63599741 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmsy8.tfm" 1480098701 1120 8b7d695260f3cff42e636090a8002094 ""
+  "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1480098733 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1480098733 32716 08e384dc442464e7285e891af9f45947 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb" 1480098746 45758 19968a0990191524e34e1994d4a31cb6 ""
   "/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb" 1480098746 44729 811d6c62865936705a31c797a1d5dada ""
@@ -91,9 +100,10 @@
   "/usr/share/texmf/web2c/texmf.cnf" 1520210507 32485 c64754543d8ac501bea6e75e209ea521 ""
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1547156272 2700761 ac0584cc9514ab21918550a6948c4ee2 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1547156307 4131556 1ef71a042492c1cec775c97b05585af8 ""
-  "smart_led_strap.aux" 1547319406 1002 b5134abd5b6991cd881a3149432de297 ""
-  "smart_led_strap.tex" 1547319406 3100 a33378052ddd6343c8649abb6c39c6a9 ""
+  "smart_led_strap.aux" 1547505487 1348 d7f467c9f1d2bba98f991382dea8ed94 ""
+  "smart_led_strap.bbl" 1547499507 2133 a27fb4120c41dad9ae6431cc8cc1fb89 "bibtex smart_led_strap"
+  "smart_led_strap.tex" 1547505486 5836 3621947284ff85665cbcf1d83ba694dc ""
   (generated)
+  "smart_led_strap.aux"
   "smart_led_strap.pdf"
   "smart_led_strap.log"
-  "smart_led_strap.aux"

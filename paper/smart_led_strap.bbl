@@ -1,0 +1,49 @@
+\providecommand{\bysame}{\leavevmode\hbox to3em{\hrulefill}\thinspace}
+\providecommand{\MR}{\relax\ifhmode\unskip\space\fi MR }
+% \MRhref is called by the amsart/book/proc definition of \MR.
+\providecommand{\MRhref}[2]{%
+  \href{http://www.ams.org/mathscinet-getitem?mr=#1}{#2}
+}
+\providecommand{\href}[2]{#2}
+\begin{thebibliography}{1}
+
+\bibitem{Antunes2017a}
+B.~M. Antunes, E.~Z. Campos, S.~S. Parmezzani, R.~V. Santos, E.~Franchini, and
+  F.~S. Lira, \emph{{Sleep quality and duration are associated with performance
+  in maximal incremental test}}, Physiology and Behavior \textbf{177} (2017),
+  no.~March, 252--256.
+
+\bibitem{DuffyJeanne2009a}
+F~{Duffy, Jeanne} and A~{Czeisler, Charles}, \emph{{Effect of Light on Human
+  Circadian Physiology}}, Sleep Medicine Clinics \textbf{4} (2009), no.~2,
+  165--177.
+
+\bibitem{Gabel2015a}
+Virginie Gabel, Micheline Maire, Carolin~F. Reichert, Sarah~L. Chellappa,
+  Christina Schmidt, Vanja Hommes, Christian Cajochen, and Antoine~U. Viola,
+  \emph{{Dawn simulation light impacts on different cognitive domains under
+  sleep restriction}}, Behavioural Brain Research \textbf{281} (2015),
+  258--266.
+
+\bibitem{Mirghani2015a}
+Hyder~O. Mirghani, Mohammed~A. Ahmed, and Abdulateef~S. Elbadawi,
+  \emph{{Daytime sleepiness and chronic sleep deprivation effects on academic
+  performance among the Sudanese medical students}}, Journal of Taibah
+  University Medical Sciences \textbf{10} (2015), no.~4, 467--470.
+
+\bibitem{Norbury2019a}
+Ray Norbury and Simon Evans, \emph{{Time to think: Subjective sleep quality,
+  trait anxiety and university start time.}}, Psychiatry Research \textbf{271}
+  (2019), no.~November 2018, 214--219.
+
+\bibitem{Rauchs2005}
+Geraldine Rauchs, BEatrice Desgranges, Jean Foret, and Francis Eustache,
+  \emph{{The relationships between memory systems and sleep stages}},  (2005),
+  123--140.
+
+\bibitem{Smolders2014a}
+Karin~C.H.J. Smolders and Yvonne~A.W. de~Kort, \emph{{Bright light and mental
+  fatigue: Effects on alertness, vitality, performance and physiological
+  arousal}}, Journal of Environmental Psychology \textbf{39} (2014), 77--91.
+
+\end{thebibliography}

@@ -13,7 +13,7 @@
 \begin{document}
 
 
-\title{Light alarm - Using a react-native client in combination with a rust backend.}
+\title{Wake alarm - Using a react-native client in combination with a rust backend.}
 
 \author{\IEEEauthorblockN{1\textsuperscript{st} Maksim Sandybekov}
 \IEEEauthorblockA{\textit{computer science - autonomouse systems)} \\
@@ -28,9 +28,11 @@ Konstanz, Germany \\
 be391bae@htwg-konstanz.de}
 }
 
+
 \maketitle
 
 \begin{abstract}
+
 
 \end{abstract}
 
@@ -38,9 +40,36 @@ be391bae@htwg-konstanz.de}
 rust, react-native, redux, redux-saga, light, alarm, smart-light
 \end{IEEEkeywords}
 
+% Motivation, why are we doing the likes
 \section{Introduction}
+The quality and duration of sleep affects the health and well being of individuals.
+Additionally sleep plays a major role in consolidation of memory \cite{Rauchs2005} therefore it is essential for learning process.
+Looking at studies on sleep deprevation and disorders it becomes clear that a poor sleep can cause an decrease in both
+mental and physical performance. \cite{Mirghani2015a, Antunes2017a} Leading up to variouse physical and mental
+diseases for example type-2 diabities, anxiety and increased depression. Especially students represent a group that 
+is likely to suffer sever sleep deprevation. In an conducted study 46\% of 546 students rated their sleep as failry bad up to 
+very bad. Furthermore 33\% of participants reported $\leq$ 7 h of sleep on study days with an average of 6.55 h. \cite{Norbury2019a}
+
+The research surrounding the impact of light on the human circadian clock thereby revelead an relationship between illuminance and
+alertness in human beings. \cite{DuffyJeanne2009a} In addition further research uncovered a link between exposure to more intense
+light and the feeling of vitality during daytime and everyday situations. \cite{Smolders2014a}
+
+These insights suggests a system that utilizes the effects of light on the human body to improve alertness and mental as well as
+pyhsical performance during the day. Using these mechanisms within the context of circadian stimulation and sleep, different
+fields of application become obviouse.
+
+While technological development proceeds there are already attempts utilizing current innovations to harness prior introduced 
+positive effects. One such attempt are wake lights that simulate the sunrise. A study investigating effects on the human body
+concludes that simulation of the dawn significantly improves performance on attention- and motor-based tasks/skills during the day.
+\cite{Gabel2015a}
+
+This paper proposes an application implementing functionality to utilize previousely introduced advances in research 
+concerning the effects of light on the human body. The application enables a user to obtain controll over a smart lamp
+to regulate the illumination, color. An additional system for scheduling of illumination facilitates the simulation of sunrises.
 
 \section{State of the art}
+Currently there is a broad range of commercially available smart lamp devices and such. Each of these
+devices uses a different technological stack and varies in their capabilities as well as their functionality.
 
 
 % Approach
@@ -48,6 +77,7 @@ rust, react-native, redux, redux-saga, light, alarm, smart-light
 
 
 \section{architecture}
+
 
 \subsection{interaction}
 
@@ -96,11 +126,18 @@ sources:
 
 
 
-\begin{thebibliography}{00}
-\bibitem{b0} Raspberry Pi \& RGB LED-Strips How to control a RGB LED-Strip with a Raspberry Pi By David Ordnung - https://dordnung.de/raspberrypi-ledstrip/
-\bibitem{b1} pigpio Daemon - http://abyz.me.uk/rpi/pigpio/pigpiod.html
+% Add Links into bib file
+% \begin{thebibliography}{00}
+% \bibitem{b0} Raspberry Pi \& RGB LED-Strips How to control a RGB LED-Strip with a Raspberry Pi By David Ordnung - https://dordnung.de/raspberrypi-ledstrip/
+% \bibitem{b1} pigpio Daemon - http://abyz.me.uk/rpi/pigpio/pigpiod.html
+% \bibitem{a0} Smart LED Lamp with Bluetooth Speaker and Clock - https://store.earlham.edu/smart-led-lamp-bluetooth-speaker-and-clock
+% \bibitem{a1} 
+% \end{thebibliography}
 
-\end{thebibliography}
-\vspace{12pt}
+\bibliographystyle{amsplain}
+\bibliography{moco}
+
+
+% \vspace{12pt}
 
 \end{document}
