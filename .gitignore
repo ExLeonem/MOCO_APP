@@ -1,7 +1,17 @@
 android-udev-rules
 client/local.properties
-paper/library
 target
 NDK
 client/android/app/src/main/assets/index.android.bundle
 server/database.sqlite
+
+# don't track compiled files
+paper/library
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.fdb_latexmk
+paper/*.fls
+paper/*.log
+paper/*.pdf
+paper/*.synctex.gz
