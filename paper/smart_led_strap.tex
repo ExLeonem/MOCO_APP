@@ -220,6 +220,8 @@ At the current time there are only two implementations that can be used as light
 
 \section{Results}
 
+The server executable is very lightweight. It has less then 5 MB memory usage and sits at 0\% cpu consumption when no web requests are handled. Which is important because it will run non stop and idealy we want to use as less energy as possible while doing nothing. The largest performance hog is the pigpiod daemon, which may be minimized by only running it when needed or by moving the gpio functionality directly into the server application.
+
 
 \section{Conclusion}
 
