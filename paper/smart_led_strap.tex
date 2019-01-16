@@ -86,32 +86,54 @@ devices uses a different technological stack and varies in their capabilities as
 
 
 \section{server}
-The main tasks of the server are to communicate with clients and to actually drive a 
-led strip or any other kind of light source.
+
+The main tasks of the server is to communicate with clients and to actually drive a led strip or any other kind of light source. This is realised through two main components a web framework to serve a REST-api that is used to communicate with clients and a controller running in a seperate thread, containing all the logic and managing the light source.
+
+\subsection{Concurrency}
+
+The execution flow of the controller and the web framework should be independent. We archive that by utilizing threads. Using Rust allows us to confidently write multithreaded applications\cite{rust:con}, by preventing data races in the first place and with its provided concurrency primitives.
+Message passing is used to communicate between the web framework and the controller. The controller loop will check each time at the beginning if it received a message from the web framework and will handle it. Currently the controller handles five different messages:
+\begin{itemize}
+    \item GetData:
+    The web framework needs the current led data to response to a request.
+    \item UpdateOn, UpdateColor and UpdateBrightness:
+    The controller should use the new provided value and use it and in case a schedule is running it will be stopped.
+    \item DatabaseChanged:
+    The web framework modified the database containing all schedules, the controller should check if the modification is relevant for it.
+\end{itemize}
+
+The web framework only expects two messages:
+\begin{itemize}
+    \item DataChanged: 
+    Some data changed since the last time the web framework updated its copy and should update it again.
+    \item DataDump:
+    Contains all data relevant to led status. Web framework needs to actively request it with \texttt{GetData}. This is done because the controller can't know when it will need the data and sending it each time some data changed may overflow the message queue, because it gets only checked when an api request is received.
+\end{itemize}
+
+The web framework doesn't communicate with the controller directly and uses instead a \texttt{LedCache}. Through it the web framework can access the current values of the light source or change them. The \texttt{LedCache} makes sure that it only communicates with the controller thread when necessary.
+
 
 \subsection{Light Sources}
 
-The server can support different kind of light sources, as long as it implements the \texttt{LedControls} trait.
-Only one implementation of the trait can be used at the same time tho. But it is possible that a specific implementation
-controls multiple hardware lights. At the current time there are only two implementations that can be used as light
-sources:
+The server can support different kinds of light sources, as long as it implements the \texttt{LedControls} trait. Only one implementation 
+of the trait can be used at the same time tho. But it is possible that a specific implementation controls multiple hardware lights.
+At the current time there are only two implementations that can be used as light sources:
 
 \begin{itemize}
     \item LedStrip
     
-    Controls a 4-pin led strip with a 12v pin and one pin for each color(red, green,blue). This cannot be driven 
-    directly by the Raspberry Pi and therefore we need to use a extra curcuit board\cite{b0} for it. The circuit
-    board allows us to controll each color seperatly by driving the gate pin of a MOSFET's respectivly. We will use 
-    the pigpio Daemon\cite{b1} for this, because we need 3 PWM pins for this and currently available gpio libraries 
-    for Rust only over up to 2 PWM pins.
+    Controls a 4-pin led strip with a 12v pin and one pin for each color(red, green,blue). This cannot be driven directly by the
+    Raspberry Pi and therefore we need to use a extra curcuit board\cite{rpiled} for it. The circuit board allows us to controll each
+    color seperatly by driving the gate pin of a MOSFET's respectivly. We will use the pigpio Daemon\cite{pigpiod} for this, because we 
+    need 3 PWM pins for this and currently available gpio libraries for Rust only over up to 2 PWM pins.
     
     % TODO: add picture
     **picture of circuit board**
 
     \item MocLedStrip
     
-    This is used only for testing. It allows us to verify the logic of the led controller without driving any
-    GPIO's of the Raspberry Pi and also allows us to run the server on amd64 architecure for testing purposes.
+    This is used only for testing. It allows us to verify the logic of the led controller without driving any GPIO's of the Raspberry Pi 
+    and also allows us to run the server on amd64 architecure for testing purposes.
 \end{itemize}
 
 
