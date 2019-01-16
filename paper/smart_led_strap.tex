@@ -28,7 +28,6 @@ Konstanz, Germany \\
 be391bae@htwg-konstanz.de}
 }
 
-
 \maketitle
 
 \begin{abstract}
@@ -68,28 +67,73 @@ concerning the effects of light on the human body. The application enables a use
 to regulate the illumination, color. An additional system for scheduling of illumination facilitates the simulation of sunrises.
 
 \section{State of the art}
-Currently there is a broad range of commercially available smart lamp devices and such. Each of these
-devices uses a different technological stack and varies in their capabilities as well as their functionality.
+Currently there is a broad range of available commercial products depicted as smart lamps. But surely there needs to be done a
+distinction, because these devices often differ in their capabilities and technological stacks. 
 
 
 % Approach
 \section{Proposed approach}
+To enable users to make full use of a lightning system, there is a need for the right control mechanisms to be in place.
+Basic operations a user may take are activation/deactivation, change of color and brightness of the lamp. The context of use can be broadend 
+by adding the possibility to schedule the activation of the light. This operation enables the use as a visual alarm clock or an automated
+lighting system. 
+
+We propose a distribution into client and server, already seen in different application. The client resembles a mobile application
+offering functionality. On the opposite the server represents the device itself communicating with the client to offer an interface for
+interaction with the light.
+
+The communication between both instances happens through a wireless-network. As we are only interesseted to visualize the possibilitiy 
+to develop a universally usable lighting system, a security layer will not be defined but should be in a production build. 
 
 
-\section{architecture}
+\subsection{architecture}
+On an architectural level such an application needs to be 
 
 
-\subsection{interaction}
+\subsection{client}
+% UI Compoenents in correlation with the basic operations
+% realization on technical level
+The client is purely written in react-native/javascript. This technologie enables cross-plattform development of mobile applications while offering
+rather quick development cycles. Apart from programmatical differences this library requires another mindset than native development.
+Compared to other technolgies the user-interface consists of so called components each of which is made up of native elements. The developed components
+may be reused and composed to create new components.
+
+% split into component types --> (screens, light, navigation, schedule, device)
+% functionality of each screen?
+
+\subsubsection{navigation}
+As the application consists of mutliple screens and react-native doesen't include any possibility to navigate between screens an additional
+library is needed. 
 
 
-\section{client}
+\subsubsection{state-management}
+While a component is able to maintain state, looking at compound components it may appear that the same state needs to be managed at different
+spots. A far better practice for this occurence involves the usage of an additional library designed especially for state-management. As this
+question often arises in javascript applications, different attempts have been made to solve this issue. Many of which is the redux library,
+which we selected because it is well documented and easiliy integrateable with react-native. Representing a predictable-state container the redux
+library bundles state in a single spot, the so called store. The state itself can be accessed by components 
+
+connecting to the store. Also changes to the store may be issued by the components by calling a redux method and dispatch an action to it.
+The action is a normal javascript function which returns an object depicting the action which in turn consists of action type and the payload.
+
+\subsubsection{side effects}
+There are several ways to implement communication with the server. Surely one possibility is to implement the server calls inside the components,
+which in result mingles the code with the 
 
 
-\section{server}
+As we already use redux to seperate and centralize the state from the components
+
+
+to ease the task at hand usage of a library is suggested. 
+% saga 
+
+
+
+\subsection{server}
 The main tasks of the server are to communicate with clients and to actually drive a 
 led strip or any other kind of light source.
 
-\subsection{Light Sources}
+\subsubsection{Light Sources}
 
 The server can support different kind of light sources, as long as it implements the \texttt{LedControls} trait.
 Only one implementation of the trait can be used at the same time tho. But it is possible that a specific implementation
