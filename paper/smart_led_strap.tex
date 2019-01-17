@@ -32,12 +32,19 @@ be391bae@htwg-konstanz.de}
 \maketitle
 
 \begin{abstract}
+With a dynamic market the area of smart lights is steady evolving and new innovations appear regulary. Comparing the number of
+different devices, it is fairly easy to implement one such device accompanyed by an application oneself using todays technologies
+and public available hardware. An outline describing the effects of light on the human supports the definition of requirements
+and functionality. Follwed by an architectural overview that depicts the components and their interaction with each other, which
+can be used to define an analogouse architecture within another infrastructure of technologies. As we proceed we define the
+components and their functionality themselves explaining our thought process and the decisions we made along the way. 
 
+Finally leading to an outlook to further functionality.
 
 \end{abstract}
 
 \begin{IEEEkeywords}
-rust, react-native, redux, redux-saga, light, alarm, smart-light
+rust, react-native, redux, redux-saga, light, alarm, smart-light, wake light
 \end{IEEEkeywords}
 
 % Motivation, why are we doing the likes
@@ -76,14 +83,13 @@ focused on short range connectivity however primarly use 6loWPAN or ZigBee Light
 devices offer are the remote control of the light itself, color and brightness. Additionally there remain advanced algorithms
 like monitoring of light spectrum, daylight levels, user occupcation to decide further actions and color reproduction. The latter
 feature providing means to influence humans circadian system and ultimatly lifting concentration and mood of users.\cite{higuera2018} 
+% lack of security: issues not the lack of specification because most devices have spec. standard encryption system
 
 Other types of devices focus more on niche use-cases like \cite{nur2018,philips19} acting as a wake/sleep light. As smart ligthing
 systems gain in popularity the area of security becomes more important. Looking at the current state of security in such devices is
 alarming. Looking at literature on the security of smart lighting, attacks are known and successfull. \cite{Morgner2017,Eichelberger2015} 
 To assume that the obtainable data has no private character is incorrect. There are already approaches to exfiltrate 
 users private data through a gateway that could be opened because of smart lighting lacking the required security setup. \cite{Maiti2018}
-
-Whether 
 
 % Approach
 \section{Proposed approach}
@@ -125,7 +131,9 @@ for persistence of data, application state as well as querying, insertion of sch
 \end{figure}
 
 
-The Server
+The base of the server resembles a web-framework that provides accessable routes for the client. In itself the web-framework is
+made up of multiple worker thread ..... .
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\textwidth]{server_architecture}
@@ -146,13 +154,14 @@ heavier components compounded out of this smaller parts. At the top most level, 
 other components themselves. Each of these screens providing a different functionality to the user. Following are the main screens
 listed.
 
+\vspace{5pt}
 \begin{itemize}
     \item \textbf{DeviceSetupScreen:} setting up a new device
     \item \textbf{LightScreen:} activate/deactivate light and set brightness
     \item \textbf{ColorSelectionScreen:} change color of the led
     \item \textbf{scheduleScreen:} schedule led activation 
 \end{itemize}
-\vspace{5pt}
+\vspace{12pt}
 
 % as there can be identified different parts of the application
 % divide into part (presentation layer (components), store (similar to model), )
@@ -254,7 +263,10 @@ the gpio functionality directly into the server application.
 
 
 \section{Conclusion}
-
+As we have shown how an smart light can be constructed using innovative technologies and easy accessable hardware, it is fairly
+easy to construct one such device. Which in fact could be used to explore further possibilities. Exemplarily a device could be
+implemented with a variation of functionality to condition the human circadian system exploring the possibile range and effects.
+Ultimatly contributing to innovations in the field of smart lightning.
 
 
 \section{Further work}
@@ -265,20 +277,7 @@ is possible to add integrations to the alarm app of the smart phone and to a cal
 is cross plattform and it should be able to run on iOS without much additional work.
 
 
-
-
-% Add Links into bib file
-% \begin{thebibliography}{00}
-% \bibitem{b0} Raspberry Pi \& RGB LED-Strips How to control a RGB LED-Strip with a Raspberry Pi By David Ordnung - https://dordnung.de/raspberrypi-ledstrip/
-% \bibitem{b1} pigpio Daemon - http://abyz.me.uk/rpi/pigpio/pigpiod.html
-% \bibitem{a0} Smart LED Lamp with Bluetooth Speaker and Clock - https://store.earlham.edu/smart-led-lamp-bluetooth-speaker-and-clock
-% \bibitem{a1} 
-% \end{thebibliography}
-
 \bibliographystyle{amsplain}
 \bibliography{moco}
-
-
-% \vspace{12pt}
 
 \end{document}
