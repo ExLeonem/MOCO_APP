@@ -10,20 +10,20 @@
 \usepackage{xcolor}
 \usepackage[utf8]{inputenc}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+   T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
 
 \title{Wake alarm - Using a react-native client in combination with a rust backend.}
 
 \author{\IEEEauthorblockN{1\textsuperscript{st} Maksim Sandybekov}
-\IEEEauthorblockA{\textit{computer science - autonomouse systems)} \\
+\IEEEauthorblockA{\textit{computer science - autonomous systems)} \\
 \textit{HTWG Konstanz}\\
-Konstaz, Germany \\
+Konstanz, Germany \\
 maksim.sandybekov@live.de}
 \and
 \IEEEauthorblockN{2\textsuperscript{nd} Benjamin Bäumler}
-\IEEEauthorblockA{\textit{computer science - autonomouse systems} \\
+\IEEEauthorblockA{\textit{computer science - autonomous systems} \\
 \textit{HTWG Konstanz}\\
 Konstanz, Germany \\
 be391bae@htwg-konstanz.de}
@@ -32,13 +32,13 @@ be391bae@htwg-konstanz.de}
 \maketitle
 
 \begin{abstract}
-With a dynamic market the area of smart lights is steady evolving and new innovations appear regulary. Comparing the number of
-different devices, it is fairly easy to implement a such device accompanyed by an application using todays technologies
-and public available hardware. An outline describing the effects of light on the human supports the definition of requirements
+With a dynamic market the area of smart lights is steady evolving and new innovations appear regularly. Comparing the number of
+different devices, it is fairly easy to implement such a device accompanied by an application using today's technologies
+and public available hardware. An introductory describing the effects of light on humans supports the definition of requirements
 and functionality. Followed by an architectural overview that depicts the components and their interaction with each other, which
-can be used to define an analogouse architecture within another infrastructure of technologies. As we proceed we define the
-components and their functionality themselves explaining our thought process and the decisions we made along the way. 
-Finally leading to an outlook of additional functionality which could and should be added.
+can be used to define an analogous architecture within another infrastructure of technologies. As we proceed we define the
+components and their functionality themselves explaining our thought process and the decisions we made along the way.
+Finally leading to an outlook of additional features which could and should be added.
 
 \end{abstract}
 
@@ -46,62 +46,57 @@ Finally leading to an outlook of additional functionality which could and should
 rust, react-native, redux, redux-saga, light, alarm, smart-light, wake light
 \end{IEEEkeywords}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\textwidth]{board}
-    \caption{Raspberry Pi and custom controller board for 4-pin led strips}
-\end{figure}
-
 % Motivation, why are we doing the likes
 \section{Introduction}
 The quality and duration of sleep affects the health and well being of individuals.
-Additionally sleep plays a major role in consolidation of memory \cite{Rauchs2005} therefore it is essential for learning process.
-Looking at studies on sleep deprevation and disorders it becomes clear that a poor sleep can cause an decrease in both
-mental and physical performance. \cite{Mirghani2015a, Antunes2017a} Leading up to variouse physical and mental
-diseases for example type-2 diabities, anxiety and increased depression. Especially students represent a group that 
-is likely to suffer sever sleep deprevation. In an conducted study 46\% of 546 students rated their sleep as failry bad up to 
+Additionally sleep plays a major role in consolidation of memory \cite{Rauchs2005} therefore it is essential for learning processes.
+Looking at studies on sleep deprivation and disorders it becomes clear that a poor sleep can cause an decrease in both
+mental and physical performance. \cite{Mirghani2015a, Antunes2017a} Leading up to various physical and mental
+diseases for example type-2 diabetes, anxiety and increased depression. Especially students represent a group that
+is likely to suffer severe sleep deprivation. In an conducted study, 46\% of 546 students rated their sleep as fairly bad up to
 very bad. Furthermore 33\% of participants reported $\leq$ 7 h of sleep on study days with an average of 6.55 h. \cite{Norbury2019a}
-The research surrounding the impact of light on the human circadian clock thereby revelead an relationship between illuminance and
+The research surrounding the impact of light on the human circadian clock thereby revealed an relationship between illuminance and
 alertness in human beings. \cite{DuffyJeanne2009a} In addition further research uncovered a link between exposure to more intense
 light and the feeling of vitality during daytime and everyday situations. \cite{Smolders2014a}
 These insights suggests a system that utilizes the effects of light on the human body to improve alertness and mental as well as
-pyhsical performance during the day. Using these mechanisms within the context of circadian stimulation and sleep, different
-fields of application become obviouse.
-While technological development proceeds there are already attempts utilizing current innovations to harness prior introduced 
+physical performance during the day. Using these mechanisms within the context of circadian stimulation and sleep, different
+fields of application become obvious.
+While technological development proceeds there are already attempts utilizing current innovations to harness prior introduced
 positive effects. One such attempt are wake lights that simulate the sunrise. A study investigating effects on the human body
 concludes that simulation of the dawn significantly improves performance on attention- and motor-based tasks/skills during the day.
 \cite{Gabel2015a}
-This paper proposes an application implementing functionality to utilize previousely introduced advances in research 
-concerning the effects of light on the human body. The application enables a user to obtain controll over a smart lamp
-to regulate the illumination, color. An additional system for scheduling of illumination facilitates the simulation of sunrises.
+This paper proposes an application implementing functionality to utilize previously introduced advances in research
+concerning the effects of light on the human body. The application enables a user to obtain control over a smart lamp
+to regulate the brightness and color. An additional system for scheduling of illumination facilitates the simulation of sunrises.
 
 \section{State of the art}
 Currently there is a broad range of available commercial products depicted as smart lamps. Most of them representing platforms.
-Besides providing the lamp itself they often offer REST based API's, mobile applications to control the device and integrateable
-third party software like IFTTT. These platforms differ in ways in which they offer their functionality and are accessable.
-Main technologies used to realize connectivity are bluetooth, Wi-Fi, sub-GHz, IEEE802.15.4 and VLC. Smart lighting systems
-focused on short range connectivity however primarly use 6loWPAN or ZigBee Light Link. The fundamental functionality such
-devices offer are the remote control of the light itself, color and brightness. Additionally there remain advanced algorithms
-like monitoring of light spectrum, daylight levels, user occupcation to decide further actions and color reproduction. The latter
-feature providing means to influence humans circadian system and ultimatly lifting concentration and mood of users.\cite{higuera2018} 
-% lack of security: issues not the lack of specification because most devices have spec. standard encryption system
-Other types of devices focus more on niche use-cases like \cite{nur2018,philips19} acting as a wake/sleep light. As smart ligthing
+Besides providing the lamp itself they often offer REST based API's, mobile applications to control the device and integratable
+third party software like IFTTT. These platforms differ in ways in which they offer their functionality and are accessible.
+The main technologies used to realize connectivity in these devices are bluetooth, Wi-Fi, sub-GHz, IEEE802.15.4 and VLC. 
+Smart lighting systems focused on short range connectivity however primarily use 6loWPAN or ZigBee Light Link. The core
+functionality such devices offer are the remote control of the light itself, color and brightness. Additionally there remain advanced
+algorithms like monitoring of light spectrum, daylight levels, user occupcation to decide further actions and color reproduction. \cite{higuera2018}
+The latter feature providing means to influence humans circadian system and ultimately lifting concentration and mood of users.
+Other types of devices focus more on niche use-cases like \cite{nur2018,philips19} acting as a wake/sleep light. As smart lighting
 systems gain in popularity the area of security becomes more important. Looking at the current state of security in such devices is
-alarming. Looking at literature on the security of smart lighting, attacks are known and successfull. \cite{Morgner2017,Eichelberger2015} 
-To assume that the obtainable data has no private character is incorrect. There are already approaches to exfiltrate 
-users private data through a gateway that could be opened because of smart lighting lacking the required security setup. \cite{Maiti2018}
+worrisome. In literature on the security of smart lighting, attacks are known and successful. \cite{Morgner2017,Eichelberger2015}
+To assume that the obtainable data has no private character is incorrect. There are already approaches to exfiltrate
+users private data through a gateway that could be opened because of smart lights lacking the required counter measurements. \cite{Maiti2018}
 
 % Approach
 \section{Proposed approach}
 To enable users to make full use of a lightning system, there is a need for the right control mechanisms to be in place.
 Basic operations a user may take are activation/deactivation, change of color and brightness of the lamp. The context of use can
-be broadend by adding the possibility to schedule the activation of the light. This operation enables the use as a visual alarm
-clock or an automated lighting system. 
+be broadened by adding the possibility to schedule the activation of the light. This operation enables the use as a visual alarm
+clock or an automated lighting system.
 We propose a distribution into client and server, already seen in different application. The client resembles a mobile application
-offering functionality. On the opposite the server represents the device itself communicating with the client to offer an interface for
+offering functionality. On the contrary the server represents the device itself communicating with the client to offer an interface for
 interaction with the light.
-The communication between both instances happens through a wireless-network. As we are only interesseted to visualize the possibility 
-to develop a universally usable lighting system, a security layer will not be defined but should be in a production build. 
+The communication between both instances happens through a wireless-network. 
+%To results?
+As we are only interested to visualize the possibility
+to develop a universally usable lighting system, a security layer will not be defined but should be in a production build.
 
 
 \subsection{Architecture}
@@ -110,55 +105,55 @@ The communication between these two instances happens via http. The server there
 querying.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.4\textwidth]{top_level_architecture}
-    \caption{Top level architecture}
-    \label{topLevelArch}
+   \centering
+   \includegraphics[width=0.4\textwidth]{top_level_architecture}
+   \caption{Top level architecture}
+   \label{topLevelArch}
 \end{figure}
 
 Looking at the clients architecture depicted in figure \ref{clientArch}, there is a clear distinction between upper and below
-part. The upper block of components might be compared to the view layer in traditional web application architectures. In contrast
-the below part can be thought of as an mixture of controllers and views in an classical web applications. Achieving the functionality
+part. The upper block of components may be compared to the view layer in traditional web application architectures. In contrast
+the below part can be thought of as an mixture of controllers and views. Realizing the functionality
 for persistence of data, application state as well as querying, insertion of schedule and led data at the server side.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=0.4\textwidth]{client_architecture}
-    \caption{Client architecture}
-    \label{clientArch}
+   \centering
+   \includegraphics[width=0.4\textwidth]{client_architecture}
+   \caption{Client architecture}
+   \label{clientArch}
 \end{figure}
 
-The server is split into two main components depicted in figure \ref{serverArch}, a web-framework is used to provide api endpoints that can be accessed through http by 
-the client. It uses mutliple worker threads to handle requests in case we need to handle many requests in a short duration.
+The server is split into two main components depicted in figure \ref{serverArch}, a web-framework is used to provide api endpoints that can be accessed through http by
+the client. It uses multiple worker threads to handle requests in case we need to handle many requests in a short duration.
 The controller thread handles the logic of the application it checks if a schedule should run and controls the light source.
 Both components communicate never directly with another and use instead the \texttt{LedCache} object or the Schedule Database.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.3\textwidth]{server_architecture}
-    \caption{Server architecture}
-    \label{serverArch}
+   \centering
+   \includegraphics[width=0.3\textwidth]{server_architecture}
+   \caption{Server architecture}
+   \label{serverArch}
 \end{figure}
 
 \subsection{Client}
-% UI Compoenents in correlation with the basic operations
+% UI Components in correlation with the basic operations
 % realization on technical level
-The client is purely written in react-native/javascript. This technologie enables cross-plattform development of mobile applications 
-while offering rather quick development cycles. Apart from programmatical differences this library requires another mindset than 
-native development. Compared to other technolgies the user-interface consists of so called components each of which is made up of
+The client is purely written in react-native/javascript. This technology enables cross-plattform development of mobile applications
+while offering rather quick development cycles. Apart from programmatically differences this library requires another mindset than
+native development. Compared to other technologies the user-interface consists of so called components each of which is made up of
 native elements. The developed components may be reused and composed to create new components. In addition it is possible to pass
-properties to a component. These are compareable with xml attributes, inside the component itself they can be accessed as an object. 
+properties to a component. These are comparable with xml attributes, inside the component itself they can be accessed as an object.
 In our case we divided the visuals in atomic components representing for example input fields and buttons. Subsequently building
-heavier components compounded out of this smaller parts. At the top most level, we simply have screen components that consist of 
+heavier components compounded out of this smaller parts. At the top most level, we simply have screen components that consist of
 other components themselves. Each of these screens providing a different functionality to the user. Following are the main screens
 listed.
 
 \vspace{5pt}
 \begin{itemize}
-    \item \textbf{DeviceSetupScreen:} setting up a new device
-    \item \textbf{LightScreen:} activate/deactivate light and set brightness
-    \item \textbf{ColorSelectionScreen:} change color of the led
-    \item \textbf{scheduleScreen:} schedule led activation 
+   \item \textbf{DeviceSetupScreen:} setting up a new device
+   \item \textbf{LightScreen:} activate/deactivate light and set brightness
+   \item \textbf{ColorSelectionScreen:} change color of the led
+   \item \textbf{scheduleScreen:} schedule led activation
 \end{itemize}
 \vspace{12pt}
 
@@ -166,130 +161,124 @@ listed.
 % divide into part (presentation layer (components), store (similar to model), )
 
 \subsubsection{Navigation}
-As the application consists of mutliple screens and react-native doesen't provide a native possibility to navigate between screens an 
+As the application consists of multiple screens and react-native doesn't provide a native possibility to navigate between screens an
 additional library is needed. At present there are mainly two libraries available react-native-navigation and react-navigation. These
 libraries mainly differ in the interface provided for navigation and their performance. The selection in our case was of agnostic nature,
-prefering the one with a shallower learning curve. 
+preferring the one with a shallower learning curve.
 
 \subsubsection{State-management}
 While a component is able to maintain state, looking at compound components it may appear that the same state needs to be managed at
-different spots. A far better practice for this occurence involves the usage of an additional library designed especially for 
+different spots. A far better practice for this occurrence involves the usage of an additional library designed especially for
 state-management. As this question often arises in javascript applications, different attempts have been made to solve this issue.
-Many of which is the redux library, which we selected because it is well documented and easiliy integrateable with react-native.
-Representing a predictable-state container the redux library centralizes state in the so called store. 
-
+Many of which is the redux library, which we selected because it is well documented and easily integratable with react-native.
+Representing a predictable-state container the redux library centralizes state in the so called store.
 For a component to access the state it first must connect to the store. Afterwards a mapping must be defined of state variables onto the
-property object of that specific component. To change state variables actions needed to defined which are getting dispatch by redux to
-reducers. While actions represent simple javascript functions returning an object with a minimum a type field and additional payload,
-the reducers are listenting for different action types and using the payload to transfer the old to the new state. 
+property object of that specific component. To change state variables actions needed to be defined which are getting dispatched by redux to
+reducers. While actions represent simple javascript functions returning an object with a minimum of a type field and additional payload,
+the reducers are listening for different action types and using the payload to transfer the state.
 
-\subsubsection{Communicaton/side effects}
-For the communication with the server we limited ourself the http protocol. As there is no network discovery implemented the user needs
-to know the IP address of the server he wants to connect to. To ease the task at hand and keep a clear sepeartion from the presentation
+\subsubsection{Communication/side effects}
+For the communication with the server we limited ourself to the http protocol. As there is no network discovery implemented the user needs
+to know the IP address of the server he wants to connect to. To ease the task at hand and keep a clear separation from the presentation
 layer we use the redux-saga library. Like the name suggest this library builds upon redux. This library mainly listens to dispatched
 actions and triggers generators which execute side effects such as http calls to the server or database writes and reads. These in
 return can dispatch actions themselves.
-
-The applications uses this functionality to aquire the current schedules from the server, as well as the current state of the device
-for example the led brightness and color of the led. These values are stored in the store of the device.
+The applications uses this functionality to acquire the current schedules from the server, as well as the current state of the device
+for example the led brightness and color of the led. These values are stored in the redux-store of the device.
 
 \subsection{Server}
-The main tasks of the server is to communicate with clients and to actually drive a led strip or any other kind of light source.
+The main tasks of the server is to communicate with clients and to actually drive an led strip or any other kind of light source.
 This is realised through two main components a web framework to serve a REST-api that is used to communicate with clients and a
-controller running in a seperate thread, containing all the logic and managing the light source.
+controller running in a separate thread, containing all the logic and managing the light source.
 
 \subsubsection{Concurrency}
-The execution flow of the controller and the web framework should be independent. We archive that by utilizing threads. Using Rust 
+The execution flow of the controller and the web framework should be independent. We achive that by utilizing threads. Using Rust
 allows us to confidently write multithreaded applications\cite{rust:con}, by preventing data races in the first place and with its
 provided concurrency primitives. Message passing is used to communicate between the web framework and the controller. The controller
-loop will check each time at the beginning if it received a message from the web framework and will handle it. Currently the
+loop checks each time at the beginning if it received a message from the web framework and processes it. Currently the
 controller handles five different messages:
 
 \begin{itemize}
-    \item GetData:
-    The web framework needs the current led data to response to a request.
-    \item UpdateOn, UpdateColor and UpdateBrightness:
-    The controller should use the new provided value and use it and in case a schedule is running it will be stopped.
-    \item DatabaseChanged:
-    The web framework modified the database containing all schedules, the controller should check if the modification is relevant
-    for it.
+   \item GetData:
+   The web framework needs the current led data to response to a request.
+   \item UpdateOn, UpdateColor and UpdateBrightness:
+   The controller should use the new provided value and use it. In case a schedule is running it will be stopped.
+   \item DatabaseChanged:
+   The web framework modified the database containing all schedules, the controller should check if the modification is relevant
+   for it.
 \end{itemize}
 
 The web framework only expects two messages:
 \begin{itemize}
-    \item DataChanged: 
-    Some data changed since the last time the web framework updated its copy and should update it again.
-    \item DataDump:
-    Contains all data relevant to led status. Web framework needs to actively request it with \texttt{GetData}. This is done
-     because the controller can't know when it will need the data and sending it each time some data changed may overflow the
-      message queue, because it gets only checked when an api request is received.
+   \item DataChanged:
+   Some data changed since the last time the web framework updated its copy and should update it again.
+   \item DataDump:
+   Contains all data relevant to led status. The web framework needs to actively request it with \texttt{GetData}. 
+   The request needs to be done because the controller has no knowledge of the moment the data is needed. On the contrary
+   sending the data each time something changes would be an option, although this may overflow the message queue because
+   it only gets checked when an api request is received. 
 \end{itemize}
 
-The web framework doesn't communicate with the controller directly and uses instead a \texttt{LedCache}. Through it the web 
+The web framework doesn't communicate with the controller directly and uses a \texttt{LedCache} instead. Through it the web
 framework can access the current values of the light source or change them. The \texttt{LedCache} makes sure that it only communicates
 with the controller thread when necessary.
 
 
 \subsubsection{Light Sources}
-The server can support different kinds of light sources, as long as it implements the \texttt{LedControls} trait. Only one
-implementation of the trait can be used at the same time tho. But it is possible that a specific implementation controls multiple
+The server can support different kinds of light sources, as long as it implements the \texttt{LedControls} trait. However only one
+implementation of the trait can be used at the same time. Still it is possible that a specific implementation controls multiple
 hardware lights. At the current time there are only two implementations that can be used as light sources:
 
 \begin{itemize}
-    \item LedStrip
-    
-    Controls a 4-pin led strip with a 12v pin and one pin for each color(red, green,blue). This cannot be driven directly by the
-    Raspberry Pi and therefore we need to use a extra curcuit board\cite{rpiled} for it. The circuit board allows us to controll each
-    color seperatly by driving the gate pin of a MOSFET's respectivly. We will use the pigpio Daemon\cite{pigpiod} for this, 
-    because we need 3 PWM pins for this and currently available gpio libraries for Rust only over up to 2 PWM pins.
-    
-    % TODO: add picture
-    **picture of circuit board**
+   \item LedStrip
+   Controls a 4-pin led strip with a 12v pin and one pin for each color(red, green,blue). This cannot be driven directly by the
+   Raspberry Pi and therefore we need to use a extra circuit board\cite{rpiled} for it. The circuit board allows us to control each
+   color separately by driving the gate pin of a MOSFETs respectively. We use the pigpio Daemon\cite{pigpiod} for this functionality.
+   As we need 3 PWM pins and the currently available gpio libraries for Rust only over up to 2 PWM pins.
+  
+   \begin{figure}[H]
+       \centering
+       \includegraphics[width=0.4\textwidth]{board}
+       \caption{Raspberry Pi and custom controller board for 4-pin led strips}
+   \end{figure}
 
-    \item MocLedStrip
-    
-    This is used only for testing. It allows us to verify the logic of the led controller without driving any GPIO's of the
-    Raspberry Pi and also allows us to run the server on amd64 architecure for testing purposes.
+   \item MocLedStrip
+   This is used only for testing. It allows us to verify the logic of the led controller without driving any GPIO's of the
+   Raspberry Pi and also allows us to run the server on amd64 architecture for testing purposes.
 \end{itemize}
-
 
 
 \section{Results}
 The current implementation covers the basic operations, allowing the user to control the light source and set a schedule
-for the visual alarm. 
-
+for the visual alarm.
 Because the client is written in react-native the portability on iOS and Android devices is ensured. Leading to the conclusion
 that a broader range of potential users can be targeted as with conventional mobile development for a single platform.
-
-The server executable is very lightweight. It has less then 5 MB memory usage and sits at 0\% cpu consumption when no web
-requests are handled. Which is important because it will run non stop and idealy we want to use as less energy as possible while
+The server executable is very lightweight. It has less than 5 MB memory usage and sits at 0\% cpu consumption when no web
+requests are handled. Which is important because it will run non stop and ideally we want to use as less energy as possible while
 doing nothing. The largest performance hog is the pigpiod daemon, which may be minimized by only running it when needed or by moving
-the gpio functionality directly into the server application. 
+the gpio functionality directly into the server application.
 
 
 \section{Conclusion}
-As we have shown how an smart light can be constructed using innovative technologies and easy accessable hardware, it is fairly
+As we have shown how a smart light can be constructed using innovative technologies and easy accessible hardware, it is fairly
 easy to construct such a device. Which in fact could be used to explore further possibilities. Exemplarily a device could be
-implemented with a variation of functionality to condition the human circadian system exploring the possibile range and effects.
-Ultimatly contributing to innovations in the field of smart lightning.
+implemented with a different set of functionality to condition the human circadian system exploring the possible range of effects.
+Ultimately contributing to innovations in the field of smart lightning.
 
 
 \section{Further work}
-As the current implementation covers only the basic operation, the user pretty much is lost in setting the ideal parameters
+As the current implementation covers only the basic operations, the user pretty much is lost in setting the ideal parameters
 for the light.
-
 To gain the effects described in the introduction, guidance of the user could be added to facilitate
 optimal use of the light. With the provided information on light configurations and their effects on the human body
-the user could make better decisions depending on the desired effect. Another possibility would be the offering of preconfigured
-light settings for specific effects.
-
-An additional feature could include the automated discovery of the smart light device through the client, providing a 
-better useability. 
-
+the user could make better decisions depending on the desired effect. Another possibility would be to offer preconfigured
+light settings for specific effects like lifted mood oder alertness.
+An additional feature could include the automated discovery of the smart light device through the client, providing a
+better usability.
 Furthermore the functionality of the schedule system could be extended to integrate the local alarm clock as well as the calendar
-of the mobile device. The resulting information could be used to prematurly react to events and trigger the light or enable the user
-to add a schedule based on this information. 
-
+of the mobile device. The resulting information could be used to prematurely react to events and trigger the light or enable the user
+to add a schedule based on this information.
+Finally, appropriate security measurements should be implemented to secure private data of the user and decrease vulnerability of the device.
 
 \bibliographystyle{amsplain}
 \bibliography{moco}
