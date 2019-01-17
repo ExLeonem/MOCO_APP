@@ -68,17 +68,22 @@ concerning the effects of light on the human body. The application enables a use
 to regulate the illumination, color. An additional system for scheduling of illumination facilitates the simulation of sunrises.
 
 \section{State of the art}
-Currently there is a broad range of available commercial products depicted as smart lamps. But mostly they are platforms.
+Currently there is a broad range of available commercial products depicted as smart lamps. Most of them representing platforms.
 Besides providing the lamp itself they often offer REST based API's, mobile applications to control the device and integrateable
-third party software like IFTTT. These platforms differe in ways they offer their functionality. 
+third party software like IFTTT. These platforms differ in ways in which they offer their functionality and are accessable.
+Main technologies used to realize connectivity are bluetooth, Wi-Fi, sub-GHz, IEEE802.15.4 and VLC. Smart lighting systems
+focused on short range connectivity however primarly use 6loWPAN or ZigBee Light Link. The fundamental functionality such
+devices offer are the remote control of the light itself, color and brightness. Additionally there remain advanced algorithms
+like monitoring of light spectrum, daylight levels, user occupcation to decide further actions and color reproduction. The latter
+feature providing means to influence humans circadian system and ultimatly lifting concentration and mood of users.\cite{higuera2018} 
 
-.\cite{higuera2018}
+Other types of devices focus more on niche use-cases like \cite{nur2018,philips19} acting as a wake/sleep light. As smart ligthing
+systems gain in popularity the area of security becomes more important. Looking at the current state of security in such devices is
+alarming. Looking at literature on the security of smart lighting, attacks are known and successfull. \cite{Morgner2017,Eichelberger2015} 
+To assume that the obtainable data has no private character is incorrect. There are already approaches to exfiltrate 
+users private data through a gateway that could be opened because of smart lighting lacking the required security setup. \cite{Maiti2018}
 
-
-
-\cite{nur2018} \cite{philips19}
-
-
+Whether 
 
 % Approach
 \section{Proposed approach}
@@ -107,9 +112,10 @@ querying.
     \label{topLevelArch}
 \end{figure}
 
-Looking at the clients architecture depicted in figure \ref{clientArch}, there is a clear distinction. The upper part the components
-block might be compared to the view layer in traditional web application architectures. In contrast the below part can be thought
-of as an mixture of controllers and views in an classical web applications.
+Looking at the clients architecture depicted in figure \ref{clientArch}, there is a clear distinction between upper and below
+part. The upper block of components might be compared to the view layer in traditional web application architectures. In contrast
+the below part can be thought of as an mixture of controllers and views in an classical web applications. Achieving the functionality
+for persistence of data, application state as well as querying, insertion of schedule and led data at the server side.
 
 \begin{figure}[H]
     \centering
@@ -178,8 +184,6 @@ return can dispatch actions themselves.
 
 The applications uses this functionality to aquire the current schedules from the server, as well as the current state of the device
 for example the led brightness and color of the led. These values are stored in the store of the device.
-
-
 
 \subsection{Server}
 The main tasks of the server is to communicate with clients and to actually drive a led strip or any other kind of light source.
