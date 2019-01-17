@@ -35,7 +35,7 @@ be391bae@htwg-konstanz.de}
 With a dynamic market the area of smart lights is steady evolving and new innovations appear regulary. Comparing the number of
 different devices, it is fairly easy to implement a such device accompanyed by an application using todays technologies
 and public available hardware. An outline describing the effects of light on the human supports the definition of requirements
-and functionality. Follwed by an architectural overview that depicts the components and their interaction with each other, which
+and functionality. Followed by an architectural overview that depicts the components and their interaction with each other, which
 can be used to define an analogouse architecture within another infrastructure of technologies. As we proceed we define the
 components and their functionality themselves explaining our thought process and the decisions we made along the way. 
 Finally leading to an outlook of additional functionality which could and should be added.
@@ -115,21 +115,23 @@ part. The upper block of components might be compared to the view layer in tradi
 the below part can be thought of as an mixture of controllers and views in an classical web applications. Achieving the functionality
 for persistence of data, application state as well as querying, insertion of schedule and led data at the server side.
 
-\begin{figure}[H]
+\begin{figure}
     \centering
     \includegraphics[width=0.4\textwidth]{client_architecture}
     \caption{Client architecture}
     \label{clientArch}
 \end{figure}
 
-
-The base of the server resembles a web-framework that provides accessable routes for the client. In itself the web-framework is
-made up of multiple worker thread ..... .
+The server is split into two main components depicted in figure \ref{serverArch}, a web-framework is used to provide api endpoints that can be accessed through http by 
+the client. It uses mutliple worker threads to handle requests in case we need to handle many requests in a short duration.
+The controller thread handles the logic of the application it checks if a schedule should run and controls the light source.
+Both components communicate never directly with another and use instead the \texttt{LedCache} object or the Schedule Database.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.3\textwidth]{server_architecture}
     \caption{Server architecture}
+    \label{serverArch}
 \end{figure}
 
 \subsection{Client}
