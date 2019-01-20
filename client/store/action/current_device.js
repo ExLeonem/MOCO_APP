@@ -10,10 +10,10 @@ import {
 } from '../constants';
 
 
-const setCurrentDevice = (device) => {
+const setCurrentDevice = (name) => {
     return {
         type: SET_CURRENT_DEVICE,
-        device: device
+        name: name
     };
 }
 

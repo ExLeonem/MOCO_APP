@@ -46,5 +46,7 @@ export {
     addDevice,
     removeDevice,
     renameDevice,
-    replaceDeviceAddress
+    replaceDeviceAddress,
+    enableDevice,
+    disableDevice
 };

@@ -10,6 +10,14 @@ const deviceTemplate = {
     active: false
 };
 
+const updateDevice = (name) => {
+    return (device) => {
+        if(device.name == action.payload.uuid) {
+            return {...device, name: action.payload.name};
+        }
+    }
+}
+
 const deviceReducer = (state = [deviceTemplate] , action) => {
     let newState = state;
     switch(action.type) {
@@ -34,19 +42,37 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
                 }
                 return device;
             }
-            newState = state.map(udpate);
+            newState = state.map(update);
             break;
         }
         case REPLACE_DEVICE_ADDRESS: {
-
+            let update = (device) => {
+                if(device.uuid == action.payload.uuid) {
+                    return {...device, url: action.payload.address};
+                }
+                return device;
+            }
+            newState = state.map(update);
             break;
         }
         case ENABLE_DEVICE: {
-
+            let update = device => {
+                if(device.uuid == action.payload.uuid) {
+                    return {...device, isActive: true};
+                }
+                return device;
+            }
+            newState = state.map(update);
             break;
         }
         case DISABLE_DEVICE: {
-
+            let update = device => {
+                if(device.uuid == action.payload.uuid) {
+                    return {...device, isActive: false};
+                }
+                return device;
+            }
+            newState = state.map(update);
             break;
         }
     }   

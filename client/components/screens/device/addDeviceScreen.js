@@ -25,6 +25,8 @@ class AddDeviceScreen extends React.Component {
         return true;
     }
 
+    // !: method insert new device
+
     render() {
         return (
             <View style={styles.container}>
@@ -85,7 +87,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         setName: name => dispatch(setNewDeviceName(name)),
-        setAddress: address => dispatch(setNewDeviceAddress(address))
+        setAddress: address => dispatch(setNewDeviceAddress(address)),
+
     }
 }
 
