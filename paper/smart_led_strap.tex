@@ -230,19 +230,20 @@ implementation of the trait can be used at the same time. Still it is possible t
 hardware lights. At the current time there are only two implementations that can be used as light sources:
 
 \begin{itemize}
-   \item LedStrip
-   Controls a 4-pin led strip with a 12v pin and one pin for each color(red, green,blue). This cannot be driven directly by the
-   Raspberry Pi and therefore we need to use a extra circuit board\cite{rpiled} for it. The circuit board allows us to control each
+   \item \textbf{LedStrip}
+   Controls a 4-pin led strip with a 12v pin and one pin for each color(red, green, blue). This cannot be driven directly by the
+   Raspberry Pi and therefore we need to use a extra circuit board\cite{rpiled} for it, which can be seen in figure \ref{hardware}. The circuit board allows us to control each
    color separately by driving the gate pin of a MOSFETs respectively. We use the pigpio Daemon\cite{pigpiod} for this functionality.
-   As we need 3 PWM pins and the currently available gpio libraries for Rust only over up to 2 PWM pins.
+   As we need 3 PWM pins and the currently available gpio libraries for Rust only cover up to 2 PWM pins.
   
    \begin{figure}[H]
        \centering
        \includegraphics[width=0.4\textwidth]{board}
        \caption{Raspberry Pi and custom controller board for 4-pin led strips}
+       \label{hardware}
    \end{figure}
 
-   \item MocLedStrip
+   \item \textbf{MocLedStrip}
    This is used only for testing. It allows us to verify the logic of the led controller without driving any GPIO's of the
    Raspberry Pi and also allows us to run the server on amd64 architecture for testing purposes.
 \end{itemize}
@@ -272,8 +273,8 @@ for the light.
 To gain the effects described in the introduction, guidance of the user could be added to facilitate
 optimal use of the light. With the provided information on light configurations and their effects on the human body
 the user could make better decisions depending on the desired effect. Another possibility would be to offer preconfigured
-light settings for specific effects like lifted mood oder alertness.
-An additional feature could include the automated discovery of the smart light device through the client, providing a
+light settings for specific effects like lifted mood or alertness.
+An additional feature could include the automated discovery of the smart light device through the client, providing
 better usability.
 Furthermore the functionality of the schedule system could be extended to integrate the local alarm clock as well as the calendar
 of the mobile device. The resulting information could be used to prematurely react to events and trigger the light or enable the user
