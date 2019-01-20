@@ -33,7 +33,7 @@ export default class Header extends React.Component {
     render() {
         return (
             <View style={headStyle.container}>
-                <TouchableHighlight style={headStyle.drawerIconStyle} onPress={() => console.log("what")} underlayColor={snow.hex()}>
+                <TouchableHighlight style={headStyle.drawerIconStyle} onPress={() => this.props.onPress()} underlayColor={snow.hex()}>
                     <DrawerIcon scaleBy={5}/>                    
                 </TouchableHighlight>
                 <Text style={headStyle.title}>{this.props.children}</Text>

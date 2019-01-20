@@ -24,7 +24,7 @@ class ScheduleScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header>Device Name</Header>
+                <Header onPress={() => this.props.navigation.openDrawer()}>Device Name</Header>
                 <TabNavigation>
                     <TabItem onPress={() => this.props.navigation.navigate('Light')}>{"Light"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Color')}>{"Color"}</TabItem>

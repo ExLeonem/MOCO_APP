@@ -3,7 +3,7 @@ import {StyleSheet, View, TouchableHighlight, Slider} from 'react-native';
 
 import Header from '../../general/header';
 import {TabNavigation, TabItem} from '../../navigation/tabs';
-import {LampIcon} from '../../general/icons';
+import {LampIcon, NewLampIcon} from '../../general/icons';
 import {withFooter} from '../../general/screen_style';
 
 import {snow} from '../../colors';
@@ -15,7 +15,7 @@ import {enableCurrentDevice, disableCurrentDevice, setCurrentDeviceLevel} from '
 let LightButton = ({isOn, onPress}) => {
     return (
         <TouchableHighlight onPress={onPress} underlayColor={snow.lighten(0.5).hex()}>
-            <LampIcon isOn={isOn}/>
+            <NewLampIcon isOn={isOn}/>
         </TouchableHighlight>
     )
 }
@@ -25,7 +25,7 @@ class LightScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header>Device Name</Header>
+                <Header onPress={this.props.navigation.openDrawer()}>Device Name</Header>
                 <TabNavigation>
                     <TabItem onPress={() => 1} isActive={true}>{"Light"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Color')}>{"Color"}</TabItem>

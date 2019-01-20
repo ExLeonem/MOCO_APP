@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import {View, Button, StyleSheet} from 'react-native';
 
 import Header from '../../general/header';
 import {TabNavigation, TabItem} from '../../navigation/tabs';
@@ -15,7 +15,7 @@ export default class ManualScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header>{"Add Schedule"}</Header>
+                <Header onPress={() => this.props.navigation.openDrawer()}>{"Add Schedule"}</Header>
                 <TabNavigation>
                     <TabItem onPress={() => 1} isActive={true}>{"Manual"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Alarm')}>{"Alarm"}</TabItem>

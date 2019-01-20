@@ -16,7 +16,7 @@ export default class FinishAddScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header>{"Add Schedule"}</Header>
+                <Header onPress={() => this.props.navigation.openDrawer()}>{"Add Schedule"}</Header>
 
                 <AddFinish style={withFooter.content}/>
 

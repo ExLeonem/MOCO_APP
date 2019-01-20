@@ -102,6 +102,36 @@ const LampIcon = ({scaleBy=0, isOn=true}) => {
 }
 
 
+
+const NewLampIcon = ({scaleBy=0, isOn=true}) => {
+    let {height, width} = scaleIconSize(scaleBy, 178, 192);
+    return (
+        <Svg width={width} height={height} viewBox="0 0 178 192" fill="none" >
+            <Path 
+                d="M89 0L158.583 33.5094L175.769 108.804L127.616 169.186H50.3843L2.23141 108.804L19.417 33.5094L89 0Z" 
+                fill={isOn? "#FFFDCD": "#F9F9F9"}
+            />
+            <Path 
+                fill-rule="evenodd" 
+                clip-rule="evenodd" 
+                d="M157.615 131.569L127.616 169.186H50.3843L18.9318 129.746C18.7104 127.563 18.597 125.349 18.597 123.11C18.597 85.9306 49.8393 55.791 88.3786 55.791C126.918 55.791 158.16 85.9306 158.16 123.11C158.16 125.975 157.975 128.798 157.615 131.569Z" 
+                fill={isOn? "#FDFAA6": "#F1F1F1"}
+            />
+            <Path 
+                fill-rule="evenodd" 
+                clip-rule="evenodd" 
+                d="M114.838 169.186H60.5049C49.5738 161.186 42.5074 148.476 42.5074 134.164C42.5074 109.954 62.7281 90.3284 87.6716 90.3284C112.615 90.3284 132.836 109.954 132.836 134.164C132.836 148.476 125.769 161.186 114.838 169.186Z" 
+                fill={isOn? "#FFF64F" : "#DEDEDE"}
+            />
+            <Path 
+                d="M59 178H117V187C117 189.761 114.761 192 112 192H64C61.2386 192 59 189.761 59 187V178Z" 
+                fill="#424B54"
+            />
+        </Svg>
+    )
+}
+
+
 const SettingsIcon = ({scaleBy=0}) => {
     let {height, width} = scaleIconSize(scaleBy, 19, 19);
     return(
@@ -138,6 +168,7 @@ export {
     RemoveIcon,
     ArrowIcon,
     DrawerIcon,
+    NewLampIcon,
     LampIcon,
     SettingsIcon,
     RepeatIcon
