@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
-import {DrawerIcon, AddIcon, RemoveIcon} from './icons';
+import {DrawerIcon, AddIcon, RemoveIcon, BackIcon} from './icons';
 import {header} from '../fonts';
 import MainNavigation from '../navigation/navigator';
 
@@ -32,7 +32,9 @@ export default class Header extends React.Component {
 
     renderIcon(icon, iconColor) {
         if(icon == "remove") {
-            return <RemoveIcon color={iconColor != undefined? iconColor: snow.hex()}/>;
+            return <RemoveIcon color={iconColor != undefined? iconColor : snow.hex()}/>;
+        } else if(icon == "back") {
+            return <BackIcon color={iconColor != undefined? iconColor : snow.hex()}/>
         }
         return <DrawerIcon scaleBy={5}/>;
     }

@@ -1,5 +1,4 @@
 import {createDrawerNavigator, createAppContainer} from 'react-navigation';
-import Drawer from '../general/drawer';
 import DevicesDrawer from '../screens/device/navigation';
 import {mainRoutes} from './routes';
 

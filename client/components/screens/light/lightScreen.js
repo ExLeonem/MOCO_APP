@@ -25,7 +25,7 @@ class LightScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header onPress={this.props.navigation.openDrawer()}>Device Name</Header>
+                <Header onPress={() => this.props.navigation.openDrawer()}>Device Name</Header>
                 <TabNavigation>
                     <TabItem onPress={() => 1} isActive={true}>{"Light"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Color')}>{"Color"}</TabItem>

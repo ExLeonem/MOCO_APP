@@ -14,7 +14,6 @@ import store from './store/index';
 import {Provider} from 'react-redux';
 import {AppNavigator} from './components/navigation/navigator';
 
-import Drawer from './components/general/drawer';
 
 
 export default class App extends Component {
@@ -22,7 +21,6 @@ export default class App extends Component {
     return (
       <Provider store={store}>
         <AppNavigator/>
-        {/* <Drawer></Drawer> */}
       </Provider>
     );
   }

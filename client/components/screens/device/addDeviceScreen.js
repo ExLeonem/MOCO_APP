@@ -30,6 +30,11 @@ class AddDeviceScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
+                <Header
+                    icon="back"
+                    onPress={() => this.props.switchScreen()}
+                    underlayColor={arsenic.hex()}
+                />
                 <View style={styles.content}>
                     <InputField 
                         label="Device Name" 

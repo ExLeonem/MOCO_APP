@@ -53,7 +53,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 50,
         borderWidth: 1,
-        borderColor: snow.hex()
+        borderColor: snow.hex(),
+        paddingHorizontal: 15
     },
     selected: {
         flex: 1,
