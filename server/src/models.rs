@@ -33,7 +33,7 @@ impl std::fmt::Display for DatabaseError {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct Schedule {
     pub id: Option<i32>,
     pub device: String,
@@ -54,7 +54,7 @@ pub struct NewSchedule {
     pub active: bool,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub enum LedMode {
     Default,
     Unknown,
@@ -78,7 +78,7 @@ impl From<i32> for LedMode {
     }
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize, Serialize)]
 pub struct LedSetting {
     pub mode: LedMode,
     pub color: [u8; 3],

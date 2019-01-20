@@ -156,7 +156,7 @@ impl Controller {
     fn handle_schedule(&mut self, now: chrono::NaiveDateTime) {
         match self.running_schedule.clone() {
             Some(schedule) => {
-                let diff = self.schedules[0].activation_time.signed_duration_since(now);
+                let diff = schedule.activation_time.signed_duration_since(now);
                 let active_since_secs = -diff.num_seconds();
                 let time_til_100 = chrono::Duration::from_std(self.time_til_100)
                     .unwrap()
@@ -183,16 +183,7 @@ impl Controller {
                         self.led.set_on(false);
                         self.notify_cache();
                     }
-                    let conn = establish_connection(&self.database_url);
-                    let result = DbSchedule::delete(&conn, schedule.id.unwrap());
-                    if let Err(e) = result {
-                        log::warn!(
-                            "Failed to delete schedule with id {} from database: {}",
-                            schedule.id.unwrap(),
-                            e
-                        );
-                    }
-                    self.running_schedule = None;
+                    Controller::delete_schedule(&self.database_url, self.running_schedule.take().unwrap());
                     self.check_database = true;
                     log::info!(
                         "Schedule with id {} finished and deleted from database",
@@ -259,10 +250,133 @@ impl Controller {
 
     fn update_manuel_timestamp(&mut self) {
         self.manuel_timestamp = Some(Instant::now());
+        if self.running_schedule.is_some() {
+            Controller::delete_schedule(&self.database_url, self.running_schedule.take().unwrap());
+        }
+    }
+
+    fn delete_schedule(conn: &str, schedule: Schedule) {
+        let conn = establish_connection(conn);
+        let result = DbSchedule::delete(&conn, schedule.id.unwrap());
+        if let Err(e) = result {
+            log::warn!(
+                "Failed to delete schedule with id {} from database: {}",
+                schedule.id.unwrap(),
+                e
+            );
+        }
     }
 }
 
 pub fn establish_connection(database_url: &str) -> SqliteConnection {
     SqliteConnection::establish(&database_url)
         .expect(&format!("Error connecting to {}", database_url))
+}
+
+
+#[cfg(test)]
+mod tests {
+    // https://doc.rust-lang.org/stable/book/ch11-01-writing-tests.html#checking-results-with-the-assert-macro
+    use std::sync::mpsc::channel;
+    use std::sync::mpsc::{Sender, Receiver};
+    use crate::led::message::Message;
+    use crate::models::{LedSetting, LedMode, Schedule};
+    use super::*;
+
+    fn create_controller() -> (Sender<Message>, Receiver<Message>, Controller) {
+        let light_source = Box::new(crate::led::MocLedStrip::new());
+        let (controller_tx, controller_rx) = channel();
+        let (cache_tx, cache_rx) = channel();
+        let conn = ":memory:".to_owned();
+        let timezone = 1;
+
+        let controller = Controller::new(
+            light_source,
+            controller_tx,
+            cache_rx,
+            conn,
+            timezone,
+        );
+
+        (cache_tx, controller_rx, controller)
+    }
+
+    #[test]
+    fn send_data_dump() {
+        let (tx, rx, mut controller) = create_controller();
+
+        // send GetData and check if we receive DataDump
+        tx.send(Message::GetData).unwrap();
+        controller.handle_message();
+        match rx.recv().unwrap() {
+            Message::DataDump(..) => {},
+            _ => assert!(false),
+        }
+    }
+
+    #[test]
+    fn update_on() {
+        let (tx, _rx, mut controller) = create_controller();
+
+        // update on to true
+        tx.send(Message::UpdateOn(true)).unwrap();
+        controller.handle_message();
+        assert_eq!(controller.led.on(), true);
+
+        // update on to false
+        tx.send(Message::UpdateOn(false)).unwrap();
+        controller.handle_message();
+        assert_eq!(controller.led.on(), false);
+    }
+
+    #[test]
+    fn update_color() {
+        let (tx, _rx, mut controller) = create_controller();
+
+        // update on to true
+        tx.send(Message::UpdateColor([10, 20, 30])).unwrap();
+        controller.handle_message();
+        assert_eq!(controller.led.color(), [10, 20, 30]);
+
+        // update on to false
+        tx.send(Message::UpdateColor([100, 100, 100])).unwrap();
+        controller.handle_message();
+        assert_eq!(controller.led.color(), [100, 100, 100]);
+    }
+
+    #[test]
+    fn update_brightness() {
+        let (tx, _rx, mut controller) = create_controller();
+
+        // update on to true
+        tx.send(Message::UpdateBrightness(50)).unwrap();
+        controller.handle_message();
+        assert_eq!(controller.led.brightness(), 50);
+
+        // update on to false
+        tx.send(Message::UpdateBrightness(0)).unwrap();
+        controller.handle_message();
+        assert_eq!(controller.led.brightness(), 0);
+    }
+
+    #[test]
+    fn stop_schedule_when_updating_led() {
+        let (tx, _rx, mut controller) = create_controller();
+        let now = chrono::Utc::now().naive_utc() + chrono::Duration::hours(controller.timezone);
+        controller.running_schedule = Some(Schedule{
+            id: Some(0),
+            activation_time: now,
+            active: true,
+            device: "test".to_owned(),
+            integration: "maunel".to_owned(),
+            running: true,
+            led_setting: LedSetting { mode: LedMode::Default, color: [50, 50, 50]},
+        });
+
+        controller.handle_schedule(now);
+        tx.send(Message::UpdateColor([100, 100, 100])).unwrap();
+        controller.handle_message();
+        assert_eq!(None, controller.running_schedule);
+
+    }
 }
