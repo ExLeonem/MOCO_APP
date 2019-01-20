@@ -26,7 +26,11 @@ export default class CircleButton extends React.Component {
         }
     }
 
-    __getIconColor(type) {
+    __getIconColor(type, passedColor) {
+        if(passedColor != undefined && passedColor != null) {
+            return passedColor;
+        }
+
         switch(type) {
             case "remove": return red
             case "check": return green
@@ -66,8 +70,8 @@ export default class CircleButton extends React.Component {
     }
 
     render() {
-        let {type, size, onPress, style} = this.props;
-        let color = this.__getIconColor(type);
+        let {type, size, onPress, style, buttonColor} = this.props;
+        let color = this.__getIconColor(type, buttonColor);
         let buttonStyle = this.__genStyles(color, size);
         return(
             <View style={style}>

@@ -1,7 +1,7 @@
 
 import React, {Component} from 'react';
 import {StyleSheet, View, TextInput, Text, Animated} from 'react-native';
-import {black} from '../general/colors';
+import {arsenic, snow} from '../colors';
 
 export default class InputField extends Component {
 
@@ -42,6 +42,8 @@ export default class InputField extends Component {
     }
 
     render() {
+        let setColor = this.props.invertColor != undefined? snow.hex() : arsenic.hex();
+
         const labelStyle = {
             position: "absolute",
             left: 35,
@@ -55,7 +57,7 @@ export default class InputField extends Component {
             }),
             color: this._animatedIsFocused.interpolate({
                 inputRange: [0, 1],
-                outputRange: [black.hex(), black.hex()]
+                outputRange: [setColor, setColor]
             }),
             opacity: this._animatedIsFocused.interpolate({
                 inputRange: [0, 1],
@@ -63,14 +65,16 @@ export default class InputField extends Component {
             })
         };
 
+
+        let inputColor = this.props.invertColor? snow.darken(0.5).hex(): arsenic.hex();
         return (
             <View style={styles.container}>
                 <Animated.Text style={labelStyle}>{this.props.label}</Animated.Text>
                 {this.createSubLabel(this.props.subLabel)}
                 <TextInput
                     value={this.props.value}
-                    style={styles.inputBox}
-                    placeholderTextColor={black.hex()}
+                    style={{...styles.inputBox, borderBottomColor: inputColor, color: setColor}}
+                    placeholderTextColor={setColor}
                     onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
                     onChangeText={this.props.onChange}
@@ -91,7 +95,7 @@ const styles = StyleSheet.create({
     },
     inputBox: {
         borderBottomWidth: 2,
-        borderBottomColor: black.hex(),
+        borderBottomColor: arsenic.hex(),
         marginLeft: 30,
         marginRight: 30
     },
@@ -100,6 +104,6 @@ const styles = StyleSheet.create({
         right: 45,
         top: 18,
         fontSize: 12,
-        color: black.lighten(0.6).hex()
+        color: arsenic.lighten(0.6).hex()
     }
 });

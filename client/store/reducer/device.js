@@ -1,4 +1,4 @@
-import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE} from '../constants';
+import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, DISABLE_DEVICE, ENABLE_DEVICE} from '../constants';
 import SQlite from 'react-native-sqlite-storage';
 
 
@@ -35,6 +35,18 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
                 return device;
             }
             newState = state.map(udpate);
+            break;
+        }
+        case REPLACE_DEVICE_ADDRESS: {
+
+            break;
+        }
+        case ENABLE_DEVICE: {
+
+            break;
+        }
+        case DISABLE_DEVICE: {
+
             break;
         }
     }   

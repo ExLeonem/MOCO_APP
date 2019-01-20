@@ -2,8 +2,11 @@ import React, {Component} from 'react';
 import {View, Text, Button, ScrollView, TouchableHighlight, StyleSheet} from 'react-native';
 
 import {arsenic, snow} from '../colors';
-import {RemoveIcon, AddIcon} from './icons';
-import {DeviceEntry} from '../device/device_entry';
+
+import DeviceEntry from '../device/device_entry';
+import Header from './header';
+
+import {connect} from 'react-redux';
 
 class Drawer extends React.Component {
 
@@ -15,10 +18,16 @@ class Drawer extends React.Component {
     }
 
     render() {
+
         return (
             <View style={styles.container}>
+                <Header 
+                    icon="remove" 
+                    onPress={() => this.props.navigation.closeDrawer()}
+                    underlayColor={arsenic.hex()}
+                />
                 <ScrollView>
-                    
+                    <DeviceEntry isActive={true}>{"Test Licht"}</DeviceEntry>
                 </ScrollView>
             </View>
         )
@@ -47,4 +56,4 @@ const styles = StyleSheet.create({
 
 
 
-export default Drawer;
+export default connect(mapStateToProps)(Drawer);

@@ -65,8 +65,13 @@ let initialState = {
         toAdd: {},
         current: [scheduleOne, scheduleTwo, scheduleThree]
     },
-    devices: [],
-    currentDevice: deviceTemplate
+    devices: [deviceTemplate],
+    currentDevice: deviceTemplate,
+    drawer: "show",
+    newDevice: {
+        name: "",
+        address: ""
+    }
 };
 
 const sagaMiddleware = createSagaMiddleware();
