@@ -13,9 +13,9 @@ class DeviceEntry extends React.Component {
 
     changeState() {
         if(this.props.isActive) {
-            this.props.disable(this.props.name);
+            this.props.disable(this.props.address);
         } else {
-            this.props.enable(this.props.name);
+            this.props.enable(this.props.address);
         }
     }
 
@@ -23,17 +23,17 @@ class DeviceEntry extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={this.props.isActive? styles.selected : null}/>
+                <View style={this.props.isActive? styles.selected : styles.notSelected}/>
                 <TouchableHighlight 
                     style={styles.selectableDevice} 
                     underlayColor={arsenic.hex()} 
-                    onPress={() => this.setCurrent(this.props.name)}
+                    onPress={() => this.props.setCurrentDevice(this.props.name)}
                 > 
                     <Text style={styles.deviceName}>{this.props.name}</Text>
                 </TouchableHighlight>
                 <TouchableHighlight 
                     style={styles.turnLight}
-                    underlayColor={arsenic.hex()} 
+                    underlayColor={arsenic.lighten(0.6).hex()} 
                     onPress={() => this.changeState()}
                 >
                     <CircleIcon color={this.props.isActive? yellow.hex() : snow.hex()}/>
@@ -52,24 +52,36 @@ const styles = StyleSheet.create({
         alignContent: 'stretch',
         alignItems: 'center',
         height: 50,
+        paddingHorizontal: 20,
+        marginVertical: 25,
         borderWidth: 1,
-        borderColor: snow.hex(),
-        paddingHorizontal: 15
+        borderColor: snow.hex()
     },
     selected: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'flex-start',
         alignSelf: 'stretch',
-        paddingHorizontal: 15,
+        paddingLeft: 15,
         borderLeftColor: green.hex(),
         borderLeftWidth: 3.5
     },
+    notSelected: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        alignSelf: 'stretch',
+        paddingLeft: 15,
+        borderColor: arsenic.hex(),
+        borderLeftWidth: 3.5
+    },
     selectableDevice: {
-        flex: 3
+        flex: 5
     },
     turnLight: {
-        flex: 1
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     deviceName: {
         color: snow.hex()
@@ -80,7 +92,7 @@ const mapDispatchToProps = dispatch => {
     return {
         enable: name => dispatch(enableDevice(name)),
         disable: name => dispatch(disableDevice(name)),
-        setCurrent: name => dispatch(setCurrentDevice(name))
+        setCurrentDevice: name => dispatch(setCurrentDevice(name))
     }
 }
 

@@ -16,11 +16,6 @@ export default class ManualScreen extends React.Component {
         return (
             <View style={withFooter.screenWrapper}>
                 <Header onPress={() => this.props.navigation.openDrawer()}>{"Add Schedule"}</Header>
-                <TabNavigation>
-                    <TabItem onPress={() => 1} isActive={true}>{"Manual"}</TabItem>
-                    <TabItem onPress={() => this.props.navigation.navigate('Alarm')}>{"Alarm"}</TabItem>
-                    <TabItem onPress={() => this.props.navigation.navigate('Calendar')}>{"Calendar"}</TabItem>
-                </TabNavigation>
                 <AddManual style={withFooter.content} onRepeat={() => this.props.navigation.navigate('Repeat')}/>
                 <View style={withFooter.footer}>
                     <CircleButton type={"forward"} size={60} onPress={() => this.props.navigation.navigate('Finish')}/>

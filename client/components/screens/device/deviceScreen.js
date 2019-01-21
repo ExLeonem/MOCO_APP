@@ -16,6 +16,12 @@ class DeviceScreen extends React.Component {
         this.props.initNewDevice();
         this.props.switchScreen();
     }
+
+    renderDevices(devices) {
+        return devices.map(device => {
+            return <DeviceEntry isActive={device.isActive} address={device.url} name={device.name}/>
+        });
+    }
     
     render() {
         return (
@@ -26,7 +32,7 @@ class DeviceScreen extends React.Component {
                     underlayColor={arsenic.hex()}
                 />
                 <ScrollView style={styles.deviceList}>
-                    <DeviceEntry isActive={true} address={"https://www.qqwa.de/sneaky/moco/api/v1"} name={"Test Licht"}/>
+                    {this.renderDevices(this.props.devices)}
                 </ScrollView>
                 <View style={styles.footer}>
                     <CircleButton buttonColor={snow} onPress={() => this.switchToAddDevice()}/>
@@ -38,7 +44,9 @@ class DeviceScreen extends React.Component {
 
 
 const mapStateToProps = (state, ownProps) => {
-    return {...ownProps};
+    return {
+        devices: state.devices
+    }
 };
 
 const mapDispatchToProps = dispatch => {

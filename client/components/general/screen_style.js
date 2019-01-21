@@ -15,8 +15,9 @@ const withFooter = StyleSheet.create({
         position: 'relative',
         flex: 0,
         height: 100,
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: 'flex-start',
+        alignItems: 'flex-end',
+        marginRight: 40
     }
 });
 

@@ -70,7 +70,8 @@ let initialState = {
     drawer: "show",
     newDevice: {
         name: "",
-        address: ""
+        address: "",
+        message: null
     }
 };
 

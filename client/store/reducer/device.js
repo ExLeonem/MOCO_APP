@@ -1,6 +1,4 @@
 import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, DISABLE_DEVICE, ENABLE_DEVICE} from '../constants';
-import SQlite from 'react-native-sqlite-storage';
-
 
 const deviceTemplate = {
     uuid: 1,
@@ -9,14 +7,6 @@ const deviceTemplate = {
     level: '0.8',
     active: false
 };
-
-const updateDevice = (name) => {
-    return (device) => {
-        if(device.name == action.payload.uuid) {
-            return {...device, name: action.payload.name};
-        }
-    }
-}
 
 const deviceReducer = (state = [deviceTemplate] , action) => {
     let newState = state;
@@ -27,7 +17,7 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
         }
         case REMOVE_DEVICE: {
             let removeDevice = (device) => {
-                if(device.uuid == action.payload.uuid) {
+                if(device.url == action.address) {
                     return false;
                 }
                 return true;
@@ -37,8 +27,8 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
         }
         case RENAME_DEVICE: {
             let update = (device) => {
-                if(device.uuid == action.payload.uuid) {
-                    return {...device, name: action.payload.name};
+                if(device.url == action.address) {
+                    return {...device, name: action.name};
                 }
                 return device;
             }
@@ -47,8 +37,8 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
         }
         case REPLACE_DEVICE_ADDRESS: {
             let update = (device) => {
-                if(device.uuid == action.payload.uuid) {
-                    return {...device, url: action.payload.address};
+                if(device.url == action.address) {
+                    return {...device, url: action.url};
                 }
                 return device;
             }
@@ -57,7 +47,7 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
         }
         case ENABLE_DEVICE: {
             let update = device => {
-                if(device.uuid == action.payload.uuid) {
+                if(device.url == action.address) {
                     return {...device, isActive: true};
                 }
                 return device;
@@ -67,7 +57,7 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
         }
         case DISABLE_DEVICE: {
             let update = device => {
-                if(device.uuid == action.payload.uuid) {
+                if(device.url == action.address) {
                     return {...device, isActive: false};
                 }
                 return device;

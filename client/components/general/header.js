@@ -32,7 +32,7 @@ export default class Header extends React.Component {
 
     renderIcon(icon, iconColor) {
         if(icon == "remove") {
-            return <RemoveIcon color={iconColor != undefined? iconColor : snow.hex()}/>;
+            return <RemoveIcon color={iconColor != undefined? iconColor : snow.hex()} scaleBy={-5}/>;
         } else if(icon == "back") {
             return <BackIcon color={iconColor != undefined? iconColor : snow.hex()}/>
         }

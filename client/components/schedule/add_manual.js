@@ -32,12 +32,12 @@ const DateDisplay = ({date, onPress, onPressRemove}) => {
                 </TouchableHighlight>
             </View>
         )
-        return (
-            <TouchableHighlight onPress={() => console.log("")} underlayColor={snow.hex()}>
-                <Text>Add Date </Text>
-            </TouchableHighlight>
-        )
     }
+    return (
+        <TouchableHighlight onPress={() => console.log("")} underlayColor={snow.hex()}>
+            <Text>Add Date </Text>
+        </TouchableHighlight>
+    )
 }
 
 const RepetitionButton = ({onPress, style}) => {
@@ -92,7 +92,7 @@ class AddManual extends React.Component {
 
     __timeSelected = date => {
         let hours = parseInt(date.getHours()) < 10 ? "0" + date.getHours().toString : date.getHours();
-        let minutes = parseInt(date.getMinutes()) < 10 ? "0" + date.getMinutes.toString : date.getMInutes();
+        let minutes = parseInt(date.getMinutes()) < 10 ? "0" + date.getMinutes.toString : date.getMinutes();
         console.log(hours);
         
         this.props.updateTime(hours + ":" + minutes);
