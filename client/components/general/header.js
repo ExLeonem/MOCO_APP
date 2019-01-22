@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
-import {DrawerIcon, AddIcon} from './icons';
+import {DrawerIcon, AddIcon, RemoveIcon, BackIcon} from './icons';
 import {header} from '../fonts';
 import MainNavigation from '../navigation/navigator';
 
@@ -30,11 +30,24 @@ const headStyle = StyleSheet.create({
 
 export default class Header extends React.Component {
 
+    renderIcon(icon, iconColor) {
+        if(icon == "remove") {
+            return <RemoveIcon color={iconColor != undefined? iconColor : snow.hex()} scaleBy={-5}/>;
+        } else if(icon == "back") {
+            return <BackIcon color={iconColor != undefined? iconColor : snow.hex()}/>
+        }
+        return <DrawerIcon scaleBy={5}/>;
+    }
+
     render() {
         return (
             <View style={headStyle.container}>
-                <TouchableHighlight style={headStyle.drawerIconStyle} onPress={() => this.props.onPress()} underlayColor={snow.hex()}>
-                    <DrawerIcon scaleBy={5}/>                    
+                <TouchableHighlight 
+                    style={headStyle.drawerIconStyle} 
+                    onPress={() => this.props.onPress()} 
+                    underlayColor={this.props.underlayColor != undefined? this.props.underlayColor : snow.hex()}
+                >
+                    {this.renderIcon(this.props.icon, this.props.iconColor)}
                 </TouchableHighlight>
                 <Text style={headStyle.title}>{this.props.children}</Text>
                 <View>

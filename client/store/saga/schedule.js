@@ -1,10 +1,26 @@
-/**
- * Endpoints
- * 
- * Base URL: https://www.qqwa.de/sneaky/moco/api
- */
+import {WRITE_SCHEDULE} from '../constants';
+import {addSchedule} from '../action/schedule'
+
+import {takeLatest, put, call, select} from 'redux-saga';
+import axios from 'axios';
 
 
+export function* checkScheduleToWrite() {
+yield takeLatest(WRITE_SCHEDULE, )
+}
+
+// TODO: method to merge existing schedules
+const endpoint = {
+    list: () => "/api/v1/schedules", // request all schedules
+    single: id => "/api/v1/schedule" + id, // remove, add, update
+    post: () => "/api/v1/schedule", // post new schedule
+
+};
+
+
+function* checkExists(action) {
+
+}
 
  // /api/v1/schedules (GET)
  /**

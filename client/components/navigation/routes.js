@@ -3,7 +3,6 @@ import {Easing, Animated} from 'react-native';
 import {createStackNavigator} from 'react-navigation';
 import {GeneralOperationTabs} from './tabs';
 import {ScheduleCreationTabs} from '../screens/schedule/navigation';
-import {DeviceScreen} from '../screens/device/deviceScreen';
 
 
 
@@ -29,7 +28,8 @@ let scheduleStackNavigation = createStackNavigator({
 
 // Drawer navigation
 let mainRoutes = {
-    Devices: scheduleStackNavigation
+    Device: scheduleStackNavigation,
+
 }
 
 

@@ -1,4 +1,4 @@
-import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE} from '../constants';
+import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, DISABLE_DEVICE, ENABLE_DEVICE} from '../constants';
 
 const addDevice = (payload) => {
     return {
@@ -21,8 +21,32 @@ const renameDevice = (payload) => {
     }
 };
 
+const replaceDeviceAddress = (payload) => {
+    return {
+        type: REPLACE_DEVICE_ADDRESS,
+        payload: payload
+    }
+};
+
+const enableDevice = (payload) => {
+    return {
+        type: ENABLE_DEVICE,
+        payload: payload
+    }
+}
+
+const disableDevice = (payload) => {
+    return {
+        type: DISABLE_DEVICE,
+        payload: payload
+    }
+}
+
 export {
     addDevice,
     removeDevice,
-    renameDevice
+    renameDevice,
+    replaceDeviceAddress,
+    enableDevice,
+    disableDevice
 };

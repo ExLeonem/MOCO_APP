@@ -1,6 +1,4 @@
-import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE} from '../constants';
-import SQlite from 'react-native-sqlite-storage';
-
+import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, DISABLE_DEVICE, ENABLE_DEVICE} from '../constants';
 
 const deviceTemplate = {
     uuid: 1,
@@ -19,7 +17,7 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
         }
         case REMOVE_DEVICE: {
             let removeDevice = (device) => {
-                if(device.uuid == action.payload.uuid) {
+                if(device.url == action.address) {
                     return false;
                 }
                 return true;
@@ -29,12 +27,42 @@ const deviceReducer = (state = [deviceTemplate] , action) => {
         }
         case RENAME_DEVICE: {
             let update = (device) => {
-                if(device.uuid == action.payload.uuid) {
-                    return {...device, name: action.payload.name};
+                if(device.url == action.address) {
+                    return {...device, name: action.name};
                 }
                 return device;
             }
-            newState = state.map(udpate);
+            newState = state.map(update);
+            break;
+        }
+        case REPLACE_DEVICE_ADDRESS: {
+            let update = (device) => {
+                if(device.url == action.address) {
+                    return {...device, url: action.url};
+                }
+                return device;
+            }
+            newState = state.map(update);
+            break;
+        }
+        case ENABLE_DEVICE: {
+            let update = device => {
+                if(device.url == action.address) {
+                    return {...device, isActive: true};
+                }
+                return device;
+            }
+            newState = state.map(update);
+            break;
+        }
+        case DISABLE_DEVICE: {
+            let update = device => {
+                if(device.url == action.address) {
+                    return {...device, isActive: false};
+                }
+                return device;
+            }
+            newState = state.map(update);
             break;
         }
     }   

@@ -1,5 +1,5 @@
 import {createDrawerNavigator, createAppContainer} from 'react-navigation';
-import Drawer from '../general/drawer';
+import DevicesDrawer from '../screens/device/navigation';
 import {mainRoutes} from './routes';
 
 import {Dimensions} from 'react-native';
@@ -8,8 +8,8 @@ const {width} = Dimensions.get('screen');
 
 const MainNavigation = createDrawerNavigator(mainRoutes,
 {
-    initialRouteName: "Devices",
-    contentComponent: Drawer,
+    initialRouteName: "Device",
+    contentComponent: DevicesDrawer,
     drawerWidth: width
 });
 

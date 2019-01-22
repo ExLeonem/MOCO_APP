@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, TouchableHighlight, Slider} from 'react-native';
+import {StyleSheet, View, TouchableHighlight, Slider, Text} from 'react-native';
 
 import Header from '../../general/header';
 import {TabNavigation, TabItem} from '../../navigation/tabs';
@@ -20,19 +20,21 @@ let LightButton = ({isOn, onPress}) => {
     )
 }
 
-class LightScreen extends React.Component {
-    
+class LightScreen extends React.Component {    
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header onPress={this.props.navigation.openDrawer()}>Device Name</Header>
+                <Header onPress={() => this.props.navigation.openDrawer()}>Device Name</Header>
                 <TabNavigation>
                     <TabItem onPress={() => 1} isActive={true}>{"Light"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Color')}>{"Color"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Schedule')}>{"Schedule"}</TabItem>
                 </TabNavigation>
                 <View style={styles.contentWrapper}>
-                    <LightButton isOn={this.props.isActive} onPress={() => this.props.isActive? this.props.disable() : this.props.enable()}/>
+                    <LightButton 
+                        isOn={this.props.isActive} 
+                        onPress={() => this.props.isActive? this.props.disable() : this.props.enable()}
+                    />
                 </View>
                 <View style={{...withFooter.footer, justifyContent: 'flex-start', position: 'relative'}}>
                     <Slider 
@@ -41,7 +43,7 @@ class LightScreen extends React.Component {
                         maximumValue={100}
                         minimumValue={0} 
                         step={1}
-                        onSlidingComplete={level => this.props.updateLevel(level)} 
+                        onValueChange={level => this.props.updateLevel(level)}
                     />
                 </View>
             </View>

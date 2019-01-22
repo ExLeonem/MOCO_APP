@@ -23,7 +23,6 @@ class ColorSelectionScreen extends React.Component {
                 <View style={styles.contentWrapper}>
                     <ColorPicker 
                         color={this.props.color}
-                        hideSliders={true}
                         style={styles.picker}
                         onColorChange={hsvColor => this.props.setColor(fromHsv(hsvColor))}
                     />

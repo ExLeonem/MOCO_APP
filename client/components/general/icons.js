@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {yellow, snow} from '../colors';
-import Svg, {Path, Rect, Ellipse} from 'react-native-svg'; // TODO: Linking for iOS needed?
+import Svg, {Path, Rect, Ellipse, Circle} from 'react-native-svg'; // TODO: Linking for iOS needed?
 
 
 const scaleIconSize = (scaleBy, width = 24, height = 24) => {
@@ -65,9 +65,9 @@ const CheckIcon = ({scaleBy=0, color}) => {
 const ArrowIcon = ({scaleBy=0}) => {
     let {width, height} = scaleIconSize(scaleBy, 18, 16);
     return (
-        <svg width={width} height={height} viewBox="0 0 18 16" fill="none">
-        <path d="M0.292892 7.29289C-0.0976315 7.68342 -0.0976315 8.31658 0.292892 8.70711L6.65685 15.0711C7.04738 15.4616 7.68054 15.4616 8.07107 15.0711C8.46159 14.6805 8.46159 14.0474 8.07107 13.6569L2.41421 8L8.07107 2.34315C8.46159 1.95262 8.46159 1.31946 8.07107 0.928932C7.68054 0.538408 7.04738 0.538408 6.65685 0.928932L0.292892 7.29289ZM18 7L1 7V9L18 9V7Z" fill="#424B54"/>
-        </svg>
+        <Svg width={width} height={height} viewBox="0 0 18 16" fill="none">
+            <Path d="M0.292892 7.29289C-0.0976315 7.68342 -0.0976315 8.31658 0.292892 8.70711L6.65685 15.0711C7.04738 15.4616 7.68054 15.4616 8.07107 15.0711C8.46159 14.6805 8.46159 14.0474 8.07107 13.6569L2.41421 8L8.07107 2.34315C8.46159 1.95262 8.46159 1.31946 8.07107 0.928932C7.68054 0.538408 7.04738 0.538408 6.65685 0.928932L0.292892 7.29289ZM18 7L1 7V9L18 9V7Z" fill="#424B54"/>
+        </Svg>
     );
 }
 
@@ -148,7 +148,7 @@ const SettingsIcon = ({scaleBy=0}) => {
 
 
 const RepeatIcon = ({scaleBy=0, color}) => {
-    let {height, width} = scaleIconSize(scaleBy, )
+    let {height, width} = scaleIconSize(scaleBy, 22, 19)
     return (
         <Svg width={width} height={height} viewBox="0 0 22 19" fill="none" >
             <Path 
@@ -158,6 +158,15 @@ const RepeatIcon = ({scaleBy=0, color}) => {
         </Svg>
 
     );
+}
+
+const CircleIcon = ({scaleBy=0, color}) => {
+    let {height, width} = scaleIconSize(scaleBy, 20, 20);    
+    return (
+        <Svg width={width} height={height} viewBox="0 0 20 20" fill={color} >
+            <Circle cx="10" cy="10" r="10" fill="white"/>
+        </Svg>
+    )
 }
 
 export {
@@ -171,5 +180,6 @@ export {
     NewLampIcon,
     LampIcon,
     SettingsIcon,
-    RepeatIcon
+    RepeatIcon,
+    CircleIcon
 }
