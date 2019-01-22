@@ -51,7 +51,7 @@ class AddDeviceScreen extends React.Component {
                             onChange={address => this.props.setAddress(address)}
                             invertColor={true}    
                         />
-                        <Text>{this.props.errorMessage}</Text>
+                        <Text style={{color: snow.hex()}}>{this.props.errorMessage}</Text>
                 </View>
                 <View style={styles.footer}>
                     <CircleButton

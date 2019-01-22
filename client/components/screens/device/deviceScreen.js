@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, Button, ScrollView, TouchableHighlight, StyleSheet} from 'react-native';
+import {View, Text, ScrollView, StyleSheet} from 'react-native';
 
 import {arsenic, snow} from '../../colors';
 
@@ -18,9 +18,23 @@ class DeviceScreen extends React.Component {
     }
 
     renderDevices(devices) {
-        return devices.map(device => {
-            return <DeviceEntry isActive={device.isActive} address={device.url} name={device.name}/>
-        });
+        if(devices.length > 0 ) {
+            return (
+                <ScrollView style={styles.deviceList}>
+                    {
+                        devices.map(device => {
+                            return <DeviceEntry isActive={device.isActive} address={device.url} name={device.name}/>
+                        })
+                    }
+                </ScrollView>
+            ) 
+            return ;
+        }
+        return (
+            <View style={styles.displayInfo}>
+                <Text style={{color: snow.darken(0.4).hex()}}>Currently there are any devices registered.</Text>
+            </View>
+        )
     }
     
     render() {
@@ -31,9 +45,8 @@ class DeviceScreen extends React.Component {
                     onPress={() => this.props.onPress()}
                     underlayColor={arsenic.hex()}
                 />
-                <ScrollView style={styles.deviceList}>
-                    {this.renderDevices(this.props.devices)}
-                </ScrollView>
+                
+                {this.renderDevices(this.props.devices)}
                 <View style={styles.footer}>
                     <CircleButton buttonColor={snow} onPress={() => this.switchToAddDevice()}/>
                 </View>
@@ -66,6 +79,11 @@ const styles = StyleSheet.create({
         flex: 1,
         // borderWidth: 1,
         // borderColor: snow.hex()
+    },
+    displayInfo: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     footer: {
         position: 'relative',

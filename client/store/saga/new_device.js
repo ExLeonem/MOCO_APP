@@ -1,9 +1,14 @@
 import {ADD_NEW_DEVICE, REMOVE_DEVICE} from '../constants';
 import {addDevice} from '../action/device';
+import {setNewDeviceMessage} from '../action/new_device';
 
 import {AsyncStorage} from 'react-native';
 import {takeLatest, put, call, select} from 'redux-saga';
 
+import Color from 'color';
+import axios from 'axios';
+
+const serverEndpoint = "/api/v1/led_status";
 
 export function* checkOnAddDevice() {
     yield takeLatest(ADD_NEW_DEVICE, processDevice);
@@ -18,33 +23,56 @@ function* processDevice(action) {
             // Devices empty insert instantly
             let name = action.name;
             let address = action.address;
-            yield addDevice(name, address);
+            yield checkAndInsert(name, address);
         } else {
             // devices already exist, check if devices with url exists  
             let found = devices.find(device => device.url == action.address);
 
             // no device found
             if(!found) {
-                yield addDevice(action.name, action.address);
+                yield checkAndInsert(action.name, action.address);
             } else {
                 // !: put error message device already exists
+                yield put(setNewDeviceMessage("Try another one, you registered this address already..."));
             }
         }
 
     } catch(error) {
         console.log(error);
+        yield put(setNewDeviceMessage("Coudln't connect to the device. Check your internet connectivity and the address."));
         // Error Message
     }
 }
 
-function* insertDevice(name, address) {
-    yield call(_storeNewDevice(name, address));
+function* checkAndInsert(name, address) {
 
-    // Add device to current store
-    let newDevice = initNewDevice(name, address);
-    yield put(addDevice(newDevice));
+    // check if endpoint/device exists
+    let resp = yield endpointExists(address + serverEndpoint);
+    if(resp.status == 200 && "on" in resp.data) {
+        let ledState = resp.data;
+        let color = Color(ledState.color);
+        
+        // create device object and insert into application state
+        let deviceObj = initNewDevice(name, address, color.hex(), ledState.brightness, ledState.on);
+        yield put(addDevice(deviceObj));
+
+        // insert new device into db
+        yield call(_storeNewDevice(name, address));
+    } else {
+        // TODO: error device doesent support connection
+        yield put(setNewDeviceMessage("Thats not a smart lamp you want connect to. Double check the address mate."));
+    }
 }
 
+
+/**
+ * --------------------------------------
+ *           SERVER REQUESTS
+ * -------------------------------------
+ */ 
+function endpointExists(url) {
+    return axios.get(url);
+}
 
 
 /**
@@ -84,13 +112,13 @@ _removeDevice = async (address) => {
  *  -----------------------------------
  */
 
-function initNewDevice(name, address) {
+function initNewDevice(name, address, color, level, isActive) {
     return {
         name: name,
         url: address,
-        color: "#FFFF00",
-        level: 10,
-        isActive: false
+        color: color,
+        level: brightness,
+        isActive: on
     }
 }
 
