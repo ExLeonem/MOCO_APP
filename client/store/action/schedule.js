@@ -1,4 +1,5 @@
 import {
+    NEW_SCHEDULE_INSERT,
     NEW_SCHEDULE_RESET,
     NEW_SCHEDULE_SET_TIME,
     NEW_SCHEDULE_SET_DATE,
@@ -13,23 +14,19 @@ import {
     NEW_SCHEDULE_REMOVE_REPEAT,
     NEW_SCHEDULE_PUSH_REPEAT,
     NEW_SCHEDULE_SET_COLOR,
+    LOAD_SCHEDULES,
+    SET_SCHEDULES
     
 } from '../constants';
 
 /**
  * Actions to create/reset new scheudle
  */
-const newScheduleInit = () => {
-    return {
-        type: NEW_SCHEDULE_INIT
-    }
-}
 
-const newScheduleReset = () => {
-    return {
-        type: NEW_SCHEDULE_RESET,
-    }
-};
+
+const newScheduleInsert = () => {return {type: NEW_SCHEDULE_INSERT}}
+const newScheduleInit = () => {return {type: NEW_SCHEDULE_INIT}}
+const newScheduleReset = () => {return {type: NEW_SCHEDULE_RESET}}
 
 const newScheduleSetTime = (time) => {
     return {
@@ -84,6 +81,19 @@ const addSchedule = (schedule) => {
 /**
  * Actions on existing schedules 
  */
+const loadSchedules = () => {
+    return {
+        type: LOAD_SCHEDULES
+    }
+}
+
+const setSchedules = (schedules) => {
+    return {
+        type: SET_SCHEDULES,
+        schedules: schedules
+    }
+}
+
 const updateSchedule = (schedule) => {
     return {
         type: UPDATE_SCHEDULE,
@@ -121,6 +131,7 @@ const disableSchedule = (schedule) => {
 
 
 export {
+    newScheduleInsert,
     newScheduleInit,
     newScheduleReset,
     newScheduleSetTime,
@@ -129,6 +140,8 @@ export {
     newSchedulePushRepeat,
     newScheduleRemoveRepeat,
     newScheduleSetType,
+    loadSchedules,
+    setSchedules,
     addSchedule,
     removeSchedule,
     updateSchedule,

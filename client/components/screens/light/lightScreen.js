@@ -21,6 +21,7 @@ let LightButton = ({isOn, onPress}) => {
 }
 
 class LightScreen extends React.Component {    
+
     render() {
         return (
             <View style={withFooter.screenWrapper}>

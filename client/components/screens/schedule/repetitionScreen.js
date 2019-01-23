@@ -5,7 +5,7 @@ import Header from '../../general/header';
 import RepetitionItem from '../../schedule/repititionItem';
 import CircleButton from '../../general/button';
 
-import { snow, arsenic } from '../../colors';
+import { snow, arsenic, blue, yellow } from '../../colors';
 import { medium } from '../../fonts';
 import {withFooter} from '../../general/screen_style';
 
@@ -39,7 +39,7 @@ class RepetitionScreen extends React.Component {
 
             rowElements.push(<RepetitionItem selected={isSelected} dayName={weekDay} short={dayShort}/>)
 
-            if(i != 0 && i % elementsPerRow) {
+            if((i+1) % elementsPerRow == 0) {
                 elements.push(<Row>{rowElements}</Row>);
                 rowElements = [];
             }
@@ -64,7 +64,7 @@ class RepetitionScreen extends React.Component {
                     {"Add Schedule"}
                 </Header>
                 <View style={{...withFooter.content, ...styles.centerContent}}>
-                    <Text style={styles.userPrompt}>Do you want to repeat the schedule?</Text>
+                    <Text style={styles.userPrompt}>Select days on which you would like to repeat the schedule.</Text>
                     <View style={styles.pillSelection}>
                         {this.renderRepeatButtons(this.props.repeat)}
                     </View>
@@ -87,22 +87,26 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: 200,
         width: width,
-        borderWidth: 1,
-        borderColor: arsenic.hex(),
     },
     userPrompt: {
         flex: 0,
+        textAlign: 'center',
         justifyContent: 'center',
         alignItems: 'center',
         color: arsenic.lighten(0.6).hex(),
-        borderWidth: 1
-    },
+        paddingHorizontal: 10,
+        paddingVertical: 5,
+        fontSize: medium,
+    },  
     centerContent: {
         justifyContent: 'center',
         alignItems: 'center'
     },
     rowStyle: {
-        width: width
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'center',
     }
 });
 

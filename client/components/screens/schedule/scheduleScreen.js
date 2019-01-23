@@ -9,12 +9,17 @@ import CircleButton from '../../general/button';
 import {withFooter} from '../../general/screen_style';
 
 import {connect} from 'react-redux';
-import {newScheduleInit} from '../../../store/action/schedule';
+import {newScheduleInit, loadSchedules} from '../../../store/action/schedule';
 
 
 
 class ScheduleScreen extends React.Component {
     
+    componentDidMount() {
+        // Load schedules
+        this.props.loadSchedules();
+    }
+
     navCreateSchedule() {
         this.props.initializeSchedule();
         this.props.navigation.navigate('Manual');
@@ -42,7 +47,8 @@ class ScheduleScreen extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        initializeSchedule: () => dispatch(newScheduleInit())
+        initializeSchedule: () => dispatch(newScheduleInit()),
+        loadSchedules: () => dispatch(loadSchedules())
     };
 }
 

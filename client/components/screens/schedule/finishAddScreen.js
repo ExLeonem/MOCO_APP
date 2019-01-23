@@ -1,23 +1,26 @@
-import React, {Component} from 'react';
-import {View, StyleSheet} from 'react-native';
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 
 import Header from '../../general/header';
 import CircleButton from '../../general/button';
 import {withFooter} from '../../general/screen_style';
+import {arsenic} from '../../colors';
 
-import {NavigationActions} from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 import {ColorPicker, fromHsv} from 'react-native-color-picker';
 import connect from 'react-redux/lib/connect/connect';
 
-import {newScheduleSetColor} from '../../../store/action/schedule';
+import {newScheduleSetColor, newScheduleInsert} from '../../../store/action/schedule';
 
 /**
  * Screen to display before insertion
  */
 class FinishAddScreen extends React.Component {
 
-    insertAndResetNav() {
-        const resetActions = NavigationActions.reset({
+
+    insertSchedule() {
+        this.props.insertSchedule();
+        const resetActions = StackActions.reset({
             index: 0,
             actions: [
                 NavigationActions.navigate({routeName: "Schedule"})
@@ -38,6 +41,7 @@ class FinishAddScreen extends React.Component {
                 </Header>
 
                 <View style={{...withFooter.content, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: arsenic.lighten(0.6).hex()}}>Finally select a color.</Text>
                     <ColorPicker
                         hideSliders={true}
                         onColorChange={hsvColor => this.props.setColor(fromHsv(hsvColor))}
@@ -47,7 +51,7 @@ class FinishAddScreen extends React.Component {
                 </View>
 
                 <View style={withFooter.footer}>
-                    <CircleButton type={"check"} size={60} onPress={() => this.insertAndResetNav()}/>
+                    <CircleButton type={"check"} size={60} onPress={() => this.insertSchedule()}/>
                 </View>
             </View>
         );
@@ -74,7 +78,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        setColor: color => dispatch(newScheduleSetColor(color))
+        setColor: color => dispatch(newScheduleSetColor(color)),
+        insertSchedule: () => dispatch(newScheduleInsert())
     }
 }
 

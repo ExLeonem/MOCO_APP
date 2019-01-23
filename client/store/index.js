@@ -7,7 +7,7 @@ import rootSaga from './saga/index';
 // Template for device element in devices list
 const deviceTemplate = {
     uuid: 1,
-    url: "https://www.qqwa.de/sneaky/moco/api/v1",
+    url: "https://www.qqwa.de/sneaky/moco",
     name: "Test licht",
     color: "#FFFF00",
     level: 10,
@@ -17,7 +17,7 @@ const deviceTemplate = {
 // Template for schedules
 let scheduleOne = {
     id: 1, // scheduleID
-    deviceUUID: 1, // dispatch to which device
+    url: "https://www.qqwa.de/sneaky/moco", // dispatch to which device
     from: 'manual', // integration type
     date: "21.12.2018", // Date on which to trigger
     time: "17:00", // Time on which to trigger
@@ -28,7 +28,7 @@ let scheduleOne = {
 
 let scheduleTwo = {
     id: 2, // scheduleID
-    deviceUUID: 1, // dispatch to which device
+    url: "https://www.qqwa.de/sneaky/moco", // dispatch to which device
     from: 'manual', // integration type
     date: "22.12.2018", // Date on which to trigger
     time: "18:00", // Time on which to trigger
@@ -52,7 +52,7 @@ let toAddTemp = {
 let initialState = {
     schedules: {
         toAdd: {},
-        current: [scheduleOne, scheduleTwo]
+        current: []
     },
     devices: [deviceTemplate],
     currentDevice: deviceTemplate,

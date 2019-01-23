@@ -4,15 +4,25 @@ import {
     updateColor,
     updateBrightness,
     checkDisableLight,
-    checkEnableLight
+    checkEnableLight,
 } from './current_device';
 
+import { checkScheduleToWrite, checkLoadSchedules } from './schedule';
+import { checkOnAddDevice } from './device';
 
 export default function* rootSaga() {
     yield all([
+        // current device
         fork(updateColor),
         fork(updateBrightness),
         fork(checkEnableLight),
-        fork(checkDisableLight)
+        fork(checkDisableLight),
+
+        // device
+        fork(checkOnAddDevice),
+
+        // Schedule
+        fork(checkScheduleToWrite),
+        fork(checkLoadSchedules)
     ])
 };

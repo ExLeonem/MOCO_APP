@@ -14,7 +14,7 @@ class ColorSelectionScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header onPress={() => this.props.navigation.openDrawer()}>Device Name</Header>
+                <Header>Device Name</Header>
                 <TabNavigation>
                     <TabItem onPress={() => this.props.navigation.navigate('Light')}>{"Light"}</TabItem>
                     <TabItem onPress={() => 1} isActive={true}>{"Color"}</TabItem>
