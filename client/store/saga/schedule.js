@@ -1,5 +1,5 @@
-import {WRITE_SCHEDULE, NEW_SCHEDULE_INSERT, LOAD_SCHEDULES, REMOVE_SCHEDULE} from '../constants';
-import {addSchedule, setSchedules} from '../action/schedule'
+import {REMOVE_SCHEDULES, NEW_SCHEDULE_INSERT, LOAD_SCHEDULES, ENABLE_SCHEDULE, DISABLE_SCHEDULE} from '../constants';
+import {addSchedule, setSchedules, removeStoreSchedules} from '../action/schedule'
 
 import {takeLatest, put, call, select} from 'redux-saga/effects';
 import axios from 'axios';
@@ -10,7 +10,7 @@ import Color from 'color';
 // TODO: method to merge existing schedules
 const endpoint = {
     schedules: () => "/api/v1/schedules", // request all schedules
-    schedule: id => "/api/v1/schedule" + (!id? "" : id), // remove, add, update
+    schedule: id => "/api/v1/schedule" + (!id? "" : "/" + id), // remove, add, update
 
 };
 
@@ -85,33 +85,72 @@ function* loadDeviceSchedules(action) {
 
 
 export function* checkScheduleDelete() {
-    yield takeLatest(REMOVE_SCHEDULE, removeSchedule)
+    yield takeLatest(REMOVE_SCHEDULES, removeSchedule)
 }
 
+const getRemoveSchedules = state => state.schedules.mode.toDelete
 function* removeSchedule(action) {
+    // TODO: umstellen auf liste
+    
     try {
         let currentDevice = yield select(getCurrentDevice);
-        let params = [
-            currentDevice.url,
-            action.schedule.id
-        ];
+        let schedulesToDelete = yield select(getRemoveSchedules);
 
-        let resp = yield call(deleteSchedule, ...params);
+
+        if(schedulesToDelete.length > 0) {
+            for(let i = 0; i < schedulesToDelete.length; i++) {
+                let resp = yield call(deleteSchedule, currentDevice.url, schedulesToDelete[i]);
+                if(resp.status == 200) {
+                    // successfull delete
+                    console.log(JSON.stringify(resp.data, null, 2));
+                } else {
+                    // failed error msg and break
+                }
+            }
+        }
+        
+        yield put(removeStoreSchedules());
+
+    } catch(err) {
+        // store access or something else failed
+        console.log(err);
+    }
+}
+
+
+export function* checkEnableSchedule() {
+    yield takeLatest(ENABLE_SCHEDULE, enableSchedule);
+}
+
+
+const getCurrentSchedules = state => state.schedules.current
+function* enableSchedule(action) {
+    let scheduleId = action.id;
+    try {
+        let currentDevice = yield select(getCurrentDevice);
+        let currentSchedules = yield select(getCurrentSchedules);
+        let resp = yield call();
 
         if(resp.status == 200) {
-            if("error" in resp.data) {
-
-            }
-            // successfull request --> check return value
-
+            let schedules = resp.data;
+            
         } else {
-            // request failed
+            // TODO: error handling
         }
-
     } catch(err) {
         console.log(err);
     }
 }
+
+
+export function* disableSchedule() {
+    yield takeLatest(DISABLE_SCHEDULE, disableSchedule);
+}
+
+function* disableSchedule(action) {
+
+}
+
 
 
 /**

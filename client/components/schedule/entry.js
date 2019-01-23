@@ -1,13 +1,15 @@
 import React, {Component} from 'react';
-import {View, Text, Switch, TouchableWithoutFeedback, StyleSheet} from 'react-native';
+import {View, Text, Switch, TouchableWithoutFeedback, TouchableHighlight, StyleSheet} from 'react-native';
+import {snow, blue, arsenic, white, red, defaultText} from '../colors';
+
 import {connect} from 'react-redux';
-import {enableSchedule, disableSchedule} from '../../store/action/schedule';
-import {defaultText} from '../colors';
+import {enableSchedule, disableSchedule, addRemoveSchedule, popRemoveSchedule} from '../../store/action/schedule';
+
 
 
 const repStyles = StyleSheet.create({
     activeRepetition: {
-        color: defaultText.lighten(0.8).hex(),
+        color: defaultText.hex(),
     },
     inactiveRepetition: {
         color: defaultText.lighten(0.4).hex()
@@ -44,19 +46,19 @@ const capitalize = (entry)  => {
     return entry;
 }
 
-const RepetitionEntries = ({type, date, repetitions}) => {
+const RepetitionEntries = ({mode, type, date, repetitions}) => {
     if(type == 'week') {
         let checkExistence = (entry) => {
                 if(repetitions.includes(entry)) {
-                    return {repeat: entry, isActive: true};
+                    return {mode: mode, repeat: entry, isActive: true};
                 } else {
-                    return {repeat: entry, isActive: false};
+                    return {mode: mode, repeat: entry, isActive: false};
                 }
         }
         let defaultEntries = ["mo", "tu", "we", "th", "fr", "sa", "su"];
         let existent = defaultEntries.map(checkExistence);
         return (
-            <View style={repStyles.repetitionBlock}>
+            <View style={mode? repStyles.repetitionBlock : {...repStyles.repetitionBlock, borderBottomColor: snow.hex()}}>
                 {existent.map((props) => <RepEntry {...props}/>)}
             </View>
         )
@@ -70,34 +72,73 @@ const RepetitionEntries = ({type, date, repetitions}) => {
     }
 }
 
-const RepEntry = ({repeat, isActive}) => {
+const RepEntry = ({mode, repeat, isActive}) => {
     let entryStyle = isActive? repStyles.activeRepetition : repStyles.inactiveRepetition;
+
     return (
-        <Text style={entryStyle}>{capitalize(repeat)}</Text>
+        <Text style={mode ? entryStyle : {...entryStyle, color: snow.hex()}}>{capitalize(repeat)}</Text>
     );
 }
 
 
 class Entry extends Component {
+    switchMode() {
+        if(!this.props.delete) {
+            this.props.removePush(this.props.id);
+        } else {
+            this.props.removePop(this.props.id);
+        }
+    }
 
+    reverserSwitch() {
+        if(this.props.delete) {
+            this.props.removePop(this.props.id);
+        } else if(this.props.deleteMode) {
+            this.props.removePush(this.props.id);
+        }
+    }
+
+    // Returns styles dependend on current state
+    setContainerStyle = () => !this.props.delete ? entryStyles.container : {...entryStyles.container, backgroundColor: arsenic.hex()};
+    setClockStyle = () => !this.props.delete ? entryStyles.clockTime : {...entryStyles.clockTime, color: snow.hex()}
+    renderSwitch(isActive) {
+        if(!this.props.delete) {
+            return (
+                <Switch  
+                    onValueChange={isActive? this.props.disable : this.props.enable} 
+                    value={isActive}
+                />
+            );
+        }
+        return null;
+    }
+    
     render() {
         let {time, date, repeat, type, isActive, toggleActive} = this.props;
     
         return(
-        <TouchableWithoutFeedback>
-            <View style={entryStyles.container}>
+        <TouchableHighlight 
+            underlayColor={white.hex()}
+            onPress={() => this.reverserSwitch()}
+            onLongPress={() => this.switchMode()}
+        >
+            <View style={this.setContainerStyle()}>
                 <View style={entryStyles.scheduleHeader}>
-                    <Text style={entryStyles.clockTime}>{time} Uhr</Text>
-                    <Switch style={entryStyles.scheduleSwitch} onValueChange={isActive?this.props.disable:this.props.enable} value={isActive}/>
+                    <Text style={this.setClockStyle()}>{time} Uhr</Text>
+                    <View style={entryStyles.scheduleSwitch}>
+                    {this.renderSwitch(isActive)}
+                    </View>
                 </View>
-                <RepetitionEntries repetitions={repeat} type={type} date={date}/>
+                <RepetitionEntries mode={!this.props.delete} repetitions={repeat} type={type} date={date}/>
             </View>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
         );
     }
 }
 
 const entryStyles = StyleSheet.create({
+
+
     container: {
         flex: 1,
         position: 'relative',
@@ -111,12 +152,13 @@ const entryStyles = StyleSheet.create({
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     scheduleSwitch: {
         flex: 1,
-        alignSelf: 'center',
-        marginRight: 30,
+        paddingHorizontal: 30,
+        justifyContent: 'center',
+        alignItems: 'flex-end',
     },
     clockTime: {
         alignSelf: 'center',
@@ -126,12 +168,19 @@ const entryStyles = StyleSheet.create({
     }
 });
 
-
-const mapDispatchToProps = (dispatch, ownProps) => {
+const mapStateToProps = state => {
     return {
-        enable: () => dispatch(enableSchedule({deviceUUID: ownProps.uuid, id: ownProps.id})),
-        disable: () => dispatch(disableSchedule({deviceUUID: ownProps.uuid, id: ownProps.id}))
+        deleteMode: state.schedules.mode.delete
     }
 }
 
-export default connect(null, mapDispatchToProps)(Entry);
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        enable: () => dispatch(enableSchedule(ownProps.id)),
+        disable: () => dispatch(disableSchedule(ownProps.id)),
+        removePush: schedule =>  dispatch(addRemoveSchedule(schedule)),
+        removePop: schedule => dispatch(popRemoveSchedule(schedule)),
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Entry);

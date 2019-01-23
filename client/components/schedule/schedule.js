@@ -9,7 +9,7 @@ import {connect} from 'react-redux';
 
 class Schedule extends Component {
 
-    renderEntries(schedules) {
+    renderEntries(schedules, toDelete) {
         let entries = schedules.map((schedule) => {
             console.log("Render entry");
         return <Entry 
@@ -21,6 +21,7 @@ class Schedule extends Component {
                 isActive={schedule.isActive}
                 uuid={schedule.deviceUUID}
                 id={schedule.id}
+                delete={toDelete.includes(schedule.id)}
             />;
         });
         return entries;
@@ -29,7 +30,7 @@ class Schedule extends Component {
     render() {
         return (
             <ScrollView style={this.props.style}>
-                {this.renderEntries(this.props.schedules)}
+                {this.renderEntries(this.props.schedules, this.props.toDelete)}
             </ScrollView>
         )
     }
@@ -41,7 +42,8 @@ const mapStateToProps = (state, ownProps) => {
     let filterSchedules = (scheduleEntry) => state.currentDevice.url == scheduleEntry.url;
     let schedulesOfCurrentDevice = state.schedules.current.filter(filterSchedules);
     return {
-        schedules: schedulesOfCurrentDevice
+        schedules: schedulesOfCurrentDevice,
+        toDelete: state.schedules.mode.toDelete
     }
 };
 

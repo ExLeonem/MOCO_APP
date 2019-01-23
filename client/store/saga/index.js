@@ -7,7 +7,12 @@ import {
     checkEnableLight,
 } from './current_device';
 
-import { checkScheduleToWrite, checkLoadSchedules } from './schedule';
+import { 
+    checkScheduleToWrite, 
+    checkLoadSchedules, 
+    checkScheduleDelete
+} from './schedule';
+
 import { checkOnAddDevice } from './device';
 
 export default function* rootSaga() {
@@ -23,6 +28,7 @@ export default function* rootSaga() {
 
         // Schedule
         fork(checkScheduleToWrite),
-        fork(checkLoadSchedules)
+        fork(checkLoadSchedules),
+        fork(checkScheduleDelete)
     ])
 };

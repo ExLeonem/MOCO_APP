@@ -28,7 +28,7 @@ function* changeLight(action) {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice);
         let isActive = action.isActive;
-        let url = currentDeviceData.url + "/set_led";
+        let url = currentDeviceData.url + "/api/v1/set_led";
 
         // Create Object for server insertion
         let toUpdate = {on: isActive, color: Color(currentDeviceData.color).rgb().array()};
@@ -60,7 +60,7 @@ function* changeDeviceBrightness(action) {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice);
         let level = action.level;
-        let url = currentDeviceData.url + "/set_led";
+        let url = currentDeviceData.url + "/api/v1/set_led";
 
         // Create object for server insertion
         let toUpdate = {brightness: level, color: Color(currentDeviceData.color).rgb().array()};
@@ -91,7 +91,7 @@ function* changeDeviceColor() {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice)
         let color = Color(currentDeviceData.color);
-        let url = currentDeviceData.url + "/set_led";
+        let url = currentDeviceData.url + "/api/v1/set_led";
 
         // Create object for server insertion
         let postObject = generatePostObject(currentDeviceData, {color: color.rgb().array()});

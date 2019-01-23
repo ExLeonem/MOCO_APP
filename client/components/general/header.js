@@ -1,12 +1,15 @@
 import React, {Component} from 'react';
-import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
+import {View, Text, TouchableHighlight, StyleSheet, Dimensions} from 'react-native';
 import {DrawerIcon, AddIcon, RemoveIcon, BackIcon, ArrowIcon} from './icons';
 import {header} from '../fonts';
 
-import {snow, arsenic} from '../colors';
+import {snow, arsenic, red} from '../colors';
+
+const {width} = Dimensions.get('screen');
 
 const headStyle = StyleSheet.create({
     container: {
+        position: 'relative',
         flex: 1,
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -22,7 +25,14 @@ const headStyle = StyleSheet.create({
         borderRadius: 50
     },
     title: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
         fontSize: header,
+        position: 'absolute',
+        width: width,
+        zIndex: -1,
+        textAlign: 'center'
     }
 });
 
@@ -38,15 +48,23 @@ export default class Header extends React.Component {
         return <DrawerIcon scaleBy={5}/>;
     }
 
-    renderBackIcon(renderBack, onBackPress) {
+    renderBackIcon(renderBack, onBack) {
         if(renderBack) {
             return (
-                <TouchableHighlight onPress={() => onBackPress()} underlayColor={snow.hex()}>
+                <TouchableHighlight onPress={() => onBack()} underlayColor={snow.hex()}>
                     <ArrowIcon color={arsenic.hex()}/>
                 </TouchableHighlight>
             );
         }
         return null;
+    }
+
+    renderRemoveIcon(onDelete) {
+       return(
+            <TouchableHighlight onPress={() => onDelete()} underlayColor={snow.hex()}>
+                <RemoveIcon color={red.hex()}/>
+            </TouchableHighlight>
+       )
     }
 
     render() {
@@ -64,6 +82,7 @@ export default class Header extends React.Component {
                     {this.props.subTask}
                 </View>
                 {this.renderBackIcon(this.props.back, this.props.onBack)}
+                {this.props.delete ? this.renderRemoveIcon(this.props.onDelete) : null}
             </View>
         );
     }

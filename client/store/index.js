@@ -26,17 +26,6 @@ let scheduleOne = {
     isActive: false,
 };
 
-let scheduleTwo = {
-    id: 2, // scheduleID
-    url: "https://www.qqwa.de/sneaky/moco", // dispatch to which device
-    from: 'manual', // integration type
-    date: "22.12.2018", // Date on which to trigger
-    time: "18:00", // Time on which to trigger
-    repetitionPattern: 'week', // PatternType in which to repeat week | date
-    repeat: ['mo', 'th', 'fr'], // Patterns on which to repeat
-    isActive: false,
-}
-
 
 
 let toAddTemp = {
@@ -52,7 +41,11 @@ let toAddTemp = {
 let initialState = {
     schedules: {
         toAdd: {},
-        current: []
+        current: [],
+        mode: {
+            delete: false,
+            toDelete: []
+        }
     },
     devices: [deviceTemplate],
     currentDevice: deviceTemplate,

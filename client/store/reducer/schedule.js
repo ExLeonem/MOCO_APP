@@ -6,7 +6,8 @@ import {
     NEW_SCHEDULE_SET_TYPE,
     ADD_SCHEDULE,
     UPDATE_SCHEDULE,
-    REMOVE_SCHEDULE,
+    ADD_REMOVE_SCHEDULE,
+    RESET_SCHEDULE_REMOVE,
     REMOVE_DEVICE_SCHEDULES,
     ENABLE_SCHEDULE,
     DISABLE_SCHEDULE,
@@ -14,6 +15,8 @@ import {
     NEW_SCHEDULE_REMOVE_REPEAT,
     NEW_SCHEDULE_SET_COLOR,
     SET_SCHEDULES,
+    POP_REMOVE_SCHEDULE,
+    REMOVE_STORE_SCHEDULES
 } from '../constants';
 
 import {blue, snow} from '../../components/colors';
@@ -80,18 +83,44 @@ const scheduleReducer = (state = initialState, action) => {
             newState = {...state, current: action.schedules};
             break;  
         }
+        // Delete Schedules
+        case REMOVE_STORE_SCHEDULES: {
+            let newSchedules = state.current.filter(schedule => {
+                return !(state.mode.toDelete.includes(schedule.id));
+            });
+            console.log("Remove store schedules");
+            newState = {...state, current: newSchedules, mode: {delete: false, toDelete: []}};
+            break;
+        }
+        case ADD_REMOVE_SCHEDULE: {
+            newState = {...state, mode: {
+                ...state.mode,
+                delete: (state.mode.toDelete.length == 0 ? true : state.mode.toDelete),
+                toDelete: [...state.mode.toDelete, action.scheduleId]
+            }};
+            break;
+        }
+        case RESET_SCHEDULE_REMOVE: {
+            newState = {...state, mode: {...state.mode, toDelete: []}};
+            break;
+        }
+        case POP_REMOVE_SCHEDULE: {
+            let newToRemove = state.mode.toDelete.filter(scheduleId => {
+                return scheduleId !== action.scheduleId;
+            });
+            console.log("Left to delete: " + newToRemove.length);
+            let deleteMode = newToRemove.length == 0 ? false : state.mode.delete;
+            newState = {...state, mode: {delete: deleteMode, toDelete: newToRemove}};
+            break;
+        }
+        // Add schedules
         case ADD_SCHEDULE: {
             // TODO: Update in DB, stack add call
-            newState =  {current: [...state.current, action.payload], toAdd: {}};
+            newState =  {...state, current: [...state.current, action.payload], toAdd: {}};
             break;
         }
         case UPDATE_SCHEDULE: {
             // TODO: Update routine
-            let schedule = action.payload;
-            break;
-        }
-        case REMOVE_SCHEDULE: {
-            // TODO: remove routine
             let schedule = action.payload;
             break;
         }
@@ -105,25 +134,23 @@ const scheduleReducer = (state = initialState, action) => {
         case ENABLE_SCHEDULE: {
             // TODO: Update in DB, stack update call (Inside saga)
 
-            let schedule = action.payload;
-            let updateIsActive = (currentSchedule) => {
-                if(currentSchedule.id == schedule.id && currentSchedule.deviceUUID == schedule.deviceUUID) {
-                    return {...currentSchedule, isActive: true};
+            let updateIsActive = schedule => {
+                if(schedule.id == action.scheduleId) {
+                    return {...schedule, isActive: true};
                 } else {
-                    return currentSchedule;
+                    return schedule;
                 }
             }
             newState = {...state, current: state.current.map(updateIsActive)};
             break;
         }
         case DISABLE_SCHEDULE: {
-            
-            let schedule = action.payload;
-            let updateIsActive = (currentSchedule) => {
-                if(currentSchedule.id == schedule.id && currentSchedule.deviceUUID == schedule.deviceUUID) {
-                    return {...currentSchedule, isActive: false};
+
+            let updateIsActive = schedule => {
+                if(schedule.id == action.scheduleId) {
+                    return {...schedule, isActive: false};
                 } else {
-                    return currentSchedule;
+                    return schedule;
                 }
             }
             newState = {...state, current: state.current.map(updateIsActive)}

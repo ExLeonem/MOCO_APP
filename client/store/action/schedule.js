@@ -7,7 +7,7 @@ import {
     NEW_SCHEDULE_SET_TYPE,
     ADD_SCHEDULE,
     UPDATE_SCHEDULE,
-    REMOVE_SCHEDULE,
+    REMOVE_SCHEDULES,
     REMOVE_DEVICE_SCHEDULES,
     ENABLE_SCHEDULE,
     DISABLE_SCHEDULE,
@@ -15,7 +15,11 @@ import {
     NEW_SCHEDULE_PUSH_REPEAT,
     NEW_SCHEDULE_SET_COLOR,
     LOAD_SCHEDULES,
-    SET_SCHEDULES
+    SET_SCHEDULES,
+    RESET_SCHEDULE_REMOVE,
+    ADD_REMOVE_SCHEDULE,
+    POP_REMOVE_SCHEDULE,
+    REMOVE_STORE_SCHEDULES
     
 } from '../constants';
 
@@ -101,31 +105,59 @@ const updateSchedule = (schedule) => {
     }
 };
 
-const removeSchedule = (scheduleId) => {
+
+const removeStoreSchedules = () => {
     return {
-        type: REMOVE_SCHEDULE,
-        payload: scheduleId
+        type: REMOVE_STORE_SCHEDULES
     }
-};
+}
+
+
+const addRemoveSchedule = scheduleId => {
+    return {
+        type: ADD_REMOVE_SCHEDULE,
+        scheduleId: scheduleId
+    }
+}
+
+const popRemoveSchedule = scheduleId => {
+    return {
+        type: POP_REMOVE_SCHEDULE,
+        scheduleId: scheduleId
+    }
+}
+
+const removeSchedules = () => {
+    return {
+        type: REMOVE_SCHEDULES
+    }
+}
+
+const resetRemoveSchedule = () => {
+    return {
+        type: RESET_SCHEDULE_REMOVE
+    }
+}
+
 
 const removeDeviceSchedules = (deviceId) => {
     return {
         type: REMOVE_DEVICE_SCHEDULES,
         payload: deviceId
     }
-};
+}
 
-const enableSchedule = (schedule) => {
+const enableSchedule = (scheduleId) => {
     return {
         type: ENABLE_SCHEDULE,
-        payload: schedule
+        scheduleId: scheduleId
     }
-};
+}
 
-const disableSchedule = (schedule) => {
+const disableSchedule = (scheduleId) => {
     return {
         type: DISABLE_SCHEDULE,
-        payload: schedule
+        scheduleId: scheduleId
     };
 }
 
@@ -143,7 +175,11 @@ export {
     loadSchedules,
     setSchedules,
     addSchedule,
-    removeSchedule,
+    removeStoreSchedules,
+    addRemoveSchedule,
+    popRemoveSchedule,
+    removeSchedules,
+    resetRemoveSchedule,
     updateSchedule,
     removeDeviceSchedules,
     enableSchedule,

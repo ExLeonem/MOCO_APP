@@ -14,7 +14,7 @@ import {enableCurrentDevice, disableCurrentDevice, setCurrentDeviceLevel} from '
 
 let LightButton = ({isOn, onPress}) => {
     return (
-        <TouchableHighlight onPress={onPress} underlayColor={snow.lighten(0.5).hex()}>
+        <TouchableHighlight onPress={onPress} underlayColor={snow.lighten(0.6).hex()}>
             <LampIcon isOn={isOn}/>
         </TouchableHighlight>
     )

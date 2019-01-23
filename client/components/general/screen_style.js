@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {white} from '../colors';
 
 
 
@@ -7,6 +8,7 @@ const withFooter = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         alignSelf: 'stretch',
+        backgroundColor: white.hex()
     },
     content: {
         flex: 1,

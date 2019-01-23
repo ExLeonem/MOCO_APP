@@ -9,7 +9,7 @@ import CircleButton from '../../general/button';
 import {withFooter} from '../../general/screen_style';
 
 import {connect} from 'react-redux';
-import {newScheduleInit, loadSchedules} from '../../../store/action/schedule';
+import {newScheduleInit, loadSchedules, removeSchedules} from '../../../store/action/schedule';
 
 
 
@@ -29,7 +29,13 @@ class ScheduleScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header onPress={() => this.props.navigation.openDrawer()}>Device Name</Header>
+                <Header 
+                    onPress={() => this.props.navigation.openDrawer()} 
+                    delete={this.props.deleteActive}
+                    onDelete={() => this.props.deleteSchedules()}
+                >
+                    Device Name
+                </Header>
                 <TabNavigation>
                     <TabItem onPress={() => this.props.navigation.navigate('Light')}>{"Light"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Color')}>{"Color"}</TabItem>
@@ -44,16 +50,22 @@ class ScheduleScreen extends React.Component {
     };
 }
 
+const mapStateToProps = state => {
+    return {
+        deleteActive: state.schedules.mode.delete
+    }
+}
 
 const mapDispatchToProps = dispatch => {
     return {
         initializeSchedule: () => dispatch(newScheduleInit()),
-        loadSchedules: () => dispatch(loadSchedules())
+        loadSchedules: () => dispatch(loadSchedules()),
+        deleteSchedules: () => dispatch(removeSchedules())
     };
 }
 
 
-export default connect(null, mapDispatchToProps)(ScheduleScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(ScheduleScreen);
 
 
 
