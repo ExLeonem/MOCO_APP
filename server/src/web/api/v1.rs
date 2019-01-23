@@ -385,11 +385,15 @@ fn add_schedule(
 ///   --url ${base_url}/api/v1/schedule/19
 /// ```
 #[delete("/api/v1/schedule/<id>")]
-fn delete_schedule(conn: DbConn, id: i32) -> Json<serde_json::Value> {
+fn delete_schedule(conn: DbConn, id: i32, cache: State<Mutex<LedCache>>) -> Json<serde_json::Value> {
     let schedule = DbSchedule::delete(&conn, id);
 
     let json: serde_json::Value = match schedule {
-        Ok(()) => json!({ "deleted": id }).take(),
+        Ok(()) => {
+            let mut cache = cache.lock().expect("Could not aquire lock of LedCache");
+            cache.send_message(Message::DatabaseChanged);
+            json!({ "deleted": id }).take()
+        }
         Err(e) => json!({
             "error": e.to_string()
         })

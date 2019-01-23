@@ -125,6 +125,14 @@ impl Controller {
             // sort by activation time
             schedule_list.sort_by(|a, b| a.activation_time.cmp(&b.activation_time));
 
+            if let Some(schedule) = self.running_schedule.clone() {
+                let still_alive = schedule_list.iter().filter(|x| x.id == schedule.id).next();
+                if !still_alive.is_some() {
+                    self.running_schedule = None;
+                    self.led.set_on(false);
+                }
+            }
+
             self.schedules.clear();
             self.schedules
                 .extend_from_slice(&schedule_list[..self.keep_schedules.min(schedule_list.len())]);
@@ -166,16 +174,16 @@ impl Controller {
                     .num_seconds();
                 let brightness =
                     ((active_since_secs as f32 / time_til_100 as f32) * 100.0).min(100.0) as u8;
-                if self.led.on() != true {
-                    self.led.set_on(true);
-                    self.notify_cache();
-                }
                 if self.led.color() != schedule.led_setting.color {
                     self.led.set_color(schedule.led_setting.color);
                     self.notify_cache();
                 }
                 if self.led.brightness() != brightness {
                     self.led.set_brightness(brightness);
+                    self.notify_cache();
+                }
+                if self.led.on() != true {
+                    self.led.set_on(true);
                     self.notify_cache();
                 }
                 if time_til_off < active_since_secs {
@@ -212,6 +220,7 @@ impl Controller {
                             );
                         }
                         self.running_schedule = Some(self.schedules[0].clone());
+                        self.schedules.remove_item(&self.running_schedule.clone().unwrap());
                         log::info!(
                             "Schedule with id {} is now running!",
                             self.schedules[0].id.unwrap()
@@ -252,6 +261,7 @@ impl Controller {
         self.manuel_timestamp = Some(Instant::now());
         if self.running_schedule.is_some() {
             Controller::delete_schedule(&self.database_url, self.running_schedule.take().unwrap());
+            log::info!("running schedule is {:?}, schedules.len is {}", self.running_schedule, self.schedules.len());
         }
     }
 

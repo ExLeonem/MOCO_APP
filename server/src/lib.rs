@@ -1,6 +1,7 @@
 #![feature(proc_macro_hygiene, decl_macro)]
 #![feature(box_patterns)]
 #![allow(proc_macro_derive_resolution_fallback)]
+#![feature(vec_remove_item)]
 
 #[macro_use]
 extern crate rocket;
