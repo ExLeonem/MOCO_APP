@@ -43,8 +43,6 @@ function* checkAndAdd(action) {
             }
         }  else {
             // TODO: error message -> no connection to serve?
-            // console.log(JSON.stringify(resp, null, 2));
-            console.log(JSON.stringify())
         }
 
     } catch(err) {
@@ -63,13 +61,11 @@ function* loadDeviceSchedules(action) {
         let currentDevice = yield select(getCurrentDevice);
         let resp = yield call(getSchedules, currentDevice.url);
 
-        console.log(JSON.stringify(resp, null, 2));
         if(resp.status == 200) {
             let params = {
                 deviceUrl: currentDevice.url,
                 repeat: []
             };
-            console.log(JSON.stringify(resp.data, null, 2));
 
             let schedules = resp.data.map(schedule => createScheduleStoreEntity(schedule, params))
             yield put(setSchedules(schedules))
@@ -102,7 +98,6 @@ function* removeSchedule(action) {
                 let resp = yield call(deleteSchedule, currentDevice.url, schedulesToDelete[i]);
                 if(resp.status == 200) {
                     // successfull delete
-                    console.log(JSON.stringify(resp.data, null, 2));
                 } else {
                     // failed error msg and break
                 }
@@ -119,38 +114,44 @@ function* removeSchedule(action) {
 
 
 export function* checkEnableSchedule() {
-    yield takeLatest(ENABLE_SCHEDULE, enableSchedule);
+    yield takeLatest(ENABLE_SCHEDULE, switchActiveTo(true));
 }
 
+export function* checkDisableSchedule() {
+    yield takeLatest(DISABLE_SCHEDULE, switchActiveTo(false));
+}
 
 const getCurrentSchedules = state => state.schedules.current
-function* enableSchedule(action) {
-    let scheduleId = action.id;
-    try {
-        let currentDevice = yield select(getCurrentDevice);
-        let currentSchedules = yield select(getCurrentSchedules);
-        let resp = yield call();
+function switchActiveTo(isActive) {
+    return function* (action) {
+        try {
+    
+            let currentDevice = yield select(getCurrentDevice);
+            let currentSchedules = yield select(getCurrentSchedules);
+            // Search for schedule data and send update request
+            for(let i = 0; i < currentSchedules.length; i++) {
+                if(action.scheduleId == currentSchedules[i].id) {
+                    // schedule found
+                    let schedule = currentSchedules[i];
+                    let updatedScheduleEntity = createScheduleEntity(currentDevice.name, {...schedule, active: isActive});
 
-        if(resp.status == 200) {
-            let schedules = resp.data;
-            
-        } else {
-            // TODO: error handling
+                    let params = [currentDevice.url, action.scheduleId, {...updatedScheduleEntity, running: false}];
+                    let resp = yield call(updateSchedule, ...params);
+    
+                    if(resp.status == 200) {
+                        // TODO: check if error response
+                    } else {
+                        // TODO: request error
+                    }
+
+                    break;
+                }
+            }
+        } catch(err) {
+            console.log(err);
         }
-    } catch(err) {
-        console.log(err);
     }
 }
-
-
-export function* disableSchedule() {
-    yield takeLatest(DISABLE_SCHEDULE, disableSchedule);
-}
-
-function* disableSchedule(action) {
-
-}
-
 
 
 /**
@@ -193,7 +194,7 @@ function createScheduleEntity(deviceName, schedule) {
                 "color": Color(schedule.color).rgb().array()
             },
         "activation_time": createScheduleDate(schedule.time, schedule.date),
-        "active": true,
+        "active": "active" in schedule ? schedule.active: true,
         "repeat": schedule.repeat
     };    
 }
@@ -221,10 +222,11 @@ function createScheduleStoreEntity(schedule, info) {
 
 // Extract time/date from utc-date-string
 function parseDate(utcDate) {
-    
+
     // create human read-able format
     let actDate = new Date(utcDate);
-    let date = actDate.getDate() + actDate.getMonth() + actDate.getFullYear();
+    let date = actDate.getDate() + "." + actDate.getMonth() + "." + actDate.getFullYear();
+    
 
     // parse time to another format
     let hours = parseInt(actDate.getHours());
@@ -234,7 +236,7 @@ function parseDate(utcDate) {
 
     return {
         time: time,
-        date: date 
+        date: actDate 
     }
 }
 // Check wether hours/minutes before current time

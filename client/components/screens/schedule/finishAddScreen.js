@@ -43,7 +43,6 @@ class FinishAddScreen extends React.Component {
                 <View style={{...withFooter.content, justifyContent: 'center', alignItems: 'center'}}>
                     <Text style={{color: arsenic.lighten(0.6).hex()}}>Finally select a color.</Text>
                     <ColorPicker
-                        hideSliders={true}
                         onColorChange={hsvColor => this.props.setColor(fromHsv(hsvColor))}
                         color={this.props.color}
                         style={styles.picker}

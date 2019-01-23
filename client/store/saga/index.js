@@ -10,7 +10,9 @@ import {
 import { 
     checkScheduleToWrite, 
     checkLoadSchedules, 
-    checkScheduleDelete
+    checkScheduleDelete,
+    checkEnableSchedule,
+    checkDisableSchedule
 } from './schedule';
 
 import { checkOnAddDevice } from './device';
@@ -29,6 +31,8 @@ export default function* rootSaga() {
         // Schedule
         fork(checkScheduleToWrite),
         fork(checkLoadSchedules),
-        fork(checkScheduleDelete)
+        fork(checkScheduleDelete),
+        fork(checkEnableSchedule),
+        fork(checkDisableSchedule)
     ])
 };
