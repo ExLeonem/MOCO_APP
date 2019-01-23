@@ -2,7 +2,6 @@ import {
     NEW_SCHEDULE_RESET,
     NEW_SCHEDULE_SET_TIME,
     NEW_SCHEDULE_SET_DATE,
-    NEW_SCHEDULE_SET_REPEAT,
     NEW_SCHEDULE_INIT,
     NEW_SCHEDULE_SET_TYPE,
     ADD_SCHEDULE,
@@ -11,6 +10,9 @@ import {
     REMOVE_DEVICE_SCHEDULES,
     ENABLE_SCHEDULE,
     DISABLE_SCHEDULE,
+    NEW_SCHEDULE_REMOVE_REPEAT,
+    NEW_SCHEDULE_PUSH_REPEAT,
+    NEW_SCHEDULE_SET_COLOR,
     
 } from '../constants';
 
@@ -43,13 +45,26 @@ const newScheduleSetDate = date => {
     }
 }
 
-const newScheduleSetRepeat = (pattern, repeat) => {
+const newScheduleSetColor = color => {
     return {
-        type: NEW_SCHEDULE_SET_REPEAT,
-        repetitionPattern: pattern,
+        type: NEW_SCHEDULE_SET_COLOR,
+        color: color
+    }
+}
+
+const newSchedulePushRepeat = repeat => {
+    return {
+        type: NEW_SCHEDULE_PUSH_REPEAT,
         repeat: repeat
     }
-};
+}
+
+const newScheduleRemoveRepeat = repeat => {
+    return {
+        type: NEW_SCHEDULE_REMOVE_REPEAT,
+        repeat: repeat
+    }
+}
 
 const newScheduleSetType = scheduleType => {
     return {
@@ -110,7 +125,9 @@ export {
     newScheduleReset,
     newScheduleSetTime,
     newScheduleSetDate,
-    newScheduleSetRepeat,
+    newScheduleSetColor,
+    newSchedulePushRepeat,
+    newScheduleRemoveRepeat,
     newScheduleSetType,
     addSchedule,
     removeSchedule,

@@ -3,7 +3,7 @@ import {StyleSheet, View, TouchableHighlight, Slider, Text} from 'react-native';
 
 import Header from '../../general/header';
 import {TabNavigation, TabItem} from '../../navigation/tabs';
-import {LampIcon, NewLampIcon} from '../../general/icons';
+import {LampIcon} from '../../general/icons';
 import {withFooter} from '../../general/screen_style';
 
 import {snow} from '../../colors';
@@ -15,7 +15,7 @@ import {enableCurrentDevice, disableCurrentDevice, setCurrentDeviceLevel} from '
 let LightButton = ({isOn, onPress}) => {
     return (
         <TouchableHighlight onPress={onPress} underlayColor={snow.lighten(0.5).hex()}>
-            <NewLampIcon isOn={isOn}/>
+            <LampIcon isOn={isOn}/>
         </TouchableHighlight>
     )
 }

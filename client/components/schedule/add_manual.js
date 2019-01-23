@@ -24,12 +24,7 @@ const DateDisplay = ({date, onPress, onPressRemove}) => {
     if(date != null) {
         return (
             <View style={styles.dateDisplay}>
-                <TouchableHighlight style={{padding:10, flex: 5}} onPress={onPress} underlayColor={snow.hex()}>
-                    <Text style={styles.dateFont}>{date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear()}</Text>
-                </TouchableHighlight>
-                <TouchableHighlight style={{flex: 1, padding: 10, borderRadius: 50, justifyContent: 'center', alignItems: 'center'}} onPress={onPressRemove} underlayColor={snow.hex()}>
-                    <RemoveIcon color={arsenic.lighten(0.6).hex()} scaleBy={-5}/>
-                </TouchableHighlight>
+                <Text style={{...styles.dateFont, padding:10, flex: 5}}>{date.getDate() + "." + (date.getMonth()+1) + "." + date.getFullYear()}</Text>
             </View>
         )
     }
@@ -37,16 +32,6 @@ const DateDisplay = ({date, onPress, onPressRemove}) => {
         <TouchableHighlight onPress={() => console.log("")} underlayColor={snow.hex()}>
             <Text>Add Date </Text>
         </TouchableHighlight>
-    )
-}
-
-const RepetitionButton = ({onPress, style}) => {
-    return (
-        <View style={style}>
-            <TouchableHighlight style={{padding: 10, borderRadius: 50}} onPress={onPress} underlayColor={snow.hex()}>
-                <RepeatIcon color={arsenic.hex()}/>
-            </TouchableHighlight>
-        </View>
     )
 }
 
@@ -91,8 +76,8 @@ class AddManual extends React.Component {
     }
 
     __timeSelected = date => {
-        let hours = parseInt(date.getHours()) < 10 ? "0" + date.getHours().toString : date.getHours();
-        let minutes = parseInt(date.getMinutes()) < 10 ? "0" + date.getMinutes.toString : date.getMinutes();
+        let hours = parseInt(date.getHours()) < 10 ? "0" + date.getHours().toString() : date.getHours();
+        let minutes = parseInt(date.getMinutes()) < 10 ? "0" + date.getMinutes().toString() : date.getMinutes();
         console.log(hours);
         
         this.props.updateTime(hours + ":" + minutes);
@@ -131,7 +116,6 @@ class AddManual extends React.Component {
                 
 
                 <View style={styles.timePicker}>
-                    <RepetitionButton style={styles.repeatStyle} onPress={() => console.log("")}/>
                     <TimeDisplay hours={this.props.hours} minutes={this.props.minutes} onPress={() => this.__openTimePicker()}/>
                     <DateDisplay date={this.props.date} onPress={() => this.__openDatePicker()}  onPressRemove={() => console.log("")}/>
                 </View>

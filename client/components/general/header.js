@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
-import {DrawerIcon, AddIcon, RemoveIcon, BackIcon} from './icons';
+import {DrawerIcon, AddIcon, RemoveIcon, BackIcon, ArrowIcon} from './icons';
 import {header} from '../fonts';
-import MainNavigation from '../navigation/navigator';
 
-import {snow} from '../colors';
+import {snow, arsenic} from '../colors';
 
 const headStyle = StyleSheet.create({
     container: {
@@ -39,6 +38,17 @@ export default class Header extends React.Component {
         return <DrawerIcon scaleBy={5}/>;
     }
 
+    renderBackIcon(renderBack, onBackPress) {
+        if(renderBack) {
+            return (
+                <TouchableHighlight onPress={() => onBackPress()} underlayColor={snow.hex()}>
+                    <ArrowIcon color={arsenic.hex()}/>
+                </TouchableHighlight>
+            );
+        }
+        return null;
+    }
+
     render() {
         return (
             <View style={headStyle.container}>
@@ -53,6 +63,7 @@ export default class Header extends React.Component {
                 <View>
                     {this.props.subTask}
                 </View>
+                {this.renderBackIcon(this.props.back, this.props.onBack)}
             </View>
         );
     }

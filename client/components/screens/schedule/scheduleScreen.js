@@ -17,7 +17,7 @@ class ScheduleScreen extends React.Component {
     
     navCreateSchedule() {
         this.props.initializeSchedule();
-        this.props.navigation.navigate('AddSchedule');
+        this.props.navigation.navigate('Manual');
     }
 
 

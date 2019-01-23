@@ -3,19 +3,11 @@ import {View, Text, TouchableHighlight, StyleSheet} from 'react-native';
 import {arsenic, green, snow} from '../colors';
 import {small} from '../fonts';
 
-import {createStackNavigator, createSwitchNavigator} from 'react-navigation';
+import {createSwitchNavigator} from 'react-navigation';
 
-import ManualScreen from '../screens/schedule/manualScreen';
-import AlarmScreen from '../screens/schedule/alarmScreen';
-import CalendarScreen from '../screens/schedule/calendarScreen';
-
-
-import ScheduleScreen from '../screens/schedule/scheduleScreen';
+import ScheduleStackNav from '../screens/schedule/navigation';
 import LightScreen from '../screens/light/lightScreen';
 import ColorSelectionScreen from '../screens/color/colorSelectionScreen';
-
-
-
 
 
 class TabItem extends React.Component {
@@ -94,9 +86,9 @@ const styles = StyleSheet.create({
 let GeneralOperationTabs = createSwitchNavigator({
     Light: {screen: LightScreen},
     Color: {screen: ColorSelectionScreen},
-    Schedule: {screen: ScheduleScreen}
+    Schedule: {screen: ScheduleStackNav}
 }, {
-    initialRouteName: 'Light'
+    initialRouteName: 'Schedule'
 });
 
 export {

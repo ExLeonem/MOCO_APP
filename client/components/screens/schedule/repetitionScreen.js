@@ -1,67 +1,116 @@
-import React, { Component } from 'react';
-import { View, FlatList, TouchableHighlight, Text, StyleSheet} from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
+
 import Header from '../../general/header';
+import RepetitionItem from '../../schedule/repititionItem';
+import CircleButton from '../../general/button';
+
+import { snow, arsenic } from '../../colors';
+import { medium } from '../../fonts';
+import {withFooter} from '../../general/screen_style';
 
 import { connect } from 'react-redux';
 import { newScheduleSetRepeat } from '../../../store/action/schedule';
-import { snow } from '../../colors';
-import { medium } from '../../fonts';
 
-const dateRepetition = ['daily', 'weekly', 'monthly', 'yearly']
 const weekRepetition = ['monday', 'tuesday',  'wednsday', 'thursday', 'friday', 'saturday', 'sunday']
-const RepetitionItem = ({value, selected}) => {
+const {width}  = Dimensions.get('screen');
+const elementsPerRow = 3;
+
+const Row = ({children}) => {
     return (
-        <TouchableHighlight 
-            style={selected.includes(value)? styles.selected : styles.unselected} 
-            onPress={() => console.log("")} 
-            underlayColor={snow.hex()}
-        >
-            <Text style={styles.listItem} >{value}</Text>
-        </TouchableHighlight>
+        <View style={styles.rowStyle}>
+            {children}
+        </View>
     )
 }
-
-
 class RepetitionScreen extends React.Component {
+    
+    // Generate Button entries
+    renderRepeatButtons(selected) {
+        let elements = [];
+        let rowElements = []
+        let weekDay = "";
+        let dayShort = "";
+        let isSelected = false;
+        for(let i = 0; i < weekRepetition.length; i++) {
+            weekDay = weekRepetition[i];
+            dayShort = weekDay.slice(0, 2);
+            isSelected = selected.includes(dayShort);
+
+            rowElements.push(<RepetitionItem selected={isSelected} dayName={weekDay} short={dayShort}/>)
+
+            if(i != 0 && i % elementsPerRow) {
+                elements.push(<Row>{rowElements}</Row>);
+                rowElements = [];
+            }
+        }
+
+        // Append last items
+        if(rowElements.length != 0) {
+            elements.push(<Row>{rowElements}</Row>);
+        }
+
+        return elements;
+    }
+
     render() {
         return (
-            <View>
-                <Header>Repeat</Header>
-                <View>
-                    {/* <FlatList 
-                        data={this.props.pattern == 'date'? dateRepetition : weekRepetition}
-                        renderItem={repeatValue => <RepetitionItem value={repeatValue} selected={this.props.repeat}/>}
-                    /> */}
+            <View style={withFooter.screenWrapper}>
+                <Header
+                    onPress={() => this.props.navigation.openDrawer()}
+                    back={true}
+                    onBack={() => this.props.navigation.goBack()}
+                >
+                    {"Add Schedule"}
+                </Header>
+                <View style={{...withFooter.content, ...styles.centerContent}}>
+                    <Text style={styles.userPrompt}>Do you want to repeat the schedule?</Text>
+                    <View style={styles.pillSelection}>
+                        {this.renderRepeatButtons(this.props.repeat)}
+                    </View>
+                </View>
+                <View style={withFooter.footer}>
+                    <CircleButton
+                        type="forward"
+                        onPress={() => this.props.navigation.navigate("Finish")}
+                    />
                 </View>
             </View>
         )
     }
-} 
+}
 
 const styles = StyleSheet.create({
-    listItem: {
-        fontSize: medium
+    pillSelection: {
+        flex: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: 200,
+        width: width,
+        borderWidth: 1,
+        borderColor: arsenic.hex(),
     },
-    selected: {
-
+    userPrompt: {
+        flex: 0,
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: arsenic.lighten(0.6).hex(),
+        borderWidth: 1
     },
-    unselected: {
-
+    centerContent: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    rowStyle: {
+        width: width
     }
-})
+});
 
 const mapStateToProps = state => {
     let current = state.schedules.toAdd;
     return {
-        pattern: current.repetitionPattern,
         repeat: current.repeat
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        updateRepeat: (repeat, repetitionPattern) => dispatch(newScheduleSetRepeat(repeat, repetitionPattern))
-    }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RepetitionScreen);
+export default connect(mapStateToProps)(RepetitionScreen);

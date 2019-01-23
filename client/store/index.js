@@ -38,17 +38,6 @@ let scheduleTwo = {
 }
 
 
-let scheduleThree = {
-    id: 3, // scheduleID
-    deviceUUID: 1, // dispatch to which device
-    from: 'manual', // integration type
-    date: "22.12.2018", // Date on which to trigger
-    time: "18:00", // Time on which to trigger
-    repetitionPattern: 'date', // PatternType in which to repeat week | date
-    repeat: ['daily'], // Patterns on which to repeat
-    isActive: false,
-}
-
 
 let toAddTemp = {
     from: 'manual',
@@ -63,7 +52,7 @@ let toAddTemp = {
 let initialState = {
     schedules: {
         toAdd: {},
-        current: [scheduleOne, scheduleTwo, scheduleThree]
+        current: [scheduleOne, scheduleTwo]
     },
     devices: [deviceTemplate],
     currentDevice: deviceTemplate,

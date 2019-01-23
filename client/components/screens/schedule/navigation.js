@@ -1,16 +1,20 @@
-import {Animated, Easing} from 'react-native'
-import {createSwitchNavigator, createStackNavigator} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation';
+
+import {Animated, Easing} from 'react-native';
+
+import ScheduleScreen from './scheduleScreen';
 import ManualScreen from './manualScreen';
-import AlarmScreen from './alarmScreen';
-import CalendarScreen from './calendarScreen';
-import RepetitionScreen from './repetitionScreen';
+import RepititionScreen from './repetitionScreen';
+import FinishAddScreen from './finishAddScreen';
 
 
-const ManualStackNavigation = createStackNavigator({
+const ScheduleStackNav = createStackNavigator({
+    Schedule: {screen: ScheduleScreen},
     Manual: {screen: ManualScreen},
-    Repeat: {screen: RepetitionScreen}
+    Repeat: {screen: RepititionScreen},
+    Finish: {screen: FinishAddScreen}
 }, {
-    initialRouteName: 'Manual',
+    initialRouteName: 'Schedule',
     headerMode: 'none',
     transitionConfig: () => ({
         transitionSpec: {
@@ -21,35 +25,4 @@ const ManualStackNavigation = createStackNavigator({
     })
 });
 
-const ScheduleCreationTabs = createSwitchNavigator({
-    Manual: ManualStackNavigation,
-    Alarm: {screen: AlarmScreen},
-    Calendar: {screen: CalendarScreen}
-}, {
-    initialRouteName: 'Manual'
-});
-
-
-// let scheduleStackNavigation = createStackNavigator({
-//     Main: GeneralOperationTabs,
-//     AddSchedule: ScheduleCreationTabs,
-//     Finish: {
-//         screen: FinishAddScreen
-//     }
-
-// }, {
-//     initialRouteName: 'Main',
-//     headerMode: 'none',
-//     transitionConfig: () => ({
-//         transitionSpec: {
-//             duration: 0,
-//             timing: Animated.timing,
-//             easing: Easing.step0,
-//         }
-//     })
-// });
-
-
-export {
-    ScheduleCreationTabs,
-}
+export default ScheduleStackNav;

@@ -3,7 +3,6 @@ import {
     NEW_SCHEDULE_RESET,
     NEW_SCHEDULE_SET_TIME,
     NEW_SCHEDULE_SET_DATE,
-    NEW_SCHEDULE_SET_REPEAT,
     NEW_SCHEDULE_SET_TYPE,
     NEW_SCHEDULE_REQUEST_ID,
     ADD_SCHEDULE,
@@ -12,7 +11,12 @@ import {
     REMOVE_DEVICE_SCHEDULES,
     ENABLE_SCHEDULE,
     DISABLE_SCHEDULE,
+    NEW_SCHEDULE_PUSH_REPEAT,
+    NEW_SCHEDULE_REMOVE_REPEAT,
+    NEW_SCHEDULE_SET_COLOR,
 } from '../constants';
+
+import {blue, snow} from '../../components/colors';
 
 // Template for schedules
 let scheduleOne = {
@@ -70,8 +74,9 @@ const scheduleReducer = (state = initialState, action) => {
                     from: 'manual',
                     isActive: true,
                     time: '01:00',
-                    repeat: [],
-                    pattern: 'date',
+                    repeat: ["mo"],
+                    pattern: 'week',
+                    color: blue.hex(),
                     date: new Date()
                 }
             }
@@ -89,8 +94,20 @@ const scheduleReducer = (state = initialState, action) => {
             newState = {...state, toAdd: {...state.toAdd, date: action.date}}
             break;
         }
-        case NEW_SCHEDULE_SET_REPEAT: {
-            newState = {...state, toAdd: {...state.toAdd, pattern: action.pattern, repeat: action.repeat}}
+        case NEW_SCHEDULE_SET_COLOR: {
+            newState = {...state, toAdd: {...state.toAdd, color: action.color}};
+            break;
+        }
+        case NEW_SCHEDULE_PUSH_REPEAT: {
+            let newRepeat = [...state.toAdd.repeat, action.repeat];
+            newState = {...state, toAdd: {...state.toAdd, repeat: newRepeat}}
+            break;
+        }
+        case NEW_SCHEDULE_REMOVE_REPEAT: {
+            let newRepeat = state.toAdd.repeat.filter( rep => {
+                return rep != action.repeat;
+            });
+            newState = {...state, toAdd: {...state.toAdd, repeat: newRepeat}};
             break;
         }
         case NEW_SCHEDULE_SET_TYPE: {
