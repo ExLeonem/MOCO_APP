@@ -17,9 +17,7 @@ import {newScheduleSetColor, newScheduleInsert} from '../../../store/action/sche
  */
 class FinishAddScreen extends React.Component {
 
-
-    insertSchedule() {
-        this.props.insertSchedule();
+    resetNav() {
         const resetActions = StackActions.reset({
             index: 0,
             actions: [
@@ -29,13 +27,18 @@ class FinishAddScreen extends React.Component {
         this.props.navigation.dispatch(resetActions);
     }
 
+    insertSchedule() {
+        this.props.insertSchedule();
+        this.resetNav();
+    }
+
     render() {
         return (
             <View style={withFooter.screenWrapper}>
                 <Header 
                     onPress={() => this.props.navigation.openDrawer()}
                     back={true}
-                    onBack={() => this.props.navigation.goBack()}
+                    onBack={() => this.resetNav()}
                 >
                     {"Add Schedule"}
                 </Header>

@@ -10,11 +10,11 @@ import CircleButton from '../general/button';
 import {connect} from 'react-redux';
 import {initNewDevice} from '../../store/action/new_device';
 
-class DeviceScreen extends React.Component {
+class MainScreen extends React.Component {
 
     switchToAddDevice() {
         this.props.initNewDevice();
-        this.props.switchScreen();
+        this.props.navigation.navigate('Create');
     }
 
     renderDevices(devices) {
@@ -28,6 +28,7 @@ class DeviceScreen extends React.Component {
                                 isActive={device.isActive} 
                                 url={device.url} 
                                 name={device.name}
+                                next={() => this.props.navigation.navigate("Schedule")}
                             />
                         })
                     }
@@ -37,7 +38,8 @@ class DeviceScreen extends React.Component {
         }
         return (
             <View style={styles.displayInfo}>
-                <Text style={{color: snow.darken(0.4).hex()}}>Currently there are any devices registered.</Text>
+                <Text style={{color: snow.darken(0.4).hex()}}>Seems like there are any devices...</Text>
+                <Text style={{color: snow.darken(0.4).hex()}}>Try to add one.</Text>
             </View>
         )
     }
@@ -45,11 +47,7 @@ class DeviceScreen extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <Header 
-                    icon="remove" 
-                    onPress={() => this.props.onPress()}
-                    underlayColor={arsenic.hex()}
-                />
+                <Header icon="none"/>
                 
                 {this.renderDevices(this.props.devices)}
                 <View style={styles.footer}>
@@ -103,6 +101,6 @@ const styles = StyleSheet.create({
 
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(DeviceScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(MainScreen);
 
 

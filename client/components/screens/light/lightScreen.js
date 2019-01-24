@@ -30,7 +30,7 @@ class LightScreen extends React.Component {
     render() {
         return (
             <View style={withFooter.screenWrapper}>
-                <Header onPress={() => this.props.navigation.openDrawer()}>Device Name</Header>
+                <Header onPress={() => this.props.navigation.openDrawer()}>{this.props.deviceName}</Header>
                 <TabNavigation>
                     <TabItem onPress={() => 1} isActive={true}>{"Light"}</TabItem>
                     <TabItem onPress={() => this.props.navigation.navigate('Color')}>{"Color"}</TabItem>
@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
+        deviceName: state.currentDevice.name,
         isActive: state.currentDevice.isActive || false,
         level: state.currentDevice.level || 10,
         url: state.currentDevice.url || ""

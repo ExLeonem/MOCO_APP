@@ -9,7 +9,6 @@ import {withFooter} from '../../general/screen_style';
 
 
 export default class ManualScreen extends React.Component {
-
     render() {
         return (
             <View style={withFooter.screenWrapper}>

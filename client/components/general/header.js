@@ -44,6 +44,8 @@ export default class Header extends React.Component {
             return <RemoveIcon color={iconColor != undefined? iconColor : snow.hex()} scaleBy={-5}/>;
         } else if(icon == "back") {
             return <BackIcon color={iconColor != undefined? iconColor : snow.hex()}/>
+        } else if(icon == "none") {
+            return <View></View>;
         }
         return <DrawerIcon scaleBy={5}/>;
     }

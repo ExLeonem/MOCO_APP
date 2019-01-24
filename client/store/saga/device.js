@@ -149,11 +149,9 @@ function* processDevice(action) {
 
 function* checkAndInsert(name, address) {
 
-    console.log("Check");
     // check if endpoint/device exists
     let resp = yield call(checkLed, address);
 
-    console.log("Process?");
     if(resp.status == 200) {
         console.log(JSON.stringify(resp.data, null, 2));
         let {color, brightness, on} = resp.data;

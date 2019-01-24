@@ -1,4 +1,4 @@
-package com.client;
+package com.wakealarm;
 
 import android.app.Application;
 

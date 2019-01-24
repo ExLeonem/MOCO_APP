@@ -21,9 +21,13 @@ class DeviceEntry extends React.Component {
         }
     }
 
-    selectDevice() {
+    selectDevice(next) {
         if(!this.props.selected) {
             this.props.setCurrentDevice(this.props.url);
+        }
+
+        if(next != undefined && next != null) {
+            next();
         }
     }
 
@@ -35,7 +39,7 @@ class DeviceEntry extends React.Component {
                 <TouchableHighlight 
                     style={styles.selectableDevice} 
                     underlayColor={arsenic.hex()} 
-                    onPress={() => this.selectDevice()}
+                    onPress={() => this.selectDevice(this.props.next)}
                 > 
                     <Text style={styles.deviceName}>{this.props.name}</Text>
                 </TouchableHighlight>

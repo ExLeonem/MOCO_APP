@@ -34,7 +34,7 @@ class ScheduleScreen extends React.Component {
                     delete={this.props.deleteActive}
                     onDelete={() => this.props.deleteSchedules()}
                 >
-                    Device Name
+                    {this.props.deviceName}
                 </Header>
                 <TabNavigation>
                     <TabItem onPress={() => this.props.navigation.navigate('Light')}>{"Light"}</TabItem>
@@ -52,6 +52,7 @@ class ScheduleScreen extends React.Component {
 
 const mapStateToProps = state => {
     return {
+        deviceName: state.currentDevice.name,
         deleteActive: state.schedules.mode.delete
     }
 }

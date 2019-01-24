@@ -5,6 +5,7 @@ import {small} from '../fonts';
 
 import {createSwitchNavigator} from 'react-navigation';
 
+import InitStackNav from '../screens/navigation';
 import ScheduleStackNav from '../screens/schedule/navigation';
 import LightScreen from '../screens/light/lightScreen';
 import ColorSelectionScreen from '../screens/color/colorSelectionScreen';
@@ -83,12 +84,16 @@ const styles = StyleSheet.create({
     }
 });
 
+
+
+
 let GeneralOperationTabs = createSwitchNavigator({
+    Main: InitStackNav,
     Light: {screen: LightScreen},
     Color: {screen: ColorSelectionScreen},
     Schedule: {screen: ScheduleStackNav}
 }, {
-    initialRouteName: 'Schedule'
+    initialRouteName: 'Main'
 });
 
 export {

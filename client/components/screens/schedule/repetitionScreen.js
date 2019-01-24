@@ -12,6 +12,9 @@ import {withFooter} from '../../general/screen_style';
 import { connect } from 'react-redux';
 import { newScheduleSetRepeat } from '../../../store/action/schedule';
 
+import {StackActions, NavigationActions} from 'react-navigation';
+
+
 const weekRepetition = ['monday', 'tuesday',  'wednsday', 'thursday', 'friday', 'saturday', 'sunday']
 const {width}  = Dimensions.get('screen');
 const elementsPerRow = 3;
@@ -24,6 +27,16 @@ const Row = ({children}) => {
     )
 }
 class RepetitionScreen extends React.Component {
+
+    resetNav() {
+        const resetActions = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({routeName: "Schedule"})
+            ]
+        });
+        this.props.navigation.dispatch(resetActions);
+    }
     
     // Generate Button entries
     renderRepeatButtons(selected) {
@@ -59,7 +72,7 @@ class RepetitionScreen extends React.Component {
                 <Header
                     onPress={() => this.props.navigation.openDrawer()}
                     back={true}
-                    onBack={() => this.props.navigation.goBack()}
+                    onBack={() => this.resetNav()}
                 >
                     {"Add Schedule"}
                 </Header>
