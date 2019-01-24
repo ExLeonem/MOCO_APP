@@ -11,7 +11,7 @@ import {
 } from '../constants';
 
 import { updateDeviceActive } from '../action/device';
-import { updateCurrentDeviceActive, setCurrentDeviceLevel } from '../action/current_device';
+import { updateCurrentDeviceActive, setCurrentDeviceLevel, setCurrentDeviceColor } from '../action/current_device';
 
 // Request currently stored device
 const getStoredDevice = state => state.currentDevice
@@ -45,7 +45,7 @@ function* pollCurrentLed(action) {
             
             // Update different values
             if(color.hex() != Color(currentDevice.color).hex()) {
-                yield put(setCurrentDeviceColor(color.rgb().array()));
+                yield put(setCurrentDeviceColor(color.hex()));
             }
             if(on != currentDevice.isActive) {
                 yield put(updateCurrentDeviceActive(on));
@@ -125,11 +125,12 @@ function* changeDeviceBrightness(action) {
     try {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice);
+        let on = currentDeviceData.isActive;
         let level = action.level;
         let url = currentDeviceData.url;
 
         // Create object for server insertion
-        let toUpdate = {brightness: level, color: Color(currentDeviceData.color).rgb().array()};
+        let toUpdate = {brightness: level, color: Color(currentDeviceData.color).rgb().array(), on: on};
         let postObject = generatePostObject(currentDeviceData, toUpdate);
 
         // Make HTTP Request
@@ -156,11 +157,13 @@ function* changeDeviceColor() {
     try {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice)
+        let on = currentDeviceData.isActive;
+        let brightness = currentDeviceData.level;
         let color = Color(currentDeviceData.color);
         let url = currentDeviceData.url;
 
         // Create object for server insertion
-        let postObject = generatePostObject(currentDeviceData, {color: color.rgb().array()});
+        let postObject = generatePostObject(currentDeviceData, {on: on, brightness: brightness, color: color.rgb().array()});
 
         // Make HTTP Request
         let params = [url, postObject];
