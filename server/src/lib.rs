@@ -43,8 +43,8 @@ pub fn run_server() -> rocket::config::Result<()> {
     let (cache_tx, cache_rx) = channel();
 
     rocket::ignite()
-        .mount("", web::routes())
-        .mount("", routes![hello])
+        .mount("/", web::routes())
+        .mount("/", routes![hello])
         .attach(DbConn::fairing())
         .attach(AdHoc::on_launch("Database Migrations", |rocket| {
             let conn = DbConn::get_one(&rocket).unwrap().0;
