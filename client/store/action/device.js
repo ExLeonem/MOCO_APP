@@ -1,16 +1,24 @@
-import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, DISABLE_DEVICE, ENABLE_DEVICE} from '../constants';
+import {SELECT_CURRENT_DEVICE, ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, DISABLE_DEVICE, ENABLE_DEVICE, UPDATE_DEVICE_ACTIVE} from '../constants';
 
-const addDevice = (payload) => {
+
+const selectCurrentDevice = (url) => {
+    return {
+        type: SELECT_CURRENT_DEVICE,
+        url: url
+    }
+}
+
+const addDevice = (device) => {
     return {
         type: ADD_DEVICE,
-        payload: payload
+        device: device
     }
 };
 
-const removeDevice = (payload) => {
+const removeDevice = (url) => {
     return {
         type: REMOVE_DEVICE,
-        payload: payload
+        url: url
     }
 };
 
@@ -28,25 +36,35 @@ const replaceDeviceAddress = (payload) => {
     }
 };
 
-const enableDevice = (payload) => {
+const enableDevice = (url) => {
     return {
         type: ENABLE_DEVICE,
-        payload: payload
+        url: url
     }
 }
 
-const disableDevice = (payload) => {
+const disableDevice = (url) => {
     return {
         type: DISABLE_DEVICE,
-        payload: payload
+        url: url
+    }
+}
+
+const updateDeviceActive = (url, isActive) => {
+    return {
+        type: UPDATE_DEVICE_ACTIVE,
+        url: url,
+        isActive: isActive
     }
 }
 
 export {
+    selectCurrentDevice,
     addDevice,
     removeDevice,
     renameDevice,
     replaceDeviceAddress,
     enableDevice,
-    disableDevice
+    disableDevice,
+    updateDeviceActive
 };

@@ -146,7 +146,7 @@ const CircleIcon = ({scaleBy=0, color}) => {
     let {height, width} = scaleIconSize(scaleBy, 20, 20);    
     return (
         <Svg width={width} height={height} viewBox="0 0 20 20" fill={color} >
-            <Circle cx="10" cy="10" r="10" fill="white"/>
+            <Circle cx="10" cy="10" r="10" fill={color}/>
         </Svg>
     )
 }

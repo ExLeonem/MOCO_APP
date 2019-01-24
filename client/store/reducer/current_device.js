@@ -23,8 +23,7 @@ const currentDeviceReducer = (state = deviceTemplate, action) => {
     let newState = state;
     switch(action.type) {
         case SET_CURRENT_DEVICE: {
-            // REQUEST first?
-            newState = {...action.device}; // replace current device with new device
+            newState = {...action.device};
             break;
         }
         case SET_CURRENT_DEVICE_LEVEL: {

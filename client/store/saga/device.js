@@ -1,15 +1,106 @@
-import {ADD_NEW_DEVICE, REMOVE_DEVICE} from '../constants';
-import {addDevice} from '../action/device';
+import {ADD_NEW_DEVICE, REMOVE_DEVICE, SELECT_CURRENT_DEVICE, ENABLE_DEVICE, DISABLE_DEVICE} from '../constants';
+import {addDevice, updateDeviceActive} from '../action/device';
 import {setNewDeviceMessage} from '../action/new_device';
+import {setCurrentDevice} from '../action/current_device';
+import {loadSchedules} from '../action/schedule';
 
 import {AsyncStorage} from 'react-native';
-import {takeLatest, put, call, select} from 'redux-saga';
+import {takeLatest, put, call, select} from 'redux-saga/effects';
 
 import Color from 'color';
 import axios from 'axios';
 
-const serverEndpoint = "/api/v1/led_status";
+// Server Endpoints
+const endpoint = {
+    get: () => "/api/v1/led_status",
+    set: () => "/api/v1/set_led"
+}
 
+// Store selector functions
+const getDevices = state => state.devices
+
+
+/**
+ * Select a device
+ */
+export function* checkCurrentDevice() {
+    yield takeLatest(SELECT_CURRENT_DEVICE, selectCurrentDevice);
+}
+
+function* selectCurrentDevice(action) {
+    try {
+        let devices = yield select(getDevices);
+        let found = false;
+        console.log("\n\nSearch device");
+        console.log(action.url);
+        for(let i = 0; i < devices.length; i++) {
+            if(devices[i].url == action.url) {
+                console.log("Selected");
+                yield put(setCurrentDevice(devices[i]));
+                yield put(loadSchedules()); // Load schedules initialy
+                found = true;
+                break;
+            }
+        }
+
+        if(!found) {
+            // TODO: device not found!? TOast
+        }
+
+    } catch(err) {
+        console.log(err);
+    }
+}
+
+
+export function* checkQuickEnableDevice() {
+    yield takeLatest(ENABLE_DEVICE, quickSwitchLightOn(true));
+}
+
+export function* checkQuickDisableDevice() {
+    yield takeLatest(DISABLE_DEVICE, quickSwitchLightOn(false));
+}
+
+
+function quickSwitchLightOn(isActive) {
+    return function* (action) {
+        try {
+            let devices = yield select(getDevices);
+            let found = false;
+
+            console.log("Turn to : " + isActive);
+            for(let i = 0; i < devices.length; i++) {
+                // Device found
+                if(devices[i].url == action.url) {
+
+                    let ledEntitiy = deviceToLed(devices[i]);
+                    let params = [devices[i].url, {...ledEntitiy, on: isActive}]
+                    let resp = yield call(updateLed, ...params);
+                    found = true;
+
+                    if(resp.status == 200) {
+                        if("Ok" in resp.data) {
+                            // Update was successful
+                            yield put(updateDeviceActive(action.url, isActive));
+                        } else if("error" in resp.data) {
+                            // TODO: couldn't update led_status
+                        }
+                    } else {
+                        // TODO: failed to update
+                    }
+
+                    // console.log(JSON.stringify(resp, null, 2));
+                }
+            }
+        } catch(err) {
+            console.log(err);
+        }
+    }
+}
+
+/**
+ * Add a new device to the device list
+ */
 export function* checkOnAddDevice() {
     yield takeLatest(ADD_NEW_DEVICE, processDevice);
 }
@@ -47,7 +138,7 @@ function* processDevice(action) {
 function* checkAndInsert(name, address) {
 
     // check if endpoint/device exists
-    let resp = yield endpointExists(address + serverEndpoint);
+    let resp = yield call(checkLed);
     if(resp.status == 200 && "on" in resp.data) {
         let ledState = resp.data;
         let color = Color(ledState.color);
@@ -70,10 +161,13 @@ function* checkAndInsert(name, address) {
  *           SERVER REQUESTS
  * -------------------------------------
  */ 
-function endpointExists(url) {
-    return axios.get(url);
+function updateLed(url, data) {
+    return axios.post(url + endpoint.set(), data);
 }
 
+function checkLed(url) {
+    return axios.get(url + endpoint.get());
+}
 
 /**
  *  -------------------------------------
@@ -120,6 +214,10 @@ function initNewDevice(name, address, color, level, isActive) {
         level: brightness,
         isActive: on
     }
+}
+
+function deviceToLed(device) {
+    return {on: device.isActive, color: Color(device.color).rgb().array(), brightness: device.level, manuel: false};
 }
 
 

@@ -6,11 +6,12 @@ import {
     SET_CURRENT_DEVICE_COLOR, 
     SET_CURRENT_DEVICE_LEVEL,
     ENABLE_CURRENT_DEVICE,
-    DISABLE_CURRENT_DEVICE
+    DISABLE_CURRENT_DEVICE,
 } from '../constants';
 
 // Request currently stored device
 const getStoredDevice = state => state.currentDevice
+
 
 /**
  * Routine for device light on/off

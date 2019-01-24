@@ -62,7 +62,7 @@ export default class Header extends React.Component {
     renderRemoveIcon(onDelete) {
        return(
             <TouchableHighlight onPress={() => onDelete()} underlayColor={snow.hex()}>
-                <RemoveIcon color={red.hex()}/>
+                <RemoveIcon color={red.hex()} scaleBy={-5}/>
             </TouchableHighlight>
        )
     }

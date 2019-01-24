@@ -5,17 +5,25 @@ import {CircleIcon} from '../general/icons';
 import {snow, arsenic, yellow, green} from '../colors';
 
 import {connect} from 'react-redux';
-import {enableDevice, disableDevice} from '../../store/action/device';
+import {enableDevice, disableDevice, selectCurrentDevice} from '../../store/action/device';
 import {setCurrentDevice} from '../../store/action/current_device';
 
 
 class DeviceEntry extends React.Component {
 
     changeState() {
+        console.log(this.props.isActive);
         if(this.props.isActive) {
-            this.props.disable(this.props.address);
+            console.log("Disable!");
+            this.props.disable(this.props.url);
         } else {
-            this.props.enable(this.props.address);
+            this.props.enable(this.props.url);
+        }
+    }
+
+    selectDevice() {
+        if(!this.props.selected) {
+            this.props.setCurrentDevice(this.props.url);
         }
     }
 
@@ -23,17 +31,17 @@ class DeviceEntry extends React.Component {
     render() {
         return (
             <View style={styles.container}>
-                <View style={this.props.isActive? styles.selected : styles.notSelected}/>
+                <View style={this.props.selected? styles.selected : styles.notSelected}/>
                 <TouchableHighlight 
                     style={styles.selectableDevice} 
                     underlayColor={arsenic.hex()} 
-                    onPress={() => this.props.setCurrentDevice(this.props.name)}
+                    onPress={() => this.selectDevice()}
                 > 
                     <Text style={styles.deviceName}>{this.props.name}</Text>
                 </TouchableHighlight>
                 <TouchableHighlight 
                     style={styles.turnLight}
-                    underlayColor={arsenic.lighten(0.6).hex()} 
+                    underlayColor={arsenic.hex()} 
                     onPress={() => this.changeState()}
                 >
                     <CircleIcon color={this.props.isActive? yellow.hex() : snow.hex()}/>
@@ -90,9 +98,9 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
     return {
-        enable: name => dispatch(enableDevice(name)),
-        disable: name => dispatch(disableDevice(name)),
-        setCurrentDevice: name => dispatch(setCurrentDevice(name))
+        enable: url => dispatch(enableDevice(url)),
+        disable: url => dispatch(disableDevice(url)),
+        setCurrentDevice: url => dispatch(selectCurrentDevice(url))
     }
 }
 

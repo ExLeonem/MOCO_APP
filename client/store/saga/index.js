@@ -15,7 +15,12 @@ import {
     checkDisableSchedule
 } from './schedule';
 
-import { checkOnAddDevice } from './device';
+import { 
+    checkOnAddDevice,
+    checkCurrentDevice,
+    checkQuickEnableDevice,
+    checkQuickDisableDevice
+} from './device';
 
 export default function* rootSaga() {
     yield all([
@@ -27,6 +32,9 @@ export default function* rootSaga() {
 
         // device
         fork(checkOnAddDevice),
+        fork(checkCurrentDevice),
+        fork(checkQuickEnableDevice),
+        fork(checkQuickDisableDevice),
 
         // Schedule
         fork(checkScheduleToWrite),

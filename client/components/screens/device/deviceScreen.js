@@ -23,7 +23,12 @@ class DeviceScreen extends React.Component {
                 <ScrollView style={styles.deviceList}>
                     {
                         devices.map(device => {
-                            return <DeviceEntry isActive={device.isActive} address={device.url} name={device.name}/>
+                            return <DeviceEntry 
+                                selected={this.props.currentDevice.url == device.url}
+                                isActive={device.isActive} 
+                                url={device.url} 
+                                name={device.name}
+                            />
                         })
                     }
                 </ScrollView>
@@ -58,7 +63,8 @@ class DeviceScreen extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        devices: state.devices
+        devices: state.devices,
+        currentDevice: state.currentDevice
     }
 };
 

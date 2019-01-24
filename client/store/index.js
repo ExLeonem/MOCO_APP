@@ -48,7 +48,7 @@ let initialState = {
         }
     },
     devices: [deviceTemplate],
-    currentDevice: deviceTemplate,
+    currentDevice: {},
     drawer: "show",
     newDevice: {
         name: "",
