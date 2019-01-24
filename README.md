@@ -10,7 +10,7 @@
 More detailed information and a guide of to setup the client and server can be found
 in the corresponding readme files:
 
-- [Server](./client/README.md)
+- [Client](./client/README.md)
 - [Server](./server/README.md)
 
 ## Project Outline
