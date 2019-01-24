@@ -1,15 +1,17 @@
 
 
-# Index
-
-- [Projekt Outline](#Project-Outline)
-- [User Interface](#User-Interface)
-
-
-#### Teammebers
+#### Teammembers
 - Benjamin Bäumler
 - Maksim Sandybekov
 
+
+## Setup
+
+More detailed information and a guide of to setup the client and server can be found
+in the corresponding readme files:
+
+- [Server](./client/README.md)
+- [Server](./server/README.md)
 
 ## Project Outline
 
@@ -54,48 +56,4 @@ Below listed are the main hardware components that are needed to realize this pr
 
 
 #### Technologies
-The Technologies we selected for this project are **react native** as a **cross-platform** framework and mainly **rust** for the backend as well as the hardware components. Because no teammember currently possses an iOS device our main target platform remains android. By Chance we will still try to target iOS as well. 
-The android/iOS codebase will interface with the backend through an adequate library.
-
-
-##### Architecture (System/Software)
-![Architektur](./assets/22_10_2018_block_diagram.png)
-
-
-### Project details
-
-#### Schedule
-
-| Due                           | Task                                                              |
-| ---                           | ---                                                               |
-| 25.10.2018                    | Analyze and list hardware and software requirements               |
-| 08.11.2018                    | User interface Design                                             |
-| 08.11.2018                    | Prototype Software                                                |
-| 11.12.2018                    | Wiring of hardware components                                     |
-| 11.12.2018                    | Implementation (Core Functionality)                               |
-| 10.01.2018                    | Wrap components into and end-product                              |
-| 10.01.2019                    | Implementation (Optional Functionality)                           |
-
-#### Complexity
-The following aspects of complexity can be identified. The Complexity of software components can
-vary depending on usage of libraries and their learning curve, from scratch implementations and also the size and number of seperate parts.
-
-- Hardware complexity (medium)
-    - soldering of parts
-    - product design/endproduct creation
-- Software complexity (easy-hard)
-    - Server-Client communication with multiple instances
-    - LED strap control
-    - Interfacing between rust and android/iOS
-
-
-#### Risks
-- Lack of experience with hardware
-- Non standard way to implement app (cross-platform/less support of lecturer)
-
-## User Interface
-
-The current state of the interface design is accessable through below link.
-
-https://www.figma.com/file/RVZd5LnsutkQmoSH1gSq4f1N/MoCo
-
+The Technologies we selected for this project are **react native** as a **cross-platform** framework and mainly **rust** for the backend as well as the hardware components. Because no teammember currently possses an iOS device our main target platform remains android. 
