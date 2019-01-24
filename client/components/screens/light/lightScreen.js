@@ -23,8 +23,8 @@ let LightButton = ({isOn, onPress}) => {
 class LightScreen extends React.Component {
     
     componentDidMount() {
-        let update = () => this.props.updateLed(this.props.url);
-        setInterval(update, 4000);
+        // let update = () => this.props.updateLed(this.props.url);
+        // setInterval(update, 4000);
     }
 
     render() {

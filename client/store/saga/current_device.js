@@ -81,13 +81,13 @@ function* changeLight(action) {
         let currentDeviceData = yield select(getStoredDevice);
         let devices = yield select(getDevices);
         let isActive = action.isActive;
+        let brightness = currentDeviceData.level;
         let url = currentDeviceData.url;
 
         // Create Object for server insertion
-        let toUpdate = {on: isActive, color: Color(currentDeviceData.color).rgb().array()};
+        let toUpdate = {on: isActive, color: Color(currentDeviceData.color).rgb().array(), brightness: brightness};
         let postObject = generatePostObject(currentDeviceData, toUpdate);
 
-        console.log(postObject);
         // Make HTTP Request
         let params = [url, postObject];
         let postState = yield call(setLed, ...params);
@@ -137,8 +137,11 @@ function* changeDeviceBrightness(action) {
         let params = [url, postObject];
         let postState = yield call(setLed, ...params);
 
+
+        console.log(JSON.stringify(postState, null, 2));
+
         // Check response
-        if(postState.status == 200 && postState.data["error"] != undefined) {
+        if(postState.status == 200) {
              // TODO: feedback post request error
         }
     } catch(err) {
@@ -169,10 +172,15 @@ function* changeDeviceColor() {
         let params = [url, postObject];
         let postState = yield call(setLed, ...params);
 
+        console.log(JSON.stringify(postState, null, 2));
+
         // Check response
-        if(postState.status == 200 && postState.data["error"] != undefined) {
-            // TODO: feedback post request error
-        }
+        // if(postState.status == 200 ) {
+        //     // TODO: feedback post request error
+        //     if("Ok" in postState.data) {
+        //         yield put(setCurrentDeviceColor())
+        //     }
+        // }
     } catch(err) {
         console.log(err);
         
