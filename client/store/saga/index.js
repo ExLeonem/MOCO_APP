@@ -20,12 +20,14 @@ import {
     checkOnAddDevice,
     checkCurrentDevice,
     checkQuickEnableDevice,
-    checkQuickDisableDevice
+    checkQuickDisableDevice,
+    checkLoadDevices
 } from './device';
 
 export default function* rootSaga() {
     yield all([
         // current device
+        fork(checkLoadDevices),
         fork(checkLedUpdate),
         fork(updateColor),
         fork(updateBrightness),

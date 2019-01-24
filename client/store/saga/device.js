@@ -1,5 +1,5 @@
-import {ADD_NEW_DEVICE, REMOVE_DEVICE, SELECT_CURRENT_DEVICE, ENABLE_DEVICE, DISABLE_DEVICE} from '../constants';
-import {addDevice, updateDeviceActive} from '../action/device';
+import {ADD_NEW_DEVICE, REMOVE_DEVICE, SELECT_CURRENT_DEVICE, ENABLE_DEVICE, DISABLE_DEVICE, LOAD_DEVICES} from '../constants';
+import {addDevice, updateDeviceActive, initDevices} from '../action/device';
 import {setNewDeviceMessage} from '../action/new_device';
 import {setCurrentDevice, updateCurrentDeviceActive} from '../action/current_device';
 import {loadSchedules} from '../action/schedule';
@@ -31,11 +31,8 @@ function* selectCurrentDevice(action) {
     try {
         let devices = yield select(getDevices);
         let found = false;
-        console.log("\n\nSearch device");
-        console.log(action.url);
         for(let i = 0; i < devices.length; i++) {
             if(devices[i].url == action.url) {
-                console.log("Selected");
                 yield put(setCurrentDevice(devices[i]));
                 yield put(loadSchedules()); // Load schedules initialy
                 found = true;
@@ -69,7 +66,6 @@ function quickSwitchLightOn(isActive) {
             let currentDevice = yield select(getStoredDevice);
             let found = false;
 
-            console.log("Turn to : " + isActive);
             for(let i = 0; i < devices.length; i++) {
                 // Device found
                 if(devices[i].url == action.url) {
@@ -105,12 +101,41 @@ function quickSwitchLightOn(isActive) {
 }
 
 /**
+ * 
+ */
+export function* checkLoadDevices() {
+    yield takeLatest(LOAD_DEVICES, loadDevicesFromDb);
+}
+
+function* loadDevicesFromDb(action) {
+    try {
+        let deviceUrls = yield call(readDevices);
+        let devices = [];
+        for(let i = 0; i < deviceUrls.length; i++) {
+            let url = deviceUrls[i];
+            let deviceName = yield call(readDevice, url);
+            let resp = yield call(checkLed, url);
+            if(resp.status == 200) {
+                let {on, brightness, color} = resp.data;
+                let deviceEntitity = initNewDevice(deviceName, url, Color(color).hex(), brightness, on);
+                devices.push(deviceEntitity);
+            }
+        }
+
+        yield put(initDevices(devices));
+    } catch(err) {  
+        console.log(err);
+    }
+}
+
+
+
+/**
  * Add a new device to the device list
  */
 export function* checkOnAddDevice() {
     yield takeLatest(ADD_NEW_DEVICE, processDevice);
 }
-
 
 const getDeviceList = state => state.devices
 function* processDevice(action) {
@@ -118,12 +143,8 @@ function* processDevice(action) {
         const devices = yield select(getDeviceList)
         if(devices.length == 0) {
             // Devices empty insert instantly
-            console.log("insert device");
             let name = action.name;
             let address = action.address;
-
-            console.log(name);
-            console.log(address);
 
             yield checkAndInsert(name, address);
             
@@ -153,7 +174,6 @@ function* checkAndInsert(name, address) {
     let resp = yield call(checkLed, address);
 
     if(resp.status == 200) {
-        console.log(JSON.stringify(resp.data, null, 2));
         let {color, brightness, on} = resp.data;
         color = Color(color);
         
@@ -163,10 +183,10 @@ function* checkAndInsert(name, address) {
         yield put(addDevice(deviceObj));
 
         // insert new device into db
-        // yield call(_storeNewDevice(name, address));
+        let params = [name, address]
+        yield call(saveToDB, ...params);
     } else {
         // TODO: error device doesent support connection
-        console.log(JSON.stringify(resp, null, 2));
         yield put(setNewDeviceMessage("Thats not a smart lamp you want connect to. Double check the address mate."));
     }
 }
@@ -190,32 +210,15 @@ function checkLed(url) {
  *          DATABASE ACCESS
  *  -------------------------------------
  */
+saveToDB = (name, address) => _storeNewDevice(name, address)
+readDevices = () => _getAllDevices()
+readDevice = (url) => _getDevice(url)
 
-
-
-_storeNewDevice = async (name, address) => {
-    try {
-        await AsyncStorage.setItem(address, name); 
-    } catch(err) {
-        console.log(err);
-    }
-}
-
-_getDevices = async (address) => {
-    try {
-
-    } catch(err) {
-        
-    }
-}
-
-_removeDevice = async (address) => {
-    try {
-        await AsyncStorage.removeItem(address);
-    } catch(err) {
-        console.log(err);
-    }
-}
+// Async functions
+_storeNewDevice = async (name, address) => await AsyncStorage.setItem(address, name);
+_getAllDevices = async () => await AsyncStorage.getAllKeys();
+_getDevice = async (url) => await AsyncStorage.getItem(url)
+_removeDevice = async (address) => await AsyncStorage.removeItem(address);
 
 
 /**
@@ -236,9 +239,4 @@ function initNewDevice(name, address, color, brightness, isActive) {
 
 function deviceToLed(device) {
     return {on: device.isActive, color: Color(device.color).rgb().array(), brightness: device.level, manuel: false};
-}
-
-
-function validAddress(url) {
-    // Check if address is valid
 }

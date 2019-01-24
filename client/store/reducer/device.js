@@ -1,4 +1,11 @@
-import {ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, UPDATE_DEVICE_ACTIVE,} from '../constants';
+import {
+    ADD_DEVICE, 
+    REMOVE_DEVICE, 
+    RENAME_DEVICE, 
+    REPLACE_DEVICE_ADDRESS, 
+    UPDATE_DEVICE_ACTIVE,
+    INIT_DEVICES
+} from '../constants';
 
 const deviceTemplate = {
     uuid: 1,
@@ -11,6 +18,10 @@ const deviceTemplate = {
 const deviceReducer = (state = [deviceTemplate] , action) => {
     let newState = state;
     switch(action.type) {
+        case INIT_DEVICES: {
+            newState = action.devices;
+            break;
+        }
         case ADD_DEVICE: {
             newState = [...state, action.device];
             break;

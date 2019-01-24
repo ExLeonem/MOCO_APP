@@ -1,5 +1,27 @@
-import {SELECT_CURRENT_DEVICE, ADD_DEVICE, REMOVE_DEVICE, RENAME_DEVICE, REPLACE_DEVICE_ADDRESS, DISABLE_DEVICE, ENABLE_DEVICE, UPDATE_DEVICE_ACTIVE} from '../constants';
+import {
+    SELECT_CURRENT_DEVICE, 
+    ADD_DEVICE, REMOVE_DEVICE, 
+    RENAME_DEVICE, 
+    REPLACE_DEVICE_ADDRESS, 
+    DISABLE_DEVICE, 
+    ENABLE_DEVICE, 
+    UPDATE_DEVICE_ACTIVE,
+    LOAD_DEVICES,
+    INIT_DEVICES
+} from '../constants';
 
+const initDevices = devices => {
+    return {
+        type: INIT_DEVICES,
+        devices: devices
+    }
+}
+
+const loadDevices = () => {
+    return {
+        type: LOAD_DEVICES
+    }
+}
 
 const selectCurrentDevice = (url) => {
     return {
@@ -59,6 +81,8 @@ const updateDeviceActive = (url, isActive) => {
 }
 
 export {
+    initDevices,
+    loadDevices,
     selectCurrentDevice,
     addDevice,
     removeDevice,

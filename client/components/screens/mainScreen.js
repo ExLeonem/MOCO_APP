@@ -9,8 +9,14 @@ import CircleButton from '../general/button';
 
 import {connect} from 'react-redux';
 import {initNewDevice} from '../../store/action/new_device';
+import {loadDevices} from '../../store/action/device';
 
 class MainScreen extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.props.loadDevices();
+    }
 
     switchToAddDevice() {
         this.props.initNewDevice();
@@ -28,7 +34,7 @@ class MainScreen extends React.Component {
                                 isActive={device.isActive} 
                                 url={device.url} 
                                 name={device.name}
-                                next={() => this.props.navigation.navigate("Schedule")}
+                                next={() => this.props.navigation.navigate("Light")}
                             />
                         })
                     }
@@ -68,7 +74,8 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        initNewDevice: () => dispatch(initNewDevice())
+        initNewDevice: () => dispatch(initNewDevice()),
+        loadDevices: () => dispatch(loadDevices())
     }
 }
 
