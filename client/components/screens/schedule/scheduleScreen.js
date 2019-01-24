@@ -25,7 +25,6 @@ class ScheduleScreen extends React.Component {
         this.props.navigation.navigate('Manual');
     }
 
-
     render() {
         return (
             <View style={withFooter.screenWrapper}>

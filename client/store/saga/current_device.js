@@ -87,6 +87,7 @@ function* changeLight(action) {
         let toUpdate = {on: isActive, color: Color(currentDeviceData.color).rgb().array()};
         let postObject = generatePostObject(currentDeviceData, toUpdate);
 
+        console.log(postObject);
         // Make HTTP Request
         let params = [url, postObject];
         let postState = yield call(setLed, ...params);
@@ -198,7 +199,7 @@ function getLed(url) {
      let {on, color, brightness} = paramsToSet;
 
      return {
-         on: on ? on: currentData.isActive,
+         on: on,
          color: color ? color : currentData.color,
          brightness: brightness ? brightness : currentData.level
      }

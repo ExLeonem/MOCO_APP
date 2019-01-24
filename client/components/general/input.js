@@ -65,7 +65,6 @@ export default class InputField extends Component {
             })
         };
 
-
         let inputColor = this.props.invertColor? snow.darken(0.5).hex(): arsenic.hex();
         return (
             <View style={styles.container}>
