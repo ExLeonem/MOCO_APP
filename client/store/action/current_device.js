@@ -8,8 +8,19 @@ import {
     DISABLE_CURRENT_DEVICE,
     RESET_CURRENT_DEVICE,
     UPDATE_CURRENT_DEVICE_ACTIVE,
-    UPDATE_CURRENT_DEVICE
+    UPDATE_CURRENT_DEVICE,
+    UPDATE_CURRENT_DEVICE_STORE
 } from '../constants';
+
+
+const updateCurrentDeviceStore = (color, level, isActive) => {
+    return {
+        type: UPDATE_CURRENT_DEVICE_STORE,
+        color: color,
+        level: level,
+        isActive: isActive
+    }
+} 
 
 
 const setCurrentDevice = (device) => {
@@ -93,5 +104,6 @@ export {
     disableCurrentDevice,
     resetCurrentDevice,
     updateCurrentDeviceActive,
-    updateCurrentDevice
+    updateCurrentDevice,
+    updateCurrentDeviceStore
 }

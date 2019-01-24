@@ -7,6 +7,7 @@ import {
     RENAME_CURRENT_DEVICE,
     RESET_CURRENT_DEVICE,
     UPDATE_CURRENT_DEVICE_ACTIVE,
+    UPDATE_CURRENT_DEVICE_STORE
 } from '../constants';
 
 // Template for device element in devices list
@@ -47,6 +48,10 @@ const currentDeviceReducer = (state = deviceTemplate, action) => {
         }
         case UPDATE_CURRENT_DEVICE_ACTIVE: {
             newState = {...state, isActive: action.isActive};
+            break;
+        }
+        case UPDATE_CURRENT_DEVICE_STORE: {
+            newState = {...state, isActive: action.isActive, level: action.level, color: action.color};
             break;
         }
     }
