@@ -11,7 +11,7 @@ import {
 } from '../constants';
 
 import { updateDeviceActive } from '../action/device';
-import { updateCurrentDeviceActive, setCurrentDeviceLevel, setCurrentDeviceColor, updateCurrentDeviceStore } from '../action/current_device';
+import { updateCurrentDeviceActive, setCurrentDeviceLevel, setCurrentDeviceColor } from '../action/current_device';
 
 // Request currently stored device
 const getStoredDevice = state => state.currentDevice
@@ -42,10 +42,18 @@ function* pollCurrentLed(action) {
             let currentDevice = yield select(getStoredDevice);
             let {on, color, brightness} = resp.data;
             color = Color(color);
-
-            if(color.hex() != Color(currentDevice.color).hex() || on != currentDevice.isActive || brightness != currentDevice.level) {
-                yield put(updateCurrentDeviceStore(color.hex(), brightness, on));
+            
+            // Update different values
+            if(color.hex() != Color(currentDevice.color).hex()) {
+                yield put(setCurrentDeviceColor(color.hex()));
             }
+            if(on != currentDevice.isActive) {
+                yield put(updateCurrentDeviceActive(on));
+            }
+            if(brightness != currentDevice.level) {
+                yield put(setCurrentDeviceLevel(brightness))
+            }
+
         } else {
             // TODO: Request error
         }

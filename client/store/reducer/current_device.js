@@ -51,6 +51,7 @@ const currentDeviceReducer = (state = deviceTemplate, action) => {
             break;
         }
         case UPDATE_CURRENT_DEVICE_STORE: {
+            console.log("UPDATE");
             newState = {...state, isActive: action.isActive, level: action.level, color: action.color};
             break;
         }
