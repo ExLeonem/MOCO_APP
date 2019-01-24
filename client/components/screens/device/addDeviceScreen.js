@@ -5,6 +5,7 @@ import Header from '../../general/header';
 import InputField from '../../general/input';
 import CircleButton from '../../general/button';
 import {arsenic, snow} from '../../colors';
+import {medium} from '../../fonts';
 
 import {connect} from 'react-redux';
 
@@ -26,8 +27,6 @@ class AddDeviceScreen extends React.Component {
         this.props.switchScreen();
         return true;
     }
-
-    // !: method insert new device
 
     render() {
         return (
@@ -51,7 +50,7 @@ class AddDeviceScreen extends React.Component {
                             onChange={address => this.props.setAddress(address)}
                             invertColor={true}    
                         />
-                        <Text style={{color: snow.hex()}}>{this.props.errorMessage}</Text>
+                        <Text style={styles.errorMessage}>{this.props.errorMessage}</Text>
                 </View>
                 <View style={styles.footer}>
                     <CircleButton
@@ -82,6 +81,12 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
         marginRight: 40
+    },
+    errorMessage: {
+        marginTop: 20,
+        color: snow.darken(0.4).hex(),
+        fontSize: medium,
+        textAlign: 'center'
     }
 });
 

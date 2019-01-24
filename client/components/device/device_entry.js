@@ -62,8 +62,6 @@ const styles = StyleSheet.create({
         height: 50,
         paddingHorizontal: 20,
         marginVertical: 25,
-        borderWidth: 1,
-        borderColor: snow.hex()
     },
     selected: {
         flex: 1,

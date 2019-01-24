@@ -1,6 +1,7 @@
 import {all, fork} from 'redux-saga/effects';
 
 import {
+    checkLedUpdate,
     updateColor,
     updateBrightness,
     checkDisableLight,
@@ -25,6 +26,7 @@ import {
 export default function* rootSaga() {
     yield all([
         // current device
+        fork(checkLedUpdate),
         fork(updateColor),
         fork(updateBrightness),
         fork(checkEnableLight),

@@ -1,14 +1,14 @@
 import React, {Component} from 'react';
 import {View, Text, ScrollView, StyleSheet} from 'react-native';
 
-import {arsenic, snow} from '../../colors';
+import {arsenic, snow} from '../colors';
 
-import DeviceEntry from '../../device/device_entry';
-import Header from '../../general/header';
-import CircleButton from '../../general/button';
+import DeviceEntry from '../device/device_entry';
+import Header from '../general/header';
+import CircleButton from '../general/button';
 
 import {connect} from 'react-redux';
-import {initNewDevice} from '../../../store/action/new_device';
+import {initNewDevice} from '../../store/action/new_device';
 
 class DeviceScreen extends React.Component {
 
@@ -53,7 +53,7 @@ class DeviceScreen extends React.Component {
                 
                 {this.renderDevices(this.props.devices)}
                 <View style={styles.footer}>
-                    <CircleButton buttonColor={snow} onPress={() => this.switchToAddDevice()}/>
+                    {this.props.devices.length == 0 ? <CircleButton buttonColor={snow} onPress={() => this.switchToAddDevice()}/>: null}
                 </View>
             </View>
         )
@@ -82,7 +82,9 @@ const styles = StyleSheet.create({
         backgroundColor: arsenic.hex()
     },
     deviceList: {
-        flex: 1
+        flex: 1,
+        // borderWidth: 1,
+        // borderColor: snow.hex()
     },
     displayInfo: {
         flex: 1,

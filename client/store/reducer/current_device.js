@@ -5,9 +5,8 @@ import {
     SET_CURRENT_DEVICE_COLOR,
     SET_CURRENT_DEVICE_URL,
     RENAME_CURRENT_DEVICE,
-    ENABLE_CURRENT_DEVICE,
-    DISABLE_CURRENT_DEVICE,
     RESET_CURRENT_DEVICE,
+    UPDATE_CURRENT_DEVICE_ACTIVE,
 } from '../constants';
 
 // Template for device element in devices list
@@ -42,16 +41,12 @@ const currentDeviceReducer = (state = deviceTemplate, action) => {
             newState = {...state, name: action.name};
             break;
         }
-        case ENABLE_CURRENT_DEVICE: {
-            newState = {...state, isActive: true};
-            break;
-        }
-        case DISABLE_CURRENT_DEVICE: {
-            newState = {...state, isActive: false};
-            break;
-        }
         case RESET_CURRENT_DEVICE: {
             newState = {};
+            break;
+        }
+        case UPDATE_CURRENT_DEVICE_ACTIVE: {
+            newState = {...state, isActive: action.isActive};
             break;
         }
     }

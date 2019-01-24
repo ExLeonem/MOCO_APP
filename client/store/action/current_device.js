@@ -7,6 +7,8 @@ import {
     ENABLE_CURRENT_DEVICE,
     DISABLE_CURRENT_DEVICE,
     RESET_CURRENT_DEVICE,
+    UPDATE_CURRENT_DEVICE_ACTIVE,
+    UPDATE_CURRENT_DEVICE
 } from '../constants';
 
 
@@ -47,13 +49,15 @@ const renameCurrentDevice = (name) => {
 
 const enableCurrentDevice = () => {
     return {
-        type: ENABLE_CURRENT_DEVICE
+        type: ENABLE_CURRENT_DEVICE,
+        isActive: true
     }
 }
 
 const disableCurrentDevice = () => {
     return {
-        type: DISABLE_CURRENT_DEVICE
+        type: DISABLE_CURRENT_DEVICE,
+        isActive: false
     }
 }
 
@@ -64,6 +68,19 @@ const resetCurrentDevice = (payload) => {
     }
 }
 
+const updateCurrentDeviceActive = isActive => {
+    return {
+        type: UPDATE_CURRENT_DEVICE_ACTIVE,
+        isActive: isActive
+    }
+}
+
+const updateCurrentDevice = url => {
+    return {
+        type: UPDATE_CURRENT_DEVICE,
+        url: url
+    }
+}
 
 
 export {
@@ -74,5 +91,7 @@ export {
     renameCurrentDevice,
     enableCurrentDevice,
     disableCurrentDevice,
-    resetCurrentDevice
+    resetCurrentDevice,
+    updateCurrentDeviceActive,
+    updateCurrentDevice
 }

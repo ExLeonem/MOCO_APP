@@ -1,7 +1,7 @@
 import {ADD_NEW_DEVICE, REMOVE_DEVICE, SELECT_CURRENT_DEVICE, ENABLE_DEVICE, DISABLE_DEVICE} from '../constants';
 import {addDevice, updateDeviceActive} from '../action/device';
 import {setNewDeviceMessage} from '../action/new_device';
-import {setCurrentDevice} from '../action/current_device';
+import {setCurrentDevice, updateCurrentDeviceActive} from '../action/current_device';
 import {loadSchedules} from '../action/schedule';
 
 import {AsyncStorage} from 'react-native';
@@ -18,7 +18,7 @@ const endpoint = {
 
 // Store selector functions
 const getDevices = state => state.devices
-
+const getStoredDevice = state => state.currentDevice
 
 /**
  * Select a device
@@ -66,6 +66,7 @@ function quickSwitchLightOn(isActive) {
     return function* (action) {
         try {
             let devices = yield select(getDevices);
+            let currentDevice = yield select(getStoredDevice);
             let found = false;
 
             console.log("Turn to : " + isActive);
@@ -82,6 +83,11 @@ function quickSwitchLightOn(isActive) {
                         if("Ok" in resp.data) {
                             // Update was successful
                             yield put(updateDeviceActive(action.url, isActive));
+
+                            // quick device is current device
+                            if(currentDevice.url == action.url) {
+                                yield put(updateCurrentDeviceActive(isActive));
+                            }
                         } else if("error" in resp.data) {
                             // TODO: couldn't update led_status
                         }
@@ -110,15 +116,21 @@ const getDeviceList = state => state.devices
 function* processDevice(action) {
     try {
         const devices = yield select(getDeviceList)
-        if(!devices) {
+        if(devices.length == 0) {
             // Devices empty insert instantly
+            console.log("insert device");
             let name = action.name;
             let address = action.address;
+
+            console.log(name);
+            console.log(address);
+
             yield checkAndInsert(name, address);
+            
         } else {
             // devices already exist, check if devices with url exists  
             let found = devices.find(device => device.url == action.address);
-
+            
             // no device found
             if(!found) {
                 yield checkAndInsert(action.name, action.address);
@@ -130,27 +142,33 @@ function* processDevice(action) {
 
     } catch(error) {
         console.log(error);
-        yield put(setNewDeviceMessage("Coudln't connect to the device. Check your internet connectivity and the address."));
+        yield put(setNewDeviceMessage("could't connect to the device. Check your internet connectivity and the address."));
         // Error Message
     }
 }
 
 function* checkAndInsert(name, address) {
 
+    console.log("Check");
     // check if endpoint/device exists
-    let resp = yield call(checkLed);
-    if(resp.status == 200 && "on" in resp.data) {
-        let ledState = resp.data;
-        let color = Color(ledState.color);
+    let resp = yield call(checkLed, address);
+
+    console.log("Process?");
+    if(resp.status == 200) {
+        console.log(JSON.stringify(resp.data, null, 2));
+        let {color, brightness, on} = resp.data;
+        color = Color(color);
         
         // create device object and insert into application state
-        let deviceObj = initNewDevice(name, address, color.hex(), ledState.brightness, ledState.on);
+        let deviceObj = initNewDevice(name, address, color.hex(), brightness, on);
+
         yield put(addDevice(deviceObj));
 
         // insert new device into db
-        yield call(_storeNewDevice(name, address));
+        // yield call(_storeNewDevice(name, address));
     } else {
         // TODO: error device doesent support connection
+        console.log(JSON.stringify(resp, null, 2));
         yield put(setNewDeviceMessage("Thats not a smart lamp you want connect to. Double check the address mate."));
     }
 }
@@ -174,6 +192,8 @@ function checkLed(url) {
  *          DATABASE ACCESS
  *  -------------------------------------
  */
+
+
 
 _storeNewDevice = async (name, address) => {
     try {
@@ -206,13 +226,13 @@ _removeDevice = async (address) => {
  *  -----------------------------------
  */
 
-function initNewDevice(name, address, color, level, isActive) {
+function initNewDevice(name, address, color, brightness, isActive) {
     return {
         name: name,
         url: address,
         color: color,
         level: brightness,
-        isActive: on
+        isActive: isActive
     }
 }
 

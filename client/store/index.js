@@ -5,14 +5,14 @@ import rootSaga from './saga/index';
 
 
 // Template for device element in devices list
-const deviceTemplate = {
-    uuid: 1,
-    url: "https://www.qqwa.de/sneaky/moco",
-    name: "Test licht",
-    color: "#FFFF00",
-    level: 10,
-    isActive: false
-};
+// const deviceTemplate = {
+//     uuid: 1,
+//     url: "https://www.qqwa.de/sneaky/moco",
+//     name: "Test licht",
+//     color: "#FFFF00",
+//     level: 10,
+//     isActive: false
+// };
 
 // Template for schedules
 let scheduleOne = {
@@ -47,7 +47,7 @@ let initialState = {
             toDelete: []
         }
     },
-    devices: [deviceTemplate],
+    devices: [],
     currentDevice: {},
     drawer: "show",
     newDevice: {

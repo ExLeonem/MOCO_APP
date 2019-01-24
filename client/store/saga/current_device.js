@@ -1,4 +1,4 @@
-import {call, select, takeLatest} from 'redux-saga/effects';
+import {call, select, takeLatest, put} from 'redux-saga/effects';
 import Color from 'color';
 import axios from 'axios';
 
@@ -7,10 +7,61 @@ import {
     SET_CURRENT_DEVICE_LEVEL,
     ENABLE_CURRENT_DEVICE,
     DISABLE_CURRENT_DEVICE,
+    UPDATE_CURRENT_DEVICE
 } from '../constants';
+
+import { updateDeviceActive } from '../action/device';
+import { updateCurrentDeviceActive, setCurrentDeviceLevel } from '../action/current_device';
 
 // Request currently stored device
 const getStoredDevice = state => state.currentDevice
+const getDevices = state => state.devices
+
+// endpoints for led access
+const endpoints = {
+    get: () => '/api/v1/led_status',
+    set: () => '/api/v1/set_led'
+}
+
+
+/**
+ * Check current state of led and update
+ */
+export function* checkLedUpdate() {
+    yield takeLatest(UPDATE_CURRENT_DEVICE, pollCurrentLed);
+}
+
+// update function for led values
+function* pollCurrentLed(action) {
+    try {
+        console.log(action.url);
+        let resp = yield call(getLed, action.url);
+        
+        if(resp.status == 200) {
+            // Success
+            let currentDevice = yield select(getStoredDevice);
+            let {on, color, brightness} = resp.data;
+            color = Color(color);
+            
+            // Update different values
+            if(color.hex() != Color(currentDevice.color).hex()) {
+                yield put(setCurrentDeviceColor(color.rgb().array()));
+            }
+            if(on != currentDevice.isActive) {
+                yield put(updateCurrentDeviceActive(on));
+            }
+            if(brightness != currentDevice.level) {
+                yield put(setCurrentDeviceLevel(brightness))
+            }
+
+        } else {
+            // TODO: Request error
+        }
+
+    } catch(err) {
+        console.log(err);
+    }
+}
 
 
 /**
@@ -28,8 +79,9 @@ function* changeLight(action) {
     try {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice);
+        let devices = yield select(getDevices);
         let isActive = action.isActive;
-        let url = currentDeviceData.url + "/api/v1/set_led";
+        let url = currentDeviceData.url;
 
         // Create Object for server insertion
         let toUpdate = {on: isActive, color: Color(currentDeviceData.color).rgb().array()};
@@ -37,11 +89,23 @@ function* changeLight(action) {
 
         // Make HTTP Request
         let params = [url, postObject];
-        let postState = yield call(setDeviceData, ...params);
+        let postState = yield call(setLed, ...params);
 
         // Check response
-        if(postState.status == 200 && postState.data["error"] != undefined) {
-             // TODO: feedback post request error
+        if(postState.status == 200) {
+            if("Ok" in postState.data) {
+                // Successful
+                yield put(updateCurrentDeviceActive(isActive));
+                for(let i = 0; i < devices.length; i++) {
+                    if(devices[i].url == currentDeviceData.url) {
+                        yield put(updateDeviceActive(currentDeviceData.url, isActive))
+                    }
+                }   
+            } else {
+                // TODO: Error from server
+            }
+        } else {
+            // TODO: request error
         }
 
     } catch(err) {
@@ -61,7 +125,7 @@ function* changeDeviceBrightness(action) {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice);
         let level = action.level;
-        let url = currentDeviceData.url + "/api/v1/set_led";
+        let url = currentDeviceData.url;
 
         // Create object for server insertion
         let toUpdate = {brightness: level, color: Color(currentDeviceData.color).rgb().array()};
@@ -69,7 +133,7 @@ function* changeDeviceBrightness(action) {
 
         // Make HTTP Request
         let params = [url, postObject];
-        let postState = yield call(setDeviceData, ...params);
+        let postState = yield call(setLed, ...params);
 
         // Check response
         if(postState.status == 200 && postState.data["error"] != undefined) {
@@ -92,14 +156,14 @@ function* changeDeviceColor() {
         // Collect data
         let currentDeviceData = yield select(getStoredDevice)
         let color = Color(currentDeviceData.color);
-        let url = currentDeviceData.url + "/api/v1/set_led";
+        let url = currentDeviceData.url;
 
         // Create object for server insertion
         let postObject = generatePostObject(currentDeviceData, {color: color.rgb().array()});
 
         // Make HTTP Request
         let params = [url, postObject];
-        let postState = yield call(setDeviceData, ...params);
+        let postState = yield call(setLed, ...params);
 
         // Check response
         if(postState.status == 200 && postState.data["error"] != undefined) {
@@ -117,14 +181,12 @@ function* changeDeviceColor() {
  *              SERVER REQUESTS
  * -------------------------------------
  */
-function setDeviceData(url, postObject) {
-    console.log("POST");
-    return axios.post(url, postObject);
+function setLed(url, postObject) {
+    return axios.post(url + endpoints.set(), postObject);
 }
 
-function getDeviceData(url) {
-    console.log("GET");
-    return axios.get(url);
+function getLed(url) {
+    return axios.get(url + endpoints.get());
 }
 
 /**

@@ -9,7 +9,7 @@ import {withFooter} from '../../general/screen_style';
 import {snow} from '../../colors';
 
 import {connect} from 'react-redux';
-import {enableCurrentDevice, disableCurrentDevice, setCurrentDeviceLevel} from '../../../store/action/current_device';
+import {enableCurrentDevice, disableCurrentDevice, setCurrentDeviceLevel, updateCurrentDevice} from '../../../store/action/current_device';
 
 
 let LightButton = ({isOn, onPress}) => {
@@ -20,7 +20,12 @@ let LightButton = ({isOn, onPress}) => {
     )
 }
 
-class LightScreen extends React.Component {    
+class LightScreen extends React.Component {
+    
+    componentDidMount() {
+        // let update = () => this.props.updateLed(this.props.url);
+        // setInterval(update, 4000);
+    }
 
     render() {
         return (
@@ -69,8 +74,9 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-        isActive: state.currentDevice.isActive,
-        level: state.currentDevice.level
+        isActive: state.currentDevice.isActive || false,
+        level: state.currentDevice.level || 10,
+        url: state.currentDevice.url || ""
     };
 }
 
@@ -78,7 +84,8 @@ const mapDispatchToProps = (dispatch) => {
     return {
         enable: () => dispatch(enableCurrentDevice()),
         disable: () => dispatch(disableCurrentDevice()),
-        updateLevel: (level) => dispatch(setCurrentDeviceLevel(level))
+        updateLevel: level => dispatch(setCurrentDeviceLevel(level)),
+        updateLed: url => dispatch(updateCurrentDevice(url))
     }
 }
 
