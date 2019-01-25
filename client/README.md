@@ -28,17 +28,25 @@ Inside the `/store` directory, redux as well as redux-saga specific code is loca
 
 ## Building the android apk
 
+
 1. Before building the project we first need to get the npm packages. Navigate into `/client` and execute the below command.
 ```
     npm install
 ```
 
-2. After everything is in place. We need to actually build the apk. Therefore execute following command in the `/client/android` directory.
+2. After the dependencies are installed a signing key is needed. Executing following command should yield such a key. More detailed instructions are given [here](https://facebook.github.io/react-native/docs/signed-apk-android).
+```
+keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg RSA -keysize 2048 -validity 10000
+```
+
+3. The generated key now needs to be copied into the `/android/app` directory. 
+
+4. After everything is in place. We need to actually build the apk. By executing following command in the `/client/android` directory an apk file is build.
 ```
 ./gradlew assembleRelease
 ```
 
-3. After the build successfully finishes a new folder
+5. After the build successfully finishes a new folder
 should will appear named `android/app/build` inside the subfolder `/android/app/build/outputs/apk/release` the fully assembled release will be located with the name *app-release.apk* .
 
 
