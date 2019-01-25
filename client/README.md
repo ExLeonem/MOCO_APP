@@ -46,8 +46,7 @@ keytool -genkey -v -keystore my-release-key.keystore -alias my-key-alias -keyalg
 ./gradlew assembleRelease
 ```
 
-5. After the build successfully finishes a new folder
-should will appear named `android/app/build` inside the subfolder `/android/app/build/outputs/apk/release` the fully assembled release will be located with the name *app-release.apk* .
+5. After the build successfully finishes a new folder will appear named `android/app/build` inside the subfolder `/android/app/build/outputs/apk/release` the fully assembled release will be located with the name *app-release.apk* .
 
 
 ## Using the app
