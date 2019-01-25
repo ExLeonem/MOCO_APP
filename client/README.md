@@ -16,7 +16,7 @@ Following the directories as well as their contents are described.
 
 The components inside these folder call upon the state by using the following method which maps the available actions and state to the component properties.
 ```javascript
-connect(mapStateToProps, mapDispatchToProps)
+export default connect(mapStateToProps, mapDispatchToProps)(ComponentName);
 ```
 
 ## Redux /- Saga
